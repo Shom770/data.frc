@@ -12,9 +12,6 @@ load_dotenv()
 
 class ApiClient:
     """Base class that contains all synchronous requests for the TBA API wrapper."""
-
-    session = aiohttp.session()
-
     def __init__(self, api_key: str = None):
         if api_key is None:
             try:
@@ -47,12 +44,45 @@ class ApiClient:
             )
          )
 
-    def teams(
-            self,
-            page_num: int = None,
-            year: typing.Union[range, int] = None,
-            simple: bool = False,
-            keys: bool = False
+    async def _get_team(
+        self,
+        page_num: int = None,
+        year: typing.Union[range, int] = None,
+        simple: bool = False,
+        keys: bool = False
+    ) -> list:
+        """
+        Returns a page of teams (a list of 500 teams or less)
+
+        Parameters:
+            page_num:
+                An integer that specifies the page number of the list of teams that should be retrieved.
+                Teams are paginated by groups of 500, and if page_num is None, every team will be retrieved.
+            year:
+                An integer that specifies if only the teams that participated during that year should be retrieved.
+                If year is a range object, it will return all teams that participated in the years within the range object.
+                If year is None, this method will get all teams that have ever participated in the history of FRC.
+            simple:
+                A boolean that specifies whether the results for each team should be 'shortened' and only contain more relevant information.
+            keys:
+                A boolean that specifies whether only the names of the FRC teams should be retrieved.
+
+        Returns:
+            A list of Team objects for each team in the list.
+        """
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                url=self._construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys),
+                headers=self._headers
+            ) as response:
+                return await response.json()
+
+    async def teams(
+        self,
+        page_num: int = None,
+        year: typing.Union[range, int] = None,
+        simple: bool = False,
+        keys: bool = False
     ) -> list:
         """
         Returns a record of teams
@@ -76,11 +106,14 @@ class ApiClient:
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
 
-        all_responses = []
-
         if isinstance(year, range):
-            for spec_year in year:
-                all_responses.extend(self.teams(page_num, spec_year, simple, keys))
+            all_responses = list(
+                itertools.chain.from_iterable(
+                    await asyncio.gather(
+                        *[self.teams(page_num, spec_year, simple, keys) for spec_year in year]
+                    )
+                )
+            )
 
             try:
                 return sorted(list(set(all_responses)))
@@ -88,26 +121,12 @@ class ApiClient:
                 return [dict(team) for team in {tuple(team.items()) for team in all_responses}]
 
         else:
-            if not page_num:
-                for page_number in itertools.count():
-
-                    response = self.session.get(
-                        url=self._construct_url("teams", year=year, page_num=page_number, simple=simple, keys=keys),
-                        headers=self._headers
-                    ).json()
-
-                    if not response:
-                        break
-
-                    all_responses.extend(response)
-
-                return all_responses
+            if page_num:
+                return await self._get_team(page_num, year, simple, keys)
             else:
-                response = self.session.get(
-                    url=self._construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys),
-                    headers=self._headers
-                ).json()
-
-                all_responses.extend(response)
-
-            return all_responses
+                all_teams = itertools.chain.from_iterable(
+                    await asyncio.gather(
+                        *[self._get_team(page_number, year, simple, keys) for page_number in range(0, 20)]
+                    )
+                )
+                return list(all_teams)
