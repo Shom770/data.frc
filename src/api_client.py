@@ -1,4 +1,5 @@
 import asyncio
+import functools
 import itertools
 import os
 import typing
@@ -24,6 +25,23 @@ class ApiClient:
 
         self._headers = {"X-TBA-Auth-Key": api_key}
         self._base_url = "https://www.thebluealliance.com/api/v3/"
+
+    def _synchronous(coro: typing.Callable):
+        """
+        Decorator that wraps an asynchronous function around a synchronous function.
+        Users can call the function synchronously although its internal behavior is asynchronous for efficiency.
+
+        Parameters:
+            coro: A coroutine that is passed into the decorator.
+
+        Returns:
+            A synchronous function with its internal behavior being asynchronous.
+        """
+        @functools.wraps(coro)
+        def wrapper(self, *args, **kwargs):
+            return self._loop.run_until_complete(coro(self, *args, **kwargs))
+
+        return wrapper
 
     def _construct_url(self, endpoint, **kwargs) -> str:
         """
@@ -80,7 +98,8 @@ class ApiClient:
             ) as response:
                 return await response.json()
 
-    async def _async_teams(
+    @_synchronous
+    async def teams(
         self,
         page_num: int = None,
         year: typing.Union[range, int] = None,
@@ -88,7 +107,7 @@ class ApiClient:
         keys: bool = False
     ) -> list:
         """
-        Asynchronous implementation of the .teams method for efficiency.
+        Retrieves and returns a record of teams based on the parameters given.
 
         Parameters:
             page_num:
@@ -133,33 +152,3 @@ class ApiClient:
                     )
                 )
                 return list(all_teams)
-
-    def teams(
-        self,
-        page_num: int = None,
-        year: typing.Union[range, int] = None,
-        simple: bool = False,
-        keys: bool = False
-    ) -> list:
-        """
-        Gets a record of all FRC teams and filters them based on certain parameters.
-
-        Parameters:
-            page_num:
-                An integer that specifies the page number of the list of teams that should be retrieved.
-                Teams are paginated by groups of 500, and if page_num is None, every team will be retrieved.
-            year:
-                An integer that specifies if only the teams that participated during that year should be retrieved.
-                If year is a range object, it will return all teams that participated in the years within the range object.
-                If year is None, this method will get all teams that have ever participated in the history of FRC.
-            simple:
-                A boolean that specifies whether the results for each team should be 'shortened' and only contain more relevant information.
-            keys:
-                A boolean that specifies whether only the names of the FRC teams should be retrieved.
-
-        Returns:
-            A list of Team objects for each team in the list.
-        """
-        return self._loop.run_until_complete(
-            self._async_teams(page_num, year, simple, keys)
-        )
