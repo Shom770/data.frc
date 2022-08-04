@@ -28,10 +28,9 @@ class ApiClient:
             except KeyError:  # In case TBA_API_KEY isn't an environment variable
                 api_key = os.environ["API_KEY"]
 
-        self.session = aiohttp.ClientSession()
+        self.session = aiohttp.ClientSession(headers={"X-TBA-Auth-Key": api_key})
         self._persistent_session = persistent_session
 
-        self._headers = {"X-TBA-Auth-Key": api_key}
         self._base_url = "https://www.thebluealliance.com/api/v3/"
 
     def __enter__(self) -> "ApiClient":
@@ -102,8 +101,7 @@ class ApiClient:
             A list of Team objects for each team in the list.
         """
         async with self.session.get(
-                url=self._construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys),
-                headers=self._headers
+                url=self._construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys)
         ) as response:
             return [Team(parent_api_client=self, **team_data) for team_data in await response.json()]
 

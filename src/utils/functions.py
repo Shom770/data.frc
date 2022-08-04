@@ -22,11 +22,13 @@ def synchronous(coro: typing.Callable) -> typing.Callable:
     def wrapper(self, *args, **kwargs) -> typing.Any:
         try:
             if not self.session:
-                self.session = aiohttp.ClientSession()
+                self.session = aiohttp.ClientSession(headers={"X-TBA-Auth-Key": self.api_key})
             result = self._loop.run_until_complete(coro(self, *args, **kwargs))
         except AttributeError:
             if not self._parent_api_client.session:
-                self._parent_api_client.session = aiohttp.ClientSession()
+                self._parent_api_client.session = aiohttp.ClientSession(
+                    headers={"X-TBA-Auth-Key": self._parent_api_client.api_key}
+                )
             result = self.parent_api_client._loop.run_until_complete(coro(self, *args, **kwargs))
 
         try:
