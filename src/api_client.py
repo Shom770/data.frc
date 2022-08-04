@@ -141,7 +141,7 @@ class ApiClient:
             all_responses = list(
                 itertools.chain.from_iterable(
                     await asyncio.gather(
-                        *[self.teams(page_num, spec_year, simple, keys) for spec_year in year]
+                        *[self.teams.coro(self, page_num, spec_year, simple, keys) for spec_year in year]
                     )
                 )
             )

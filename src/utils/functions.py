@@ -40,4 +40,6 @@ def synchronous(coro: typing.Callable) -> typing.Callable:
 
         return result
 
+    wrapper.coro = coro
+
     return wrapper
