@@ -45,33 +45,7 @@ class ApiClient:
     ) -> None:
         self._loop.run_until_complete(self.session.close())
 
-    def _synchronous(coro: typing.Callable) -> typing.Callable:
-        """
-        Decorator that wraps an asynchronous function around a synchronous function.
-        Users can call the function synchronously although its internal behavior is asynchronous for efficiency.
-
-        Parameters:
-            coro: A coroutine that is passed into the decorator.
-
-        Returns:
-            A synchronous function with its internal behavior being asynchronous.
-        """
-        @functools.wraps(coro)
-        def wrapper(self, *args, **kwargs) -> typing.Any:
-            if not self.session:
-                self.session = aiohttp.ClientSession()
-
-            result = self._loop.run_until_complete(coro(self, *args, **kwargs))
-
-            if not self._persistent_session:
-                self._loop.run_until_complete(self.session.close())
-                self.session = None
-
-            return result
-
-        return wrapper
-
-    @_synchronous
+    @synchronous
     async def close(self):
         """
         Closes the ongoing session (`aiohttp.ClientSession`).
@@ -101,13 +75,13 @@ class ApiClient:
             )
          )
 
-    async def _get_team(
+    async def _get_team_page(
         self,
         page_num: int = None,
         year: typing.Union[range, int] = None,
         simple: bool = False,
         keys: bool = False
-    ) -> Team:
+    ) -> list[Team]:
         """
         Returns a page of teams (a list of 500 teams or less)
 
@@ -131,9 +105,9 @@ class ApiClient:
                 url=self._construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys),
                 headers=self._headers
         ) as response:
-            return Team(await response.json())
+            return [Team(parent_api_client=self, **team_data) for team_data in await response.json()]
 
-    @_synchronous
+    @synchronous
     async def teams(
         self,
         page_num: int = None,
@@ -172,18 +146,15 @@ class ApiClient:
                 )
             )
 
-            try:
-                return sorted(list(set(all_responses)))
-            except TypeError:
-                return [dict(team) for team in {tuple(team.items()) for team in all_responses}]
+            return sorted(list(set(all_responses)))
 
         else:
             if page_num:
-                return await self._get_team(page_num, year, simple, keys)
+                return await self._get_team_page(page_num, year, simple, keys)
             else:
                 all_teams = itertools.chain.from_iterable(
                     await asyncio.gather(
-                        *[self._get_team(page_number, year, simple, keys) for page_number in range(0, 20)]
+                        *[self._get_team_page(page_number, year, simple, keys) for page_number in range(0, 20)]
                     )
                 )
                 return list(all_teams)

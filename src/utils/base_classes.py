@@ -1,7 +1,7 @@
 class BaseSchema:
     """Base class for all schemas."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, parent_api_client: "ApiClient", **kwargs):
         attributes_formatted = ""
 
         for attr_name, attr_value in kwargs.items():
