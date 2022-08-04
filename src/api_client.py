@@ -3,6 +3,7 @@ import functools
 import itertools
 import os
 import typing
+from types import TracebackType
 
 import aiohttp
 from dotenv import load_dotenv
@@ -10,23 +11,39 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+__all__ = ["ApiClient"]
+
 
 class ApiClient:
-    """Base class that contains all synchronous requests for the TBA API wrapper."""
+    """Base class that contains all requests for the TBA API wrapper."""
 
     _loop = asyncio.get_event_loop()
 
-    def __init__(self, api_key: str = None):
+    def __init__(self, api_key: str = None, persistent_session: bool = False):
         if api_key is None:
             try:
                 api_key = os.environ["TBA_API_KEY"]
             except KeyError:  # In case TBA_API_KEY isn't an environment variable
                 api_key = os.environ["API_KEY"]
 
+        self.session = aiohttp.ClientSession()
+        self._persistent_session = persistent_session
+
         self._headers = {"X-TBA-Auth-Key": api_key}
         self._base_url = "https://www.thebluealliance.com/api/v3/"
 
-    def _synchronous(coro: typing.Callable):
+    def __enter__(self) -> "ApiClient":
+        return self
+
+    def __exit__(
+        self,
+        exc_type: typing.Optional[type[BaseException]],
+        exc_val: typing.Optional[BaseException],
+        exc_tb: typing.Optional[TracebackType],
+    ) -> None:
+        self._loop.run_until_complete(self.session.close())
+
+    def _synchronous(coro: typing.Callable) -> typing.Callable:
         """
         Decorator that wraps an asynchronous function around a synchronous function.
         Users can call the function synchronously although its internal behavior is asynchronous for efficiency.
@@ -38,10 +55,27 @@ class ApiClient:
             A synchronous function with its internal behavior being asynchronous.
         """
         @functools.wraps(coro)
-        def wrapper(self, *args, **kwargs):
-            return self._loop.run_until_complete(coro(self, *args, **kwargs))
+        def wrapper(self, *args, **kwargs) -> typing.Any:
+            if not self.session:
+                self.session = aiohttp.ClientSession()
+
+            result = self._loop.run_until_complete(coro(self, *args, **kwargs))
+
+            if not self._persistent_session:
+                self._loop.run_until_complete(self.session.close())
+                self.session = None
+
+            return result
 
         return wrapper
+
+    @_synchronous
+    async def close(self):
+        """
+        Closes the ongoing session (`aiohttp.ClientSession`).
+        Do note that this function should only be used if `persistent_session` was True when initializing this instance.
+        """
+        await self.session.close()
 
     def _construct_url(self, endpoint, **kwargs) -> str:
         """
@@ -91,12 +125,11 @@ class ApiClient:
         Returns:
             A list of Team objects for each team in the list.
         """
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
+        async with self.session.get(
                 url=self._construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys),
                 headers=self._headers
-            ) as response:
-                return await response.json()
+        ) as response:
+            return await response.json()
 
     @_synchronous
     async def teams(
