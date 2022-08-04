@@ -6,7 +6,7 @@ import aiohttp
 __all__ = ["synchronous"]
 
 
-def synchronous(coro: typing.Callable) -> typing.Callable:
+def synchronous(coro: typing.Coroutine) -> typing.Callable:
     """
     Decorator that wraps an asynchronous function around a synchronous function.
     Users can call the function synchronously although its internal behavior is asynchronous for efficiency.
