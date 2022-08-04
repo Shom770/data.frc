@@ -25,8 +25,8 @@ def synchronous(coro: typing.Callable) -> typing.Callable:
                 self.session = aiohttp.ClientSession()
             result = self._loop.run_until_complete(coro(self, *args, **kwargs))
         except AttributeError:
-            if not self.parent_api_client.session:
-                self.parent_api_client.session = aiohttp.ClientSession()
+            if not self._parent_api_client.session:
+                self._parent_api_client.session = aiohttp.ClientSession()
             result = self.parent_api_client._loop.run_until_complete(coro(self, *args, **kwargs))
 
         try:
@@ -34,9 +34,9 @@ def synchronous(coro: typing.Callable) -> typing.Callable:
                 self._loop.run_until_complete(self.session.close())
                 self.session = None
         except AttributeError:
-            if not self.parent_api_client._persistent_session:
-                self.parent_api_client._loop.run_until_complete(self.session.close())
-                self.parent_api_client.session = None
+            if not self._parent_api_client._persistent_session:
+                self._parent_api_client._loop.run_until_complete(self.session.close())
+                self._parent_api_client.session = None
 
         return result
 

@@ -9,6 +9,7 @@ class BaseSchema:
             attributes_formatted += f"{attr_name}={attr_value}, "
 
         self._attributes_formatted = attributes_formatted.rstrip(", ")
+        self._parent_api_client = parent_api_client
 
     def __repr__(self):
         return f"{type(self).__name__}({self._attributes_formatted})"
