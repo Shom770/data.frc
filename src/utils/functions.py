@@ -3,8 +3,6 @@ import typing
 
 import aiohttp
 
-from ..api_client import ApiClient
-
 __all__ = ["synchronous"]
 
 

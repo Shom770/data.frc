@@ -9,6 +9,7 @@ import aiohttp
 from dotenv import load_dotenv
 
 from utils import *
+from schemas import *
 
 
 load_dotenv()
