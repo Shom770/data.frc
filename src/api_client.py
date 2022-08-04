@@ -8,6 +8,8 @@ from types import TracebackType
 import aiohttp
 from dotenv import load_dotenv
 
+from utils import *
+
 
 load_dotenv()
 
@@ -105,7 +107,7 @@ class ApiClient:
         year: typing.Union[range, int] = None,
         simple: bool = False,
         keys: bool = False
-    ) -> list:
+    ) -> Team:
         """
         Returns a page of teams (a list of 500 teams or less)
 
@@ -129,7 +131,7 @@ class ApiClient:
                 url=self._construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys),
                 headers=self._headers
         ) as response:
-            return await response.json()
+            return Team(await response.json())
 
     @_synchronous
     async def teams(
@@ -138,7 +140,7 @@ class ApiClient:
         year: typing.Union[range, int] = None,
         simple: bool = False,
         keys: bool = False
-    ) -> list:
+    ) -> list[Team]:
         """
         Retrieves and returns a record of teams based on the parameters given.
 
