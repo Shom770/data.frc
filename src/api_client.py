@@ -26,9 +26,9 @@ class ApiClient:
                 api_key = os.environ["API_KEY"]
 
         self._headers = {"X-TBA-Auth-Key": api_key}
+        BaseSchema.add_headers(self._headers)
 
     def __enter__(self) -> "ApiClient":
-        BaseSchema._headers = self._headers
         return self
 
     def __exit__(
