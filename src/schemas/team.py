@@ -2,6 +2,7 @@ import typing
 
 from .base_schema import BaseSchema
 from .district import District
+from .event import Event
 from .robot import Robot
 
 try:
@@ -66,7 +67,7 @@ class Team(BaseSchema):
             year: typing.Union[range, int] = None,
             simple: bool = False,
             keys: bool = False
-    ) -> list[typing.Union[Team, str]]:
+    ) -> list[typing.Union[Event, str]]:
         """
         Retrieves and returns a record of teams based on the parameters given.
 
