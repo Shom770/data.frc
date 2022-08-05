@@ -27,8 +27,6 @@ class ApiClient:
 
         self._headers = {"X-TBA-Auth-Key": api_key}
 
-        self._base_url = "https://www.thebluealliance.com/api/v3/"
-
     def __enter__(self) -> "ApiClient":
         BaseSchema._headers = self._headers
         return self
@@ -49,35 +47,13 @@ class ApiClient:
         """
         await InternalData.session.close()
 
-    def _construct_url(self, endpoint, **kwargs) -> str:
-        """
-        Constructs the URL with the given parameters.
-
-        Parameters:
-            endpoint: The base endpoint to add all the different additions to the URL.
-            kwargs: Arbritary amount of keyword arguments to construct the URL.
-
-        Returns:
-            A string of the constructed URL based on the endpoints.
-        """
-        return (
-            f"{self._base_url}{endpoint}/" +
-            "/".join(
-                map(str, [
-                    param_name if isinstance(param_value, bool) else param_value
-                    for param_name, param_value in kwargs.items()
-                    if param_value is not None and param_value is not False
-                ])
-            )
-         )
-
     async def _get_team_page(
         self,
         page_num: int = None,
         year: typing.Union[range, int] = None,
         simple: bool = False,
         keys: bool = False
-    ) -> list[Team]:
+    ) -> list[typing.Union[Team, str]]:
         """
         Returns a page of teams (a list of 500 teams or less)
 
@@ -98,10 +74,13 @@ class ApiClient:
             A list of Team objects for each team in the list.
         """
         async with InternalData.session.get(
-                url=self._construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys),
+                url=construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys),
                 headers=self._headers
         ) as response:
-            return [Team(**team_data) for team_data in await response.json()]
+            return [
+                Team(**team_data) if not isinstance(team_data, str) else team_data
+                for team_data in await response.json()
+            ]
 
     @synchronous
     async def teams(
@@ -110,7 +89,7 @@ class ApiClient:
         year: typing.Union[range, int] = None,
         simple: bool = False,
         keys: bool = False
-    ) -> list[Team]:
+    ) -> list[typing.Union[Team, str]]:
         """
         Retrieves and returns a record of teams based on the parameters given.
 
