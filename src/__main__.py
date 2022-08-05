@@ -1,9 +1,10 @@
 from api_client import *
+from schemas import *
 
 
 def main():
     with ApiClient() as api_client:
-        print(api_client.teams(year=range(2016, 2018), page_num=1, simple=True))
+        print(Team(key="frc4099").years_participated())
 
 
 main()

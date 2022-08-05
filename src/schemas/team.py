@@ -1,8 +1,23 @@
 from .base_schema import BaseSchema
+from utils import *
 
 
 class Team(BaseSchema):
     """Class represening a team's metadata with methods to get team specific data."""
+
+    @synchronous
+    async def years_participated(self) -> list[int]:
+        """
+        Returns all the years this team has participated in.
+
+        Returns:
+            A list of integers representing every year this team has partcipated in.
+        """
+        async with InternalData.session.get(
+                url=construct_url(endpoint="team", key=self.key, years_participated=True),
+                headers=self._headers
+        ) as response:
+            return await response.json()
 
     def __eq__(self, other) -> bool:
         return self.team_number == other.team_number
