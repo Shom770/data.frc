@@ -3,6 +3,7 @@ import typing
 from .base_schema import BaseSchema
 from .district import District
 from .event import Event
+from .event_team_status import EventTeamStatus
 from .robot import Robot
 
 try:
@@ -104,7 +105,7 @@ class Team(BaseSchema):
             elif not statuses:
                 return [Event(**event_data) for event_data in await response.json()]
             else:
-                print((await response.json())["2022chcmp"])
+                return [Tven]
 
     def __eq__(self, other) -> bool:
         return self.team_number == other.team_number
