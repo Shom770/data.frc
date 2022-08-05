@@ -17,3 +17,8 @@ class EventTeamStatus:
     def __init__(self, event_key: str, team_status_info: dict):
         self.event_key = event_key
         self.alliance = self.Alliance(**team_status_info["alliance"])
+        self.alliance_status_str = team_status_info["alliance_status_str"]
+        self.last_match_key = team_status_info["last_match_key"]
+        self.next_match_key = team_status_info["next_match_key"]
+        self.overall_status_str = team_status_info["overall_status_str"]
+
