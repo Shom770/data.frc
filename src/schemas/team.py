@@ -68,7 +68,7 @@ class Team(BaseSchema):
             simple: bool = False,
             keys: bool = False,
             statuses: bool = False,
-    ) -> list[typing.Union[Event, str]]:
+    ) -> list[typing.Union[Event, EventTeamStatus, str]]:
         """
         Retrieves and returns a record of teams based on the parameters given.
 
@@ -85,7 +85,7 @@ class Team(BaseSchema):
                 A boolean that specifies whether a key/value pair of the statuses of events should be returned.
 
         Returns:
-            A list of Event objects for each event that was returned or a list of strings representing the keys of the events.
+            A list of Event objects for each event that was returned, a list of strings representing the keys of the events, or a list of EventTeamStatus objects for each team's status during an event.
         """
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
@@ -105,7 +105,7 @@ class Team(BaseSchema):
             elif not statuses:
                 return [Event(**event_data) for event_data in await response.json()]
             else:
-                return [Tven]
+                return [EventTeamStatus(team_status_info) for team_status_info in await response.json()]
 
     def __eq__(self, other) -> bool:
         return self.team_number == other.team_number
