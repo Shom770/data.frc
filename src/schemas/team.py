@@ -63,32 +63,48 @@ class Team(BaseSchema):
     @synchronous
     async def events(
             self,
-            page_num: int = None,
             year: typing.Union[range, int] = None,
             simple: bool = False,
-            keys: bool = False
+            keys: bool = False,
+            statuses: bool = False,
     ) -> list[typing.Union[Event, str]]:
         """
         Retrieves and returns a record of teams based on the parameters given.
 
         Parameters:
-            page_num:
-                An integer that specifies the page number of the list of teams that should be retrieved.
-                Teams are paginated by groups of 500, and if page_num is None, every team will be retrieved.
             year:
-                An integer that specifies if only the teams that participated during that year should be retrieved.
-                If year is a range object, it will return all teams that participated in the years within the range object.
-                If year is None, this method will get all teams that have ever participated in the history of FRC.
+                An integer that specifies if only the events the team participated from that year should be retrieved.
+                If year is a range object, it will return all events that the team participated in during that timeframe.
+                If year is None, this method will return all events the team has ever participated in.
             simple:
-                A boolean that specifies whether the results for each team should be 'shortened' and only contain more relevant information.
+                A boolean that specifies whether the results for each event should be 'shortened' and only contain more relevant information.
             keys:
-                A boolean that specifies whether only the names of the FRC teams should be retrieved.
+                A boolean that specifies whether only the names of the events this team has participated in should be returned.
+            statuses:
+                A boolean that specifies whether a key/value pair of the statuses of events should be returned.
 
         Returns:
-            A list of Team objects for each team in the list.
+            A list of Event objects for each event that was returned or a list of strings representing the keys of the events.
         """
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
+        elif statuses and (simple or keys):
+            raise ValueError("statuses cannot be True in conjunction with simple or keys, if statuses is True then simple and keys must be False.")
+        elif statuses and not year:
+            raise ValueError("statuses cannot be True if a year isn't passed into Team.events")
+
+        async with InternalData.session.get(
+                url=construct_url(
+                    "team", key=self.key, endpoint="events", year=year, simple=simple, keys=keys, statuses=statuses
+                ),
+                headers=self._headers
+        ) as response:
+            if keys:
+                return await response.json()
+            elif not statuses:
+                return [Event(**event_data) for event_data in await response.json()]
+            else:
+                print((await response.json())["2022chcmp"])
 
     def __eq__(self, other) -> bool:
         return self.team_number == other.team_number
