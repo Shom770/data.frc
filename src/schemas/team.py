@@ -108,6 +108,7 @@ class Team(BaseSchema):
                 return [
                     EventTeamStatus(event_key, team_status_info)
                     for event_key, team_status_info in (await response.json()).items()
+                    if team_status_info
                 ]
 
     def __eq__(self, other) -> bool:
