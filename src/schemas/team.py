@@ -1,4 +1,5 @@
 from .base_schema import BaseSchema
+from .district import District
 
 try:
     from utils import *
@@ -22,6 +23,22 @@ class Team(BaseSchema):
                 headers=self._headers
         ) as response:
             return await response.json()
+
+    @synchronous
+    async def districts(self) -> list[District]:
+        """
+        Retrieves a list of districts representing each year this team was in said district.
+
+        If a team has never been in a district, the list will be empty.
+
+        Returns:
+            A list of districts representing each year this team was in said district.
+        """
+        async with InternalData.session.get(
+                url=construct_url("team", key=self.key, endpoint="districts"),
+                headers=self._headers
+        ) as response:
+            return [District(**district_data) for district_data in await response.json()]
 
     def __eq__(self, other) -> bool:
         return self.team_number == other.team_number

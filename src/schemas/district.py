@@ -6,5 +6,5 @@ except ImportError:
     from ..utils import *
 
 
-class Team(BaseSchema):
+class District(BaseSchema):
     """Class representing a district's method containing methods to get specific district information."""

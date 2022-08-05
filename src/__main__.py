@@ -4,7 +4,7 @@ from schemas import *
 
 def main():
     with ApiClient() as api_client:
-        print(Team(key="frc4099").years_participated())
+        print(Team(key="frc4099").districts())
 
 
 main()
