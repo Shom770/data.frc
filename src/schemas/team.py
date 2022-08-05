@@ -1,3 +1,5 @@
+import typing
+
 from .base_schema import BaseSchema
 from .district import District
 from .robot import Robot
@@ -56,6 +58,36 @@ class Team(BaseSchema):
                 headers=self._headers
         ) as response:
             return [Robot(**robot_data) for robot_data in await response.json()]
+
+    @synchronous
+    async def events(
+            self,
+            page_num: int = None,
+            year: typing.Union[range, int] = None,
+            simple: bool = False,
+            keys: bool = False
+    ) -> list[typing.Union[Team, str]]:
+        """
+        Retrieves and returns a record of teams based on the parameters given.
+
+        Parameters:
+            page_num:
+                An integer that specifies the page number of the list of teams that should be retrieved.
+                Teams are paginated by groups of 500, and if page_num is None, every team will be retrieved.
+            year:
+                An integer that specifies if only the teams that participated during that year should be retrieved.
+                If year is a range object, it will return all teams that participated in the years within the range object.
+                If year is None, this method will get all teams that have ever participated in the history of FRC.
+            simple:
+                A boolean that specifies whether the results for each team should be 'shortened' and only contain more relevant information.
+            keys:
+                A boolean that specifies whether only the names of the FRC teams should be retrieved.
+
+        Returns:
+            A list of Team objects for each team in the list.
+        """
+        if simple and keys:
+            raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
 
     def __eq__(self, other) -> bool:
         return self.team_number == other.team_number
