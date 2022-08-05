@@ -6,7 +6,7 @@ from .internal_data import InternalData
 __all__ = ["construct_url", "synchronous"]
 
 
-def construct_url(endpoint, **kwargs) -> str:
+def construct_url(base_endpoint, **kwargs) -> str:
     """
     Constructs the URL with the given parameters.
 
@@ -18,7 +18,7 @@ def construct_url(endpoint, **kwargs) -> str:
         A string of the constructed URL based on the endpoints.
     """
     return (
-            f"https://www.thebluealliance.com/api/v3/{endpoint}/" +
+            f"https://www.thebluealliance.com/api/v3/{base_endpoint}/" +
             "/".join(
                 map(str, [
                     param_name if isinstance(param_value, bool) else param_value

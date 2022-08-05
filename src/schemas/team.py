@@ -11,10 +11,10 @@ class Team(BaseSchema):
         Returns all the years this team has participated in.
 
         Returns:
-            A list of integers representing every year this team has partcipated in.
+            A list of integers representing every year this team has participated in.
         """
         async with InternalData.session.get(
-                url=construct_url(endpoint="team", key=self.key, years_participated=True),
+                url=construct_url("team", key=self.key, endpoint="years_participated"),
                 headers=self._headers
         ) as response:
             return await response.json()
