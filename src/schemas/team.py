@@ -105,7 +105,10 @@ class Team(BaseSchema):
             elif not statuses:
                 return [Event(**event_data) for event_data in await response.json()]
             else:
-                return [EventTeamStatus(team_status_info) for team_status_info in await response.json()]
+                return [
+                    EventTeamStatus(event_key, team_status_info)
+                    for event_key, team_status_info in (await response.json()).items()
+                ]
 
     def __eq__(self, other) -> bool:
         return self.team_number == other.team_number
