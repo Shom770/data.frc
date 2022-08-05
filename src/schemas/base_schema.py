@@ -8,7 +8,7 @@ class BaseSchema:
 
         for attr_name, attr_value in kwargs.items():
             setattr(self, attr_name, attr_value)
-            attributes_formatted += f"{attr_name}={attr_value}, "
+            attributes_formatted += f"{attr_name}={attr_value!r}, "
 
         self._attributes_formatted = attributes_formatted.rstrip(", ")
 
