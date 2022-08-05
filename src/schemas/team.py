@@ -1,9 +1,13 @@
 from .base_schema import BaseSchema
-from utils import *
+
+try:
+    from utils import *
+except ImportError:
+    from ..utils import *
 
 
 class Team(BaseSchema):
-    """Class represening a team's metadata with methods to get team specific data."""
+    """Class representing a team's metadata with methods to get team specific data."""
 
     @synchronous
     async def years_participated(self) -> list[int]:
