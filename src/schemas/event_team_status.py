@@ -14,6 +14,14 @@ class EventTeamStatus:
         number: int
         pick: int
 
+    @dataclass(repr=True)
+    class Record:
+        """Class representing a record of wins, losses and ties for qualification matches, playoffs, and more."""
+
+        losses: int
+        ties: int
+        wins: int
+
     def __init__(self, event_key: str, team_status_info: dict):
         self.event_key = event_key
         self.alliance = self.Alliance(**team_status_info["alliance"])
