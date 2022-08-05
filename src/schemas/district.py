@@ -7,4 +7,4 @@ except ImportError:
 
 
 class District(BaseSchema):
-    """Class representing a district's method containing methods to get specific district information."""
+    """Class representing a district containing methods to get specific district information."""
