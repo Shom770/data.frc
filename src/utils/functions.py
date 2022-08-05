@@ -1,7 +1,7 @@
 import functools
 import typing
 
-import aiohttp
+from .internal_data import InternalData
 
 __all__ = ["synchronous"]
 
@@ -20,27 +20,7 @@ def synchronous(coro: typing.Coroutine) -> typing.Callable:
 
     @functools.wraps(coro)
     def wrapper(self, *args, **kwargs) -> typing.Any:
-        try:
-            if not self.session:
-                self.session = aiohttp.ClientSession(headers={"X-TBA-Auth-Key": self.api_key})
-            result = self._loop.run_until_complete(coro(self, *args, **kwargs))
-        except AttributeError:
-            if not self._parent_api_client.session:
-                self._parent_api_client.session = aiohttp.ClientSession(
-                    headers={"X-TBA-Auth-Key": self._parent_api_client.api_key}
-                )
-            result = self.parent_api_client._loop.run_until_complete(coro(self, *args, **kwargs))
-
-        try:
-            if not self._persistent_session:
-                self._loop.run_until_complete(self.session.close())
-                self.session = None
-        except AttributeError:
-            if not self._parent_api_client._persistent_session:
-                self._parent_api_client._loop.run_until_complete(self.session.close())
-                self._parent_api_client.session = None
-
-        return result
+        return InternalData.loop.run_until_complete(coro(self, *args, **kwargs))
 
     wrapper.coro = coro
 

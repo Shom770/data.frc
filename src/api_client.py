@@ -4,7 +4,6 @@ import os
 import typing
 from types import TracebackType
 
-import aiohttp
 from dotenv import load_dotenv
 
 from utils import *
@@ -19,21 +18,19 @@ __all__ = ["ApiClient"]
 class ApiClient:
     """Base class that contains all requests for the TBA API wrapper."""
 
-    _loop = asyncio.get_event_loop()
-
-    def __init__(self, api_key: str = None, persistent_session: bool = False):
+    def __init__(self, api_key: str = None):
         if api_key is None:
             try:
                 api_key = os.environ["TBA_API_KEY"]
             except KeyError:  # In case TBA_API_KEY isn't an environment variable
                 api_key = os.environ["API_KEY"]
 
-        self.session = aiohttp.ClientSession(headers={"X-TBA-Auth-Key": api_key})
-        self._persistent_session = persistent_session
+        self._headers = {"X-TBA-Auth-Key": api_key}
 
         self._base_url = "https://www.thebluealliance.com/api/v3/"
 
     def __enter__(self) -> "ApiClient":
+        BaseSchema._headers = self._headers
         return self
 
     def __exit__(
@@ -42,7 +39,7 @@ class ApiClient:
         exc_val: typing.Optional[BaseException],
         exc_tb: typing.Optional[TracebackType],
     ) -> None:
-        self._loop.run_until_complete(self.session.close())
+        InternalData.loop.run_until_complete(InternalData.session.close())
 
     @synchronous
     async def close(self):
@@ -50,7 +47,7 @@ class ApiClient:
         Closes the ongoing session (`aiohttp.ClientSession`).
         Do note that this function should only be used if `persistent_session` was True when initializing this instance.
         """
-        await self.session.close()
+        await InternalData.session.close()
 
     def _construct_url(self, endpoint, **kwargs) -> str:
         """
@@ -100,10 +97,11 @@ class ApiClient:
         Returns:
             A list of Team objects for each team in the list.
         """
-        async with self.session.get(
-                url=self._construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys)
+        async with InternalData.session.get(
+                url=self._construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys),
+                headers=self._headers
         ) as response:
-            return [Team(parent_api_client=self, **team_data) for team_data in await response.json()]
+            return [Team(**team_data) for team_data in await response.json()]
 
     @synchronous
     async def teams(
