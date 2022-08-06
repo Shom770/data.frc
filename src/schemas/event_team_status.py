@@ -13,13 +13,20 @@ class EventTeamStatus:
         ELIMINATED = 2
         PLAYING = 3
 
-    @dataclass()
     class SortOrders:
         """Information about the team used to determine ranking for an event."""
 
         def __init__(self, sort_orders: list, sort_order_info: list[dict]):
+            self._attributes_formatted = ""
+
             for data, data_info in zip(sort_orders, sort_order_info):
-                setattr(self, data_info["name"].lower().replace(" ", "_"), data)
+                snake_case_name = data_info["name"].lower().replace(" ", "_")
+
+                setattr(self, snake_case_name, data)
+                self._attributes_formatted += f"{snake_case_name}={data!r}, "
+
+        def __repr__(self):
+            return f"SortOrders({self._attributes_formatted.rstrip(', ')})"
 
     @dataclass()
     class Ranking:
@@ -69,17 +76,26 @@ class EventTeamStatus:
         status: "EventTeamStatus.Status"
 
     def __init__(self, event_key: str, team_status_info: dict):
+        self._attributes_formatted = ""
+
         self.event_key = event_key
+        self._attributes_formatted += f"{event_key=}, "
 
         if team_status_info["alliance"]:
             self.alliance = self.Alliance(**team_status_info["alliance"])
         else:
             self.alliance = None
 
+        self._attributes_formatted += "Alliance(...), "
+
         self.alliance_status_str = team_status_info["alliance_status_str"]
         self.last_match_key = team_status_info["last_match_key"]
         self.next_match_key = team_status_info["next_match_key"]
         self.overall_status_str = team_status_info["overall_status_str"]
+
+        self._attributes_formatted += (
+            f"{self.alliance_status_str=}, {self.last_match_key=}, {self.next_match_key=}, {self.overall_status_str=}, "
+        )
 
         if team_status_info["playoff"]:
             self.playoff = self.Playoff(
@@ -93,6 +109,7 @@ class EventTeamStatus:
             self.playoff = None
 
         self.playoff_status_str = team_status_info["playoff_status_str"]
+        self._attributes_formatted += f"Playoff(...), {self.playoff_status_str=}, "
 
         if team_status_info["qual"]:
             self.qual = self.Qualifications(
@@ -115,3 +132,9 @@ class EventTeamStatus:
             )
         else:
             self.qual = None
+
+        self._attributes_formatted += "Qualifications(...)"
+        self._attributes_formatted = self._attributes_formatted.replace("self.", "")
+
+    def __repr__(self) -> str:
+        return f"EventTeamStatus({self._attributes_formatted})"
