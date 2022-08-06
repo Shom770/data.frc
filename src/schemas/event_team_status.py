@@ -31,6 +31,7 @@ class EventTeamStatus:
         rank: int
         record: "EventTeamStatus.Record"
         sort_orders: "EventTeamStatus.SortOrders"
+        team_key: str
 
     @dataclass()
     class Alliance:
@@ -92,3 +93,22 @@ class EventTeamStatus:
             self.playoff = None
 
         self.playoff_status_str = team_status_info["playoff_status_str"]
+
+        self.qual = self.Qualifications(
+            num_teams=team_status_info["qual"]["num_teams"],
+            ranking=self.Ranking(
+                dq=team_status_info["qual"]["ranking"]["dq"],
+                matches_played=team_status_info["qual"]["ranking"]["matches_played"],
+                qual_average=team_status_info["qual"]["ranking"]["qual_average"],
+                rank=team_status_info["qual"]["ranking"]["rank"],
+                record=self.Record(
+                    **team_status_info["qual"]["ranking"]["record"],
+                ),
+                sort_orders=self.SortOrders(
+                    team_status_info["qual"]["ranking"]["sort_orders"],
+                    team_status_info["qual"]["sort_order_info"]
+                ),
+                team_key=team_status_info["qual"]["ranking"]["team_key"]
+            ),
+            status=getattr(self.Status, team_status_info["qual"]["status"].upper())
+        )
