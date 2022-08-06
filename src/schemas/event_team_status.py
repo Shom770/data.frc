@@ -20,7 +20,7 @@ class EventTeamStatus:
             self._attributes_formatted = ""
 
             for data, data_info in zip(sort_orders, sort_order_info):
-                snake_case_name = data_info["name"].lower().replace(" ", "_")
+                snake_case_name = data_info["name"].lower().replace(" ", "_").replace("+", "plus")
 
                 setattr(self, snake_case_name, data)
                 self._attributes_formatted += f"{snake_case_name}={data!r}, "
