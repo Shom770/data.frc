@@ -94,7 +94,7 @@ class EventTeamStatus:
         self.overall_status_str = team_status_info["overall_status_str"]
 
         self._attributes_formatted += (
-            f"{self.alliance_status_str=}, {self.last_match_key=}, {self.next_match_key=}, {self.overall_status_str=}, "
+            f"alliance_status_str=\"...\", {self.last_match_key=}, {self.next_match_key=}, overall_status_str=\"...\", "
         )
 
         if team_status_info["playoff"]:
@@ -109,7 +109,7 @@ class EventTeamStatus:
             self.playoff = None
 
         self.playoff_status_str = team_status_info["playoff_status_str"]
-        self._attributes_formatted += f"Playoff(...), {self.playoff_status_str=}, "
+        self._attributes_formatted += "Playoff(...), playoff_status_str=\"...\", "
 
         if team_status_info["qual"]:
             self.qual = self.Qualifications(
