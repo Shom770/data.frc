@@ -14,6 +14,25 @@ class EventTeamStatus:
         PLAYING = 3
 
     @dataclass()
+    class SortOrders:
+        """Information about the team used to determine ranking for an event."""
+
+        def __init__(self, sort_orders: list, sort_order_info: list[dict]):
+            for data, data_info in zip(sort_orders, sort_order_info):
+                setattr(self, data_info["name"].lower().replace(" ", "_"), data)
+
+    @dataclass()
+    class Ranking:
+        """Class representing a team's ranking information during qualifications of an event."""
+
+        dq: int
+        matches_played: int
+        qual_average: typing.Optional[float]
+        rank: int
+        record: "EventTeamStatus.Record"
+        sort_orders: "EventTeamStatus.SortOrders"
+
+    @dataclass()
     class Alliance:
         """Class representing the alliance said team was on during an event."""
 
@@ -40,6 +59,14 @@ class EventTeamStatus:
         record: "EventTeamStatus.Record"
         status: "EventTeamStatus.Status"
 
+    @dataclass()
+    class Qualifications:
+        """Class representing the team's performance during qualifications."""
+
+        num_teams: int
+        ranking: "EventTeamStatus.Ranking"
+        status: "EventTeamStatus.Status"
+
     def __init__(self, event_key: str, team_status_info: dict):
         self.event_key = event_key
 
@@ -63,3 +90,5 @@ class EventTeamStatus:
             )
         else:
             self.playoff = None
+
+        self.playoff_status_str = team_status_info["playoff_status_str"]
