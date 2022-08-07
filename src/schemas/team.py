@@ -91,7 +91,8 @@ class Team(BaseSchema):
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
         elif statuses and (simple or keys):
-            raise ValueError("statuses cannot be True in conjunction with simple or keys, if statuses is True then simple and keys must be False.")
+            raise ValueError(
+                "statuses cannot be True in conjunction with simple or keys, if statuses is True then simple and keys must be False.")
         elif statuses and not year:
             raise ValueError("statuses cannot be True if a year isn't passed into Team.events")
 
@@ -142,7 +143,8 @@ class Team(BaseSchema):
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
         elif status and (simple or keys or matches):
-            raise ValueError("status cannot be True in conjunction with simple or keys, if statuses is True then simple, keys, and matches must be False.")
+            raise ValueError(
+                "status cannot be True in conjunction with simple or keys, if statuses is True then simple, keys, and matches must be False.")
 
         async with InternalData.session.get(
                 url=construct_url(
@@ -160,23 +162,7 @@ class Team(BaseSchema):
             if matches and keys:
                 return await response.json()
             elif matches:
-                all_matches = []
-
-                for match in await response.json():
-                    match_data = {}
-
-                    for key, value in match.items():
-                        if key != "alliance":
-                            match_data[key] = value
-                        else:
-                            match_data[key] = {
-                                "red": Match.Alliance(**value["red"]),
-                                "blue": Match.Alliance(**value["blue"])
-                            }
-                    all_matches.append(Match(**match_data))
-
-                return all_matches
-
+                return [Match(**match_data) for match_data in await response.json()]
             else:
                 return EventTeamStatus(event_key, await response.json())
 

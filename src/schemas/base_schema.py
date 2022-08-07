@@ -3,14 +3,10 @@ class BaseSchema:
 
     _headers = None
 
-    def __init__(self, **kwargs):
-        attributes_formatted = ""
-
-        for attr_name, attr_value in kwargs.items():
-            setattr(self, attr_name, attr_value)
-            attributes_formatted += f"{attr_name}={attr_value!r}, "
-
-        self._attributes_formatted = attributes_formatted.rstrip(", ")
+    def __init__(self, attrs: dict):
+        self._attributes_formatted = ", ".join(
+            [f"{attr_name}={attr_value}" for attr_name, attr_value in attrs.items()]
+        ).rstrip(", ")
 
     def __repr__(self):
         return f"{type(self).__name__}({self._attributes_formatted})"
