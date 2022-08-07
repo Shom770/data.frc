@@ -1,10 +1,7 @@
 import typing
+from dataclasses import dataclass
 
 from .base_schema import BaseSchema
-from .district import District
-from .event import Event
-from .event_team_status import EventTeamStatus
-from .robot import Robot
 
 try:
     from utils import *
@@ -14,3 +11,12 @@ except ImportError:
 
 class Match(BaseSchema):
     """Class representing a match's metadata with methods to get match specific data."""
+
+    @dataclass()
+    class Alliance:
+        """Class representing an alliance's performance/metadata during a match."""
+
+        score: typing.Optional[int]
+        team_keys: list[str]
+        surrogate_team_keys: list[str]
+        dq_team_keys: list[str]

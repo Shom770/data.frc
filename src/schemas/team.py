@@ -157,11 +157,26 @@ class Team(BaseSchema):
                 ),
                 headers=self._headers
         ) as response:
-            if matches:
-                return [
-                    Match(**match_data_or_key) if not keys else match_data_or_key
-                    for match_data_or_key in await response.json()
-                ]
+            if matches and keys:
+                return await response.json()
+            elif matches:
+                all_matches = []
+
+                for match in await response.json():
+                    match_data = {}
+
+                    for key, value in match.items():
+                        if key != "alliance":
+                            match_data[key] = value
+                        else:
+                            match_data[key] = {
+                                "red": Match.Alliance(**value["red"]),
+                                "blue": Match.Alliance(**value["blue"])
+                            }
+                    all_matches.append(Match(**match_data))
+
+                return all_matches
+
             else:
                 return EventTeamStatus(event_key, await response.json())
 
