@@ -16,6 +16,27 @@ except ImportError:
 class Team(BaseSchema):
     """Class representing a team's metadata with methods to get team specific data."""
 
+    def __init__(self, **kwargs):
+        self.key: str = kwargs["key"]
+        self.team_number: int = kwargs["team_number"]
+        self.nickname: typing.Optional[str] = kwargs.get("nickname")
+        self.name: str = kwargs["name"]
+        self.school_name: typing.Optional[str] = kwargs.get("school_name")
+        self.city: typing.Optional[str] = kwargs.get("city")
+        self.state_prov: typing.Optional[str] = kwargs.get("state_prov")
+        self.country: typing.Optional[str] = kwargs.get("country")
+        self.address: typing.Optional[str] = kwargs.get("address")
+        self.postal_code: typing.Optional[int] = kwargs.get("postal_code")
+        self.gmaps_place_id: typing.Optional[str] = kwargs.get("gmaps_place_id")
+        self.gmaps_url: typing.Optional[str] = kwargs.get("gmaps_url")
+        self.lat: typing.Optional[float] = kwargs.get("lat")
+        self.lng: typing.Optional[float] = kwargs.get("lng")
+        self.location_name: typing.Optional[float] = kwargs.get("location_name")
+        self.rookie_year: typing.Optional[int] = kwargs.get("rookie_year")
+        self.home_championship: typing.Optional[dict] = kwargs.get("home_championship")
+
+        super().__init__(kwargs)
+
     @synchronous
     async def years_participated(self) -> list[int]:
         """
