@@ -85,7 +85,7 @@ class Team(BaseSchema):
                 A boolean that specifies whether a key/value pair of the statuses of events should be returned.
 
         Returns:
-            A list of Event objects for each event that was returned, a list of strings representing the keys of the events, or a list of EventTeamStatus objects for each team's status during an event.
+            A list of Event objects for each event that was returned or a list of strings representing the keys of the events or a list of EventTeamStatus objects for each team's status during an event.
         """
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
@@ -110,6 +110,34 @@ class Team(BaseSchema):
                     for event_key, team_status_info in (await response.json()).items()
                     if team_status_info
                 ]
+
+    @synchronous
+    async def event(
+            self,
+            event_key: str,
+            matches: bool = False,
+            simple: bool = False,
+            keys: bool = False,
+            status: bool = False,
+    ) -> list[typing.Union[Match, EventTeamStatus, str]]:
+        """
+        Retrieves and returns a record of teams based on the parameters given.
+
+        Parameters:
+            event_key:
+                An event key (a unique key specific to one event) to retrieve data from.
+            matches:
+                A boolean that specifies whether the matches a team played in during an event should be retrieved.
+            simple:
+                A boolean that specifies whether the results for each event's matches should be 'shortened' and only contain more relevant information. Do note that `simple` should only be True in conjunction with `matches`.
+            keys:
+                A boolean that specifies whether only the keys of the matches the team played should be returned. Do note that `keys` should only be True in conjunction with `matches`
+            status:
+                A boolean that specifies whether a key/value pair of the status of the team during an event should be returned. `status` should only be the only boolean out of the parameters that is True when using it.
+
+        Returns:
+            A list of Match objects representing each match a team played or an EventTeamStatus object to represent the team's status during an event or a list of strings representing the keys of the matches the team played in.
+        """
 
     def __eq__(self, other) -> bool:
         return self.team_number == other.team_number
