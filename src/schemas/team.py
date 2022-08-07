@@ -139,6 +139,10 @@ class Team(BaseSchema):
         Returns:
             A list of Match objects representing each match a team played or an EventTeamStatus object to represent the team's status during an event or a list of strings representing the keys of the matches the team played in.
         """
+        if simple and keys:
+            raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
+        elif status and (simple or keys or matches):
+            raise ValueError("status cannot be True in conjunction with simple or keys, if statuses is True then simple, keys, and matches must be False.")
 
     def __eq__(self, other) -> bool:
         return self.team_number == other.team_number
