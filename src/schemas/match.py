@@ -9,6 +9,7 @@ except ImportError:
     from ..utils import *
 
 
+# TODO: Implement attribute documentation and add more schemas to make code cleaner.
 class Match(BaseSchema):
     """Class representing a match's metadata with methods to get match specific data."""
 
