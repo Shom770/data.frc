@@ -120,7 +120,7 @@ class Team(BaseSchema):
             simple: bool = False,
             keys: bool = False,
             status: bool = False,
-    ) -> list[typing.Union[Match, EventTeamStatus, str]]:
+    ) -> typing.Union[list[typing.Union[Match, str]], EventTeamStatus]:
         """
         Retrieves and returns a record of teams based on the parameters given.
 
@@ -143,6 +143,27 @@ class Team(BaseSchema):
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
         elif status and (simple or keys or matches):
             raise ValueError("status cannot be True in conjunction with simple or keys, if statuses is True then simple, keys, and matches must be False.")
+
+        async with InternalData.session.get(
+                url=construct_url(
+                    "team",
+                    key=self.key,
+                    endpoint="event",
+                    event_key=event_key,
+                    status=status,
+                    matches=matches,
+                    simple=simple,
+                    keys=keys,
+                ),
+                headers=self._headers
+        ) as response:
+            if matches:
+                return [
+                    Match(**match_data_or_key) if not keys else match_data_or_key
+                    for match_data_or_key in await response.json()
+                ]
+            else:
+                return EventTeamStatus(event_key, await response.json())
 
     def __eq__(self, other) -> bool:
         return self.team_number == other.team_number
