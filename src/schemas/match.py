@@ -1,3 +1,4 @@
+import datetime
 import typing
 from dataclasses import dataclass
 
@@ -20,3 +21,43 @@ class Match(BaseSchema):
         team_keys: list[str]
         surrogate_team_keys: list[str]
         dq_team_keys: list[str]
+
+    def __init__(self, **kwargs):
+        self.key: str = kwargs["key"]
+
+        self.comp_level: typing.Optional[str] = kwargs.get("comp_level")
+        self.set_number: typing.Optional[int] = kwargs.get("set_number")
+
+        self.match_number: typing.Optional[int] = kwargs.get("match_number")
+
+        alliances = kwargs.get("alliances")
+        self.alliances: typing.Optional[dict] = {
+            "red": self.Alliance(**alliances["red"]),
+            "blue": self.Alliance(**alliances["blue"])
+        }
+        self.winning_alliance: typing.Optional[str] = kwargs.get("winning_alliance")
+
+        self.event_key: typing.Optional[str] = kwargs.get("event_key")
+
+        time = kwargs.get("time")
+        actual_time = kwargs.get("actual_time")
+        predicted_time = kwargs.get("predicted_time")
+        post_result_time = kwargs.get("post_result_time")
+
+        self.time: typing.Optional[datetime.datetime] = (
+            datetime.datetime.fromtimestamp(time) if time else None
+        )
+        self.actual_time: typing.Optional[int] = (
+            datetime.datetime.fromtimestamp(actual_time) if actual_time else None
+        )
+        self.predicted_time: typing.Optional[int] = (
+            datetime.datetime.fromtimestamp(predicted_time) if predicted_time else None
+        )
+        self.post_result_time: typing.Optional[int] = (
+            datetime.datetime.fromtimestamp(post_result_time) if post_result_time else None
+        )
+
+        self.score_breakdown: typing.Optional[dict] = kwargs.get("score_breakdown")
+        self.videos: typing.Optional[list] = kwargs.get("videos")
+
+        super().__init__()

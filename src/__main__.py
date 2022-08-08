@@ -4,6 +4,8 @@ from schemas import *
 
 def main():
     with ApiClient() as api_client:
-        var: Event = Team(key="frc4099").events(year=2022)[0]
+        var: Match = Team(key="frc4099").event("2022chcmp", matches=True, simple=True)
+        print(var)
+
 
 main()

@@ -7,6 +7,9 @@ class BaseSchema:
         attributes_formatted = ""
 
         for attr_name, attr_value in vars(self).items():
+            if attr_value is None:
+                continue
+
             if isinstance(attr_value, dict):
                 attributes_formatted += f"{attr_name}={{...}}, "
             elif isinstance(attr_value, list):
