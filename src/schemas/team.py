@@ -138,6 +138,7 @@ class Team(BaseSchema):
     async def event(
             self,
             event_key: str,
+            awards: bool = False,
             matches: bool = False,
             simple: bool = False,
             keys: bool = False,
@@ -149,8 +150,10 @@ class Team(BaseSchema):
         Parameters:
             event_key:
                 An event key (a unique key specific to one event) to retrieve data from.
+            awards:
+                A boolean that specifies whether the awards a team got during a match should be retrieved. Cannot be True in conjunction with `matches`.
             matches:
-                A boolean that specifies whether the matches a team played in during an event should be retrieved.
+                A boolean that specifies whether the matches a team played in during an event should be retrieved. Cannot be True in conjunction with `awards`.
             simple:
                 A boolean that specifies whether the results for each event's matches should be 'shortened' and only contain more relevant information. Do note that `simple` should only be True in conjunction with `matches`.
             keys:
