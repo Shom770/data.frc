@@ -2,6 +2,7 @@ import datetime
 import typing
 
 from .base_schema import BaseSchema
+from .district import District
 
 try:
     from utils import *
@@ -17,7 +18,10 @@ class Event(BaseSchema):
         self.name: typing.Optional[str] = kwargs.get("name")
         self.event_code: typing.Optional[str] = kwargs.get("event_code")
         self.event_type: typing.Optional[int] = kwargs.get("event_type")
-        self.district: typing.Optional[dict] = kwargs.get("district")
+
+        district_data = kwargs.get("district")
+        self.district: typing.Optional[dict] = District(**district_data) if district_data else None
+
         self.city: typing.Optional[str] = kwargs.get("city")
         self.state_prov: typing.Optional[str] = kwargs.get("state_prov")
         self.country: typing.Optional[str] = kwargs.get("country")

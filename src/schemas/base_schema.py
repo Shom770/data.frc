@@ -11,8 +11,8 @@ class BaseSchema:
                 attributes_formatted += f"{attr_name}={{...}}, "
             elif isinstance(attr_value, list):
                 attributes_formatted += f"{attr_name}=[...], "
-            elif type(attr_value).__qualname__.startswith("schemas"):
-                attributes_formatted += f"{attr_name}={type(attr_value).__name__}(...), "
+            elif attr_value and type(attr_value).__name__[0].isupper():
+                attributes_formatted += f"{attr_name}={type(attr_value).__name__}(...)"
             else:
                 attributes_formatted += f"{attr_name}={attr_value!r}, "
 
