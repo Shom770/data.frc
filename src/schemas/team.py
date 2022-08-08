@@ -18,9 +18,9 @@ class Team(BaseSchema):
 
     def __init__(self, **kwargs):
         self.key: str = kwargs["key"]
-        self.team_number: int = kwargs["team_number"]
+        self.team_number: typing.Optional[int] = kwargs.get("team_number")
         self.nickname: typing.Optional[str] = kwargs.get("nickname")
-        self.name: str = kwargs["name"]
+        self.name: typing.Optional[int] = kwargs.get("name")
         self.school_name: typing.Optional[str] = kwargs.get("school_name")
         self.city: typing.Optional[str] = kwargs.get("city")
         self.state_prov: typing.Optional[str] = kwargs.get("state_prov")

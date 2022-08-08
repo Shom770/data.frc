@@ -4,7 +4,7 @@ from schemas import *
 
 def main():
     with ApiClient() as api_client:
-        var: Match = Team(key="frc4099").event(event_key="2022chcmp", matches=True)[0]
+        var: Match = Team(key="frc4099").robots()
         print(var)
 
 main()
