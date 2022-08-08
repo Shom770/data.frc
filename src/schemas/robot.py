@@ -17,4 +17,4 @@ class Robot(BaseSchema):
         self.key: str = kwargs["key"]
         self.team_key: typing.Optional[str] = kwargs.get("team_key")
 
-        super().__init__(kwargs)
+        super().__init__()

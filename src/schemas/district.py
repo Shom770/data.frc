@@ -17,4 +17,4 @@ class District(BaseSchema):
         self.key: str = kwargs["key"]
         self.year: typing.Optional[int] = kwargs.get("year")
 
-        super().__init__(kwargs)
+        super().__init__()

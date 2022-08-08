@@ -35,7 +35,7 @@ class Team(BaseSchema):
         self.rookie_year: typing.Optional[int] = kwargs.get("rookie_year")
         self.home_championship: typing.Optional[dict] = kwargs.get("home_championship")
 
-        super().__init__(kwargs)
+        super().__init__()
 
     @synchronous
     async def years_participated(self) -> list[int]:
