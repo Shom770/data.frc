@@ -1,5 +1,6 @@
 import datetime
 import typing
+from dataclasses import dataclass
 
 from .base_schema import BaseSchema
 from .district import District
@@ -9,9 +10,24 @@ try:
 except ImportError:
     from ..utils import *
 
+PARSING_FORMAT = "%Y-%m-%d"
+
 
 class Event(BaseSchema):
     """Class representing an event containing methods to get specific event information."""
+
+    @dataclass
+    class Webcast:
+        """Class representing metadata and information about a webcast for an event."""
+
+        type: str
+        channel: str
+        date: typing.Optional[datetime.datetime] = None
+        file: typing.Optional[str] = None
+
+        def __post_init__(self):
+            if self.date:
+                self.date = datetime.datetime.strptime(self.date, PARSING_FORMAT)
 
     def __init__(self, **kwargs):
         self.key: str = kwargs["key"]
@@ -26,13 +42,11 @@ class Event(BaseSchema):
         self.state_prov: typing.Optional[str] = kwargs.get("state_prov")
         self.country: typing.Optional[str] = kwargs.get("country")
 
-        parsing_format = "%Y-%m-%d"
-
         self.start_date: typing.Optional[datetime.datetime] = datetime.datetime.strptime(
-            kwargs.get("start_date"), parsing_format
+            kwargs.get("start_date"), PARSING_FORMAT
         )
         self.end_date: typing.Optional[datetime.datetime] = datetime.datetime.strptime(
-            kwargs.get("end_date"), parsing_format
+            kwargs.get("end_date"), PARSING_FORMAT
         )
         self.year: typing.Optional[int] = kwargs.get("year")
 
@@ -54,7 +68,9 @@ class Event(BaseSchema):
         self.first_event_id: typing.Optional[str] = kwargs.get("first_event_id")
         self.first_event_code: typing.Optional[str] = kwargs.get("first_event_code")
 
-        self.webcasts: typing.Optional[list] = kwargs.get("webcasts")
+        self.webcasts: typing.Optional[list] = [
+            self.Webcast(**webcast_data) for webcast_data in kwargs.get("webcasts") if webcast_data
+        ]
 
         self.division_keys: typing.Optional[list] = kwargs.get("division_keys")
         self.parent_event_key: typing.Optional[str] = kwargs.get("parent_event_key")
