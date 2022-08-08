@@ -1,5 +1,6 @@
 import typing
 
+from .award import Award
 from .base_schema import BaseSchema
 from .district import District
 from .event import Event
@@ -143,7 +144,7 @@ class Team(BaseSchema):
             simple: bool = False,
             keys: bool = False,
             status: bool = False,
-    ) -> typing.Union[list[typing.Union[Match, str]], EventTeamStatus]:
+    ) -> typing.Union[list[Award], EventTeamStatus, list[typing.Union[Match, str]]]:
         """
         Retrieves and returns a record of teams based on the parameters given.
 
@@ -162,13 +163,22 @@ class Team(BaseSchema):
                 A boolean that specifies whether a key/value pair of the status of the team during an event should be returned. `status` should only be the only boolean out of the parameters that is True when using it.
 
         Returns:
-            A list of Match objects representing each match a team played or an EventTeamStatus object to represent the team's status during an event or a list of strings representing the keys of the matches the team played in.
+            A list of Match objects representing each match a team played or an EventTeamStatus object to represent the team's status during an event or a list of strings representing the keys of the matches the team played in or a list of Award objects to represent award(s) a team got during an event.
         """
+        if awards and matches:
+            raise ValueError("awards and matches cannot be True, you must choose one endpoint over the other.")
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
+        elif awards and (simple or keys or matches):
+            raise ValueError(
+                "awards cannot be True in conjunction with simple, keys or matches, "
+                "if awards is True then simple, keys, and matches must be False."
+            )
         elif status and (simple or keys or matches):
             raise ValueError(
-                "status cannot be True in conjunction with simple or keys, if statuses is True then simple, keys, and matches must be False.")
+                "status cannot be True in conjunction with simple, keys or matches "
+                "if statuses is True then simple, keys, and matches must be False."
+            )
 
         async with InternalData.session.get(
                 url=construct_url(
@@ -176,8 +186,9 @@ class Team(BaseSchema):
                     key=self.key,
                     endpoint="event",
                     event_key=event_key,
-                    status=status,
+                    awards=awards,
                     matches=matches,
+                    status=status,
                     simple=simple,
                     keys=keys,
                 ),
@@ -187,6 +198,8 @@ class Team(BaseSchema):
                 return await response.json()
             elif matches:
                 return [Match(**match_data) for match_data in await response.json()]
+            elif awards:
+                return [Award(**award_data) for award_data in await response.json()]
             else:
                 return EventTeamStatus(event_key, await response.json())
 

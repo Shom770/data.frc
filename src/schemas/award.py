@@ -22,7 +22,7 @@ class Award(BaseSchema):
         self.award_type: typing.Optional[int] = kwargs.get("award_type")
         self.event_key: typing.Optional[str] = kwargs.get("event_key")
         self.recipient_list: typing.Optional[list] = [
-            Award(**award_data) for award_data in kwargs.get("recipient_list")
+            self.AwardRecipient(**recipient_data) for recipient_data in kwargs.get("recipient_list", [])
         ]
         self.year: typing.Optional[int] = kwargs.get("year")
 
