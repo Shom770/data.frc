@@ -83,6 +83,30 @@ class ApiClient:
             ]
 
     @synchronous
+    async def team(
+            self,
+            team_key: str,
+            simple: bool = False
+    ) -> Team:
+        """
+        Retrieves and returns a record of teams based on the parameters given.
+
+        Parameters:
+            team_key:
+                A string representing a unique key assigned to a team to set it apart from others (in the form of frcXXXX) where XXXX is the team number.
+            simple:
+                A boolean that specifies whether the results for the team should be 'shortened' and only contain more relevant information.
+
+        Returns:
+            A Team object representing the data given.
+        """
+        async with InternalData.session.get(
+            url=construct_url("team", key=team_key, simple=simple),
+            headers=self._headers
+        ) as response:
+            return Team(**await response.json())
+
+    @synchronous
     async def teams(
         self,
         page_num: int = None,

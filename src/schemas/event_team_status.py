@@ -86,7 +86,7 @@ class EventTeamStatus:
         else:
             self.alliance = None
 
-        self._attributes_formatted += "Alliance(...), "
+        self._attributes_formatted += "alliance=Alliance(...), "
 
         self.alliance_status_str = team_status_info["alliance_status_str"]
         self.last_match_key = team_status_info["last_match_key"]
@@ -109,7 +109,7 @@ class EventTeamStatus:
             self.playoff = None
 
         self.playoff_status_str = team_status_info["playoff_status_str"]
-        self._attributes_formatted += "Playoff(...), playoff_status_str=\"...\", "
+        self._attributes_formatted += "playoff=Playoff(...), playoff_status_str=\"...\", "
 
         if team_status_info["qual"]:
             self.qual = self.Qualifications(
@@ -133,7 +133,7 @@ class EventTeamStatus:
         else:
             self.qual = None
 
-        self._attributes_formatted += "Qualifications(...)"
+        self._attributes_formatted += "qual=Qualifications(...)"
         self._attributes_formatted = self._attributes_formatted.replace("self.", "")
 
     def __repr__(self) -> str:

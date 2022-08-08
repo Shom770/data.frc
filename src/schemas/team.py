@@ -165,9 +165,11 @@ class Team(BaseSchema):
         Returns:
             A list of Match objects representing each match a team played or an EventTeamStatus object to represent the team's status during an event or a list of strings representing the keys of the matches the team played in or a list of Award objects to represent award(s) a team got during an event.
         """
-        if awards and matches:
+        if not awards and not matches and not status:
+            raise ValueError("Either awards, matches or status must be True for this function.")
+        elif awards and matches:
             raise ValueError("awards and matches cannot be True, you must choose one endpoint over the other.")
-        if simple and keys:
+        elif simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
         elif awards and (simple or keys or matches):
             raise ValueError(
