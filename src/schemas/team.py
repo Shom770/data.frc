@@ -49,6 +49,14 @@ class Team(BaseSchema):
         Returns:
             A list of Award objects representing each award a team has got based on the parameters; may be empty if the team has gotten no awards.
         """
+        async with InternalData.session.get(
+            url=construct_url("team", key=self.key, endpoint="awards", year=year if isinstance(year, int) else False),
+            headers=self._headers
+        ) as response:
+            if isinstance(year, range):
+                return [Award(**award_data) for award_data in await response.json() if award_data["year"] in year]
+            else:
+                return [Award(**award_data) for award_data in await response.json()]
 
     @synchronous
     async def years_participated(self) -> list[int]:
