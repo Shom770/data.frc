@@ -186,6 +186,12 @@ class Team(BaseSchema):
         Returns:
             A list of Media objects representing individual media from a team.
         """
+        if isinstance(year, range):
+            return list(itertools.chain.from_iterable(
+                await asyncio.gather(*[self.media.coro(self, spec_year, media_tag) for spec_year in year])
+            ))
+        else:
+            return await self._get_year_media(year, media_tag)
 
     @synchronous
     async def robots(self) -> list[Robot]:
