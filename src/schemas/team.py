@@ -116,7 +116,12 @@ class Team(BaseSchema):
             return [District(**district_data) for district_data in await response.json()]
 
     @synchronous
-    async def matches(self, year: typing.Union[range, int], simple: bool, keys: bool) -> list[Match]:
+    async def matches(
+            self,
+            year: typing.Union[range, int],
+            simple: typing.Optional[bool] = False,
+            keys: typing.Optional[bool] = False
+    ) -> list[Match]:
         """
         Retrieves all matches a team played from certain year(s).
 
@@ -124,13 +129,16 @@ class Team(BaseSchema):
             year:
                 An integer representing the year to retrieve a team's matches from or a range object representing all the years matches a team played should be retrieved from.
             simple:
-                A boolean representing whether each match's information should be stripped to only contain relevant information.
+                A boolean representing whether each match's information should be stripped to only contain relevant information. Can be False if `simple` isn't passed in.
             keys:
-                A boolean representing whether only the keys of the matches a team played from said year should be returned:
+                A boolean representing whether only the keys of the matches a team played from said year should be returned. Can be False if `keys` isn't passed in.
 
         Returns:
             A list of Match objects representing each match a team played based on the conditions; might be empty if team didn't play matches in the specified year(s).
         """
+        if simple and keys:
+            raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
+
         if isinstance(year, range):
             return list(itertools.chain.from_iterable(
                 await asyncio.gather(*[self.matches.coro(spec_year, simple, keys) for spec_year in year])
