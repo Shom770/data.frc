@@ -172,6 +172,7 @@ class Team(BaseSchema):
         else:
             return await self._get_year_matches(year, simple, keys)
 
+    # TODO: using media tag doesn't seem to return anything.
     @synchronous
     async def media(self, year: typing.Union[range, int], media_tag: typing.Optional[str] = None) -> list[Media]:
         """
