@@ -8,6 +8,7 @@ from .district import District
 from .event import Event
 from .event_team_status import EventTeamStatus
 from .match import Match
+from .media import Media
 from .robot import Robot
 
 try:
