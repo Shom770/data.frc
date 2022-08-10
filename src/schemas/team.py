@@ -135,6 +135,8 @@ class Team(BaseSchema):
             return list(itertools.chain.from_iterable(
                 await asyncio.gather(*[self.matches.coro(spec_year, simple, keys) for spec_year in year])
             ))
+        else:
+            return await self._get_year_matches(year, simple, keys)
 
     @synchronous
     async def robots(self) -> list[Robot]:
