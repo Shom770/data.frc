@@ -39,12 +39,12 @@ class Team(BaseSchema):
         super().__init__()
 
     @synchronous
-    async def awards(self, year: typing.Union[range, int]) -> list[Award]:
+    async def awards(self, year: typing.Optional[typing.Union[range, int]] = None) -> list[Award]:
         """
         Retrieves all awards a team has gotten either during its career or during certain year(s).
 
         Parameters:
-            year: An integer representing a year that the awards should be returned for or a range object representing the years that awards should be returned from.
+            year: An integer representing a year that the awards should be returned for or a range object representing the years that awards should be returned from. Can be None if no year is passed in as it is an optional parameter.
 
         Returns:
             A list of Award objects representing each award a team has got based on the parameters; may be empty if the team has gotten no awards.
