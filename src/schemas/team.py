@@ -38,13 +38,38 @@ class Team(BaseSchema):
 
         super().__init__()
 
+    async def _get_year_matches(self, year: int, simple: bool, keys: bool) -> list[Match]:
+        """
+        Retrieves all matches a team played from a certain year.
+
+        Parameters:
+            year:
+                An integer representing the year to retrieve a team's matches from.
+            simple:
+                A boolean representing whether each match's information should be stripped to only contain relevant information.
+            keys:
+                A boolean representing whether only the keys of the matches a team played from said year should be returned:
+
+        Returns:
+            A list of Match objects representing each match a team played based on the conditions; might be empty if team didn't play matches that year.
+        """
+        async with InternalData.session.get(
+            url=construct_url("team", key=self.key, endpoint="matches", year=year, simple=simple, keys=keys),
+            headers=self._headers
+        ) as response:
+            if keys:
+                return await response.json()
+            else:
+                return [Match(**match_data) for match_data in await response.json()]
+
     @synchronous
     async def awards(self, year: typing.Optional[typing.Union[range, int]] = None) -> list[Award]:
         """
         Retrieves all awards a team has gotten either during its career or during certain year(s).
 
         Parameters:
-            year: An integer representing a year that the awards should be returned for or a range object representing the years that awards should be returned from. Can be None if no year is passed in as it is an optional parameter.
+            year:
+                An integer representing a year that the awards should be returned for or a range object representing the years that awards should be returned from. Can be None if no year is passed in as it is an optional parameter.
 
         Returns:
             A list of Award objects representing each award a team has got based on the parameters; may be empty if the team has gotten no awards.
