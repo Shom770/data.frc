@@ -78,6 +78,17 @@ class Team(BaseSchema):
         Returns:
             A list of Media objects representing individual media from a team during a year.
         """
+        if media_tag:
+            url = construct_url(
+                "team", key=self.key,
+                endpoint="media", second_endpoint="tag",
+                media_tag=media_tag, year=year
+            )
+        else:
+            url = construct_url("team", key=self.key, endpoint="media", year=year)
+
+        async with InternalData.session.get(url=url, headers=self._headers) as response:
+            return [Media(**media_data) for media_data in await response.json()]
 
     @synchronous
     async def awards(self, year: typing.Optional[typing.Union[range, int]] = None) -> list[Award]:
