@@ -141,7 +141,7 @@ class Team(BaseSchema):
 
         if isinstance(year, range):
             return list(itertools.chain.from_iterable(
-                await asyncio.gather(*[self.matches.coro(spec_year, simple, keys) for spec_year in year])
+                await asyncio.gather(*[self.matches.coro(self, spec_year, simple, keys) for spec_year in year])
             ))
         else:
             return await self._get_year_matches(year, simple, keys)
