@@ -1,3 +1,5 @@
+import asyncio
+import itertools
 import typing
 
 from .award import Award
@@ -129,6 +131,10 @@ class Team(BaseSchema):
         Returns:
             A list of Match objects representing each match a team played based on the conditions; might be empty if team didn't play matches in the specified year(s).
         """
+        if isinstance(year, range):
+            return list(itertools.chain.from_iterable(
+                await asyncio.gather(*[self.matches.coro(spec_year, simple, keys) for spec_year in year])
+            ))
 
     @synchronous
     async def robots(self) -> list[Robot]:
