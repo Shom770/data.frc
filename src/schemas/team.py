@@ -114,6 +114,23 @@ class Team(BaseSchema):
             return [District(**district_data) for district_data in await response.json()]
 
     @synchronous
+    async def matches(self, year: typing.Union[range, int], simple: bool, keys: bool) -> list[Match]:
+        """
+        Retrieves all matches a team played from certain year(s).
+
+        Parameters:
+            year:
+                An integer representing the year to retrieve a team's matches from or a range object representing all the years matches a team played should be retrieved from.
+            simple:
+                A boolean representing whether each match's information should be stripped to only contain relevant information.
+            keys:
+                A boolean representing whether only the keys of the matches a team played from said year should be returned:
+
+        Returns:
+            A list of Match objects representing each match a team played based on the conditions; might be empty if team didn't play matches in the specified year(s).
+        """
+
+    @synchronous
     async def robots(self) -> list[Robot]:
         """
         Retrieves a list of robots representing each robot for every year the team has played if they named the robot.
