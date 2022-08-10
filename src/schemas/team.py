@@ -148,6 +148,21 @@ class Team(BaseSchema):
             return await self._get_year_matches(year, simple, keys)
 
     @synchronous
+    async def media(self, year: typing.Union[range, int], media_tag: typing.Optional[str] = None) -> list[Media]:
+        """
+        Retrieves all the media of a certain team based off the parameters.
+
+        Parameters:
+            year:
+                An integer representing a year to retrieve a team's media from or a range object representing all the years media from a team should be retrieved from.
+            media_tag:
+                A string representing the type of media to be returned (eg "youtube")
+
+        Returns:
+            A list of Media objects representing individual media from a team.
+        """
+
+    @synchronous
     async def robots(self) -> list[Robot]:
         """
         Retrieves a list of robots representing each robot for every year the team has played if they named the robot.
