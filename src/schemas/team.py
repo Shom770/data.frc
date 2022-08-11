@@ -73,7 +73,7 @@ class Team(BaseSchema):
             year:
                 An integer representing a year to retrieve a team's media from.
             media_tag:
-                A string representing the type of media to be returned (eg "youtube"). Can be None if media_tag is not passed in.
+                A string representing the type of media to be returned. Can be None if media_tag is not passed in.
 
         Returns:
             A list of Media objects representing individual media from a team during a year.
@@ -172,7 +172,6 @@ class Team(BaseSchema):
         else:
             return await self._get_year_matches(year, simple, keys)
 
-    # TODO: using media tag doesn't seem to return anything.
     @synchronous
     async def media(self, year: typing.Union[range, int], media_tag: typing.Optional[str] = None) -> list[Media]:
         """
@@ -182,7 +181,7 @@ class Team(BaseSchema):
             year:
                 An integer representing a year to retrieve a team's media from or a range object representing all the years media from a team should be retrieved from.
             media_tag:
-                A string representing the type of media to be returned (eg "youtube"). Can be None if media_tag is not passed in.
+                A string representing the type of media to be returned. Can be None if media_tag is not passed in.
 
         Returns:
             A list of Media objects representing individual media from a team.
