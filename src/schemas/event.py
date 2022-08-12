@@ -69,7 +69,7 @@ class Event(BaseSchema):
         self.first_event_code: typing.Optional[str] = kwargs.get("first_event_code")
 
         self.webcasts: typing.Optional[list] = [
-            self.Webcast(**webcast_data) for webcast_data in kwargs.get("webcasts") if webcast_data
+            self.Webcast(**webcast_data) for webcast_data in kwargs.get("webcasts", []) if webcast_data
         ]
 
         self.division_keys: typing.Optional[list] = kwargs.get("division_keys")

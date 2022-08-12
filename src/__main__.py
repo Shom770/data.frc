@@ -6,8 +6,7 @@ from schemas import *
 
 def main():
     with ApiClient() as api_client:
-        team4099 = Team(key="frc4099")
-        print(team4099.social_media())
+        print(api_client.events(year=range(2019, 2023), simple=True)[0])
 
 
 main()

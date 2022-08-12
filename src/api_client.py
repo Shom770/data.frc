@@ -132,14 +132,16 @@ class ApiClient:
         Returns:
             A list of Event objects representing each event in certain year(s) or a list of strings representing all the keys of the events retrieved.
         """
-        async with InternalData.session.get(
-                url=construct_url("events", year=year, simple=simple, keys=keys),
-                headers=self._headers
-        ) as response:
-            if keys:
-                return await response.json()
-            else:
-                return [Event(**event_data) for event_data in await response.json()]
+        if isinstance(year, range):
+            return list(
+                itertools.chain.from_iterable(
+                    await asyncio.gather(
+                        *[self.events.coro(self, spec_year, simple, keys) for spec_year in year]
+                    )
+                )
+            )
+        else:
+            return await self._get_year_events(year, simple, keys)
 
     @synchronous
     async def team(
