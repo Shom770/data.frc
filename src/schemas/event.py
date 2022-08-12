@@ -16,14 +16,20 @@ PARSING_FORMAT = "%Y-%m-%d"
 class Event(BaseSchema):
     """Class representing an event containing methods to get specific event information."""
 
-    @dataclass()
-    class Alliance:
+    class Alliance(BaseSchema):
         """Class representing an alliance in an event."""
 
-        backup: typing.Optional[dict]
-        declines: list[str]
-        picks: list[str]
-        status: "Event.Status"
+        def __init__(
+                self,
+                backup: typing.Optional[dict],
+                declines: list[str],
+                picks: list[str],
+                status: dict
+        ):
+            self.backup = backup
+            self.declines = declines
+            self.picks = picks
+            self.status: "Event.Status" = status
 
     @dataclass()
     class Record:
