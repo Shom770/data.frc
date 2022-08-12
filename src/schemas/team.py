@@ -338,6 +338,11 @@ class Team(BaseSchema):
         Returns:
             A list of Media objects representing each social media account of a team. May be empty if a team has no social media accounts.
         """
+        async with InternalData.session.get(
+            url=construct_url("team", key=self.key, endpoint="social_media"),
+            headers=self._headers
+        ) as response:
+            return [Media(**social_media_info) for social_media_info in await response.json()]
 
     def __eq__(self, other) -> bool:
         return self.team_number == other.team_number
