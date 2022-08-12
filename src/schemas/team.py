@@ -330,6 +330,15 @@ class Team(BaseSchema):
             else:
                 return EventTeamStatus(event_key, await response.json())
 
+    @synchronous
+    async def social_media(self) -> list[Media]:
+        """
+        Retrieves all social media accounts of a team registered on TBA.
+
+        Returns:
+            A list of Media objects representing each social media account of a team. May be empty if a team has no social media accounts.
+        """
+
     def __eq__(self, other) -> bool:
         return self.team_number == other.team_number
 

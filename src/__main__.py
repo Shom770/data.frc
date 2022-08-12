@@ -1,3 +1,5 @@
+import functools
+
 from api_client import *
 from schemas import *
 
