@@ -47,6 +47,35 @@ class ApiClient:
         """
         await InternalData.session.close()
 
+    async def _get_year_events(
+            self,
+            year: int,
+            simple: typing.Optional[bool] = False,
+            keys: typing.Optional[bool] = False
+    ) -> list[typing.Union[Event, str]]:
+        """
+        Retrieves all the events from a year.
+
+        Parameters:
+            year:
+                An integer representing which year to return its events for.
+            simple:
+                A boolean representing whether some of the information regarding an event should be stripped to only contain relevant information about the event.
+            keys:
+                A boolean representing whether only the keys of the events should be returned.
+
+        Returns:
+            A list of Event objects representing each event in a year or a list of strings representing all the keys of the events retrieved.
+        """
+        async with InternalData.session.get(
+                url=construct_url("events", year=year, simple=simple, keys=keys),
+                headers=self._headers
+        ) as response:
+            if keys:
+                return await response.json()
+            else:
+                return [Event(**event_data) for event_data in await response.json()]
+
     async def _get_team_page(
         self,
         page_num: int = None,
@@ -81,6 +110,36 @@ class ApiClient:
                 Team(**team_data) if not isinstance(team_data, str) else team_data
                 for team_data in await response.json()
             ]
+
+    @synchronous
+    async def events(
+            self,
+            year: typing.Union[range, int],
+            simple: typing.Optional[bool] = False,
+            keys: typing.Optional[bool] = False
+    ) -> list[typing.Union[Event, str]]:
+        """
+        Retrieves all the events from certain year(s).
+
+        Parameters:
+            year:
+                An integer representing which year to return its events for o range object representing all the years events should be returned from.
+            simple:
+                A boolean representing whether some of the information regarding an event should be stripped to only contain relevant information about the event.
+            keys:
+                A boolean representing whether only the keys of the events should be returned.
+
+        Returns:
+            A list of Event objects representing each event in certain year(s) or a list of strings representing all the keys of the events retrieved.
+        """
+        async with InternalData.session.get(
+                url=construct_url("events", year=year, simple=simple, keys=keys),
+                headers=self._headers
+        ) as response:
+            if keys:
+                return await response.json()
+            else:
+                return [Event(**event_data) for event_data in await response.json()]
 
     @synchronous
     async def team(
