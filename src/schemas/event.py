@@ -16,6 +16,33 @@ PARSING_FORMAT = "%Y-%m-%d"
 class Event(BaseSchema):
     """Class representing an event containing methods to get specific event information."""
 
+    @dataclass()
+    class Alliance:
+        """Class representing an alliance in an event."""
+
+        backup: typing.Optional[dict]
+        declines: list[str]
+        picks: list[str]
+        status: "Event.Status"
+
+    @dataclass()
+    class Record:
+        """Class representing a record of wins, losses and ties for either a certain level or throughout the event."""
+
+        losses: int
+        ties: int
+        wins: int
+
+    @dataclass()
+    class Status:
+        """Class representing a status of an alliance during an event."""
+
+        playoff_average: float
+        level: str
+        record: "Event.Record"
+        current_level_record: "Event.Record"
+        status: str
+
     @dataclass
     class Webcast:
         """Class representing metadata and information about a webcast for an event."""
@@ -79,3 +106,17 @@ class Event(BaseSchema):
         self.playoff_type_string: typing.Optional[str] = kwargs.get("playoff_type_string")
 
         super().__init__()
+
+    @synchronous
+    def alliances(self) -> list[Alliance]:
+        """
+        Retrieves all alliances of an event.
+
+        Returns:
+            A list of Alliance objects representing each alliance in the event.
+        """
+        async with InternalData.session.get(
+                url=construct_url("event", key=self.key, endpoint="alliances"),
+                headers=self._headers
+        ) as response:
+            return [self.Alliance(**alliance_info) for alliance_info in await response.json()]
