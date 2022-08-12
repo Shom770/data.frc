@@ -112,6 +112,26 @@ class ApiClient:
             ]
 
     @synchronous
+    async def event(self, event_key: str, simple: typing.Optional[bool] = False) -> Event:
+        """
+        Retrieves and returns a record of teams based on the parameters given.
+
+        Parameters:
+            event_key:
+                A string representing a unique key assigned to an event to set it apart from others.
+            simple:
+                A boolean that specifies whether the results for the event should be 'shortened' and only contain more relevant information.
+
+        Returns:
+            A Team object representing the data given.
+        """
+        async with InternalData.session.get(
+            url=construct_url("event", key=event_key, simple=simple),
+            headers=self._headers
+        ) as response:
+            return Event(**await response.json())
+
+    @synchronous
     async def events(
             self,
             year: typing.Union[range, int],
