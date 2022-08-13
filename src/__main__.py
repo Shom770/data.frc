@@ -6,7 +6,7 @@ from schemas import *
 
 def main():
     with ApiClient() as api_client:
-        print(api_client.event(event_key="2022aowuer"))
+        print(Event(key="2022chcmp").alliances())
 
 
 main()

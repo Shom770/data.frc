@@ -16,6 +16,24 @@ PARSING_FORMAT = "%Y-%m-%d"
 class Event(BaseSchema):
     """Class representing an event containing methods to get specific event information."""
 
+    @dataclass()
+    class Status:
+        """Class representing a status of an alliance during an event."""
+
+        playoff_average: float
+        level: str
+        record: "Event.Record"
+        current_level_record: "Event.Record"
+        status: str
+
+    @dataclass()
+    class Record:
+        """Class representing a record of wins, losses and ties for either a certain level or throughout the event."""
+
+        losses: int
+        ties: int
+        wins: int
+
     class Alliance(BaseSchema):
         """Class representing an alliance in an event."""
 
@@ -29,25 +47,19 @@ class Event(BaseSchema):
             self.backup = backup
             self.declines = declines
             self.picks = picks
-            self.status: "Event.Status" = status
+            self.status: Event.Status = Event.Status(
+                playoff_average=status["playoff_average"],
+                level=status["level"],
+                record=Event.Record(
+                    **status["record"]
+                ),
+                current_level_record=Event.Record(
+                    **status["current_level_record"]
+                ),
+                status=status["status"]
+            )
 
-    @dataclass()
-    class Record:
-        """Class representing a record of wins, losses and ties for either a certain level or throughout the event."""
-
-        losses: int
-        ties: int
-        wins: int
-
-    @dataclass()
-    class Status:
-        """Class representing a status of an alliance during an event."""
-
-        playoff_average: float
-        level: str
-        record: "Event.Record"
-        current_level_record: "Event.Record"
-        status: str
+            super().__init__()
 
     @dataclass
     class Webcast:
@@ -114,7 +126,7 @@ class Event(BaseSchema):
         super().__init__()
 
     @synchronous
-    def alliances(self) -> list[Alliance]:
+    async def alliances(self) -> list[Alliance]:
         """
         Retrieves all alliances of an event.
 
