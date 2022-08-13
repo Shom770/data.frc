@@ -63,7 +63,14 @@ class Event(BaseSchema):
 
             super().__init__()
 
-    @dataclass
+    @dataclass()
+    class Insights:
+        """Class representing the insights of an event (specific by year)"""
+
+        qual: dict
+        playoff: dict
+
+    @dataclass()
     class Webcast:
         """Class representing metadata and information about a webcast for an event."""
 
