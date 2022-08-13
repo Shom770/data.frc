@@ -87,12 +87,17 @@ class Event(BaseSchema):
         self.state_prov: typing.Optional[str] = kwargs.get("state_prov")
         self.country: typing.Optional[str] = kwargs.get("country")
 
-        self.start_date: typing.Optional[datetime.datetime] = datetime.datetime.strptime(
-            kwargs.get("start_date"), PARSING_FORMAT
-        )
-        self.end_date: typing.Optional[datetime.datetime] = datetime.datetime.strptime(
-            kwargs.get("end_date"), PARSING_FORMAT
-        )
+        try:
+            self.start_date: typing.Optional[datetime.datetime] = datetime.datetime.strptime(
+                kwargs["start_date"], PARSING_FORMAT
+            )
+            self.end_date: typing.Optional[datetime.datetime] = datetime.datetime.strptime(
+                kwargs["end_date"], PARSING_FORMAT
+            )
+        except KeyError:
+            self.start_date = None
+            self.end_date = None
+
         self.year: typing.Optional[int] = kwargs.get("year")
 
         self.short_name: typing.Optional[str] = kwargs.get("short_name")
