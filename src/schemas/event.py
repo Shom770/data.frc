@@ -40,10 +40,10 @@ class Event(BaseSchema):
         def __init__(
                 self,
                 name: str,
-                backup: typing.Optional[dict],
                 declines: list[str],
                 picks: list[str],
-                status: dict
+                status: dict,
+                backup: typing.Optional[dict] = None
         ):
             self.name = name
             self.backup = backup
