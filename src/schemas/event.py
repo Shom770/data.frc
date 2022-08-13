@@ -39,11 +39,13 @@ class Event(BaseSchema):
 
         def __init__(
                 self,
+                name: str,
                 backup: typing.Optional[dict],
                 declines: list[str],
                 picks: list[str],
                 status: dict
         ):
+            self.name = name
             self.backup = backup
             self.declines = declines
             self.picks = picks
