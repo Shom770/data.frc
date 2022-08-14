@@ -185,3 +185,17 @@ class Event(BaseSchema):
 
             if insights:
                 return self.Insights(**insights)
+
+    @synchronous
+    async def predictions(self) -> dict:
+        """
+        Retrieves predictions for matches of an event. May not work for all events since this endpoint is in beta per TBA.
+
+        Returns:
+            A dictionary containing the predictions of an event from TBA (contains year-specific information). May be an empty dictionary if there are no predictions available for that event.
+        """
+        async with InternalData.session.get(
+            url=construct_url("event", key=self.key, endpoint="predictions"),
+            headers=self._headers
+        ) as response:
+            return await response.json()
