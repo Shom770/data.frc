@@ -79,6 +79,18 @@ class Event(BaseSchema):
         dprs: dict
         ccwms: dict
 
+        def average(self, metric: typing.Optional[str] = None) -> typing.Union[dict, float]:
+            """
+            Gets the average of all the metrics for said event; could also only get one average for a specific metric if you aren't interested in all metrics.
+
+            Parameters:
+                metric:
+                    A string representing which metric to get the average for (opr/dpr/ccwm). `metric` is optional, and if not passed in, the averages for all metrics will be retrieved.
+
+            Returns:
+                A dictionary containing the averages for all metrics or a decimal (float object) representing the average of one of the metrics if specified.
+            """
+
     @dataclass()
     class Webcast:
         """Class representing metadata and information about a webcast for an event."""
