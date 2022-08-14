@@ -152,3 +152,21 @@ class Event(BaseSchema):
                 headers=self._headers
         ) as response:
             return [self.Alliance(**alliance_info) for alliance_info in await response.json()]
+
+    @synchronous
+    async def insights(self) -> typing.Optional[Insights]:
+        """
+        Retrieves insights of an event (specific data about performance and the like at the event; specific by game).
+        Insights can only be retrieved for any events from 2016 and onwards.
+
+        Returns:
+            An Insight object containing qualification and playoff insights from the event. Can be None if the event hasn't occurred yet, and the fields of Insight may be None depending on how far the event has advanced.
+        """
+        async with InternalData.session.get(
+                url=construct_url("event", key=self.key, endpoint="insights"),
+                headers=self._headers
+        ) as response:
+            insights = await response.json()
+
+            if insights:
+                return self.Insights(**insights)
