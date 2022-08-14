@@ -154,6 +154,15 @@ class Event(BaseSchema):
             return [self.Alliance(**alliance_info) for alliance_info in await response.json()]
 
     @synchronous
+    async def awards(self) -> list[Award]:
+        """
+        Retrieves all awards distributed in an event.
+
+        Returns:
+            A list of Award objects representing each award distributed in an event.
+        """
+
+    @synchronous
     async def insights(self) -> typing.Optional[Insights]:
         """
         Retrieves insights of an event (specific data about performance and the like at the event; specific by game).
