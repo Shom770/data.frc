@@ -1,6 +1,7 @@
 import datetime
 import typing
 from dataclasses import dataclass
+from statistics import mean
 
 from .base_schema import BaseSchema
 from .award import Award
@@ -90,6 +91,21 @@ class Event(BaseSchema):
             Returns:
                 A dictionary containing the averages for all metrics or a decimal (float object) representing the average of one of the metrics if specified.
             """
+            metric_data_mapping = {"opr": self.oprs, "dpr": self.dprs, "ccwm": self.ccwms}
+
+            if metric:
+                if metric.lower() not in metric_data_mapping.keys():
+                    raise ValueError("metric must be either 'opr', 'dpr', or 'ccwm'")
+
+                metric_data = metric_data_mapping[metric.lower()]
+
+                return mean(metric_data.values())
+            else:
+                return {
+                    "opr": mean(self.oprs.values()),
+                    "dpr": mean(self.dprs.values()),
+                    "ccwm": mean(self.ccwms.values())
+                }
 
     @dataclass()
     class Webcast:
