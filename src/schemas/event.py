@@ -3,6 +3,7 @@ import typing
 from dataclasses import dataclass
 
 from .base_schema import BaseSchema
+from .award import Award
 from .district import District
 
 try:
@@ -161,6 +162,11 @@ class Event(BaseSchema):
         Returns:
             A list of Award objects representing each award distributed in an event.
         """
+        async with InternalData.session.get(
+            url=construct_url("event", key=self.key, endpoint="awards"),
+            headers=self._headers
+        ) as response:
+            return [Award(**award_info) for award_info in await response.json()]
 
     @synchronous
     async def insights(self) -> typing.Optional[Insights]:
