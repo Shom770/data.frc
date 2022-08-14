@@ -72,6 +72,14 @@ class Event(BaseSchema):
         playoff: dict
 
     @dataclass()
+    class OPRs:
+        """Class representing different metrics (OPR/DPR/CCWMs) for teams during an event."""
+
+        oprs: dict
+        dprs: dict
+        ccwms: dict
+
+    @dataclass()
     class Webcast:
         """Class representing metadata and information about a webcast for an event."""
 
