@@ -223,6 +223,16 @@ class Event(BaseSchema):
                 return self.Insights(**insights)
 
     @synchronous
+    async def oprs(self) -> OPRs:
+        """
+        Retrieves different metrics for all teams during an event.
+        To see an explanation on OPR and other metrics retrieved from an event, see https://www.thebluealliance.com/opr.
+
+        Returns:
+            An OPRs object containing a key/value pair for the OPRs, DPRs, and CCWMs of all teams at an event.
+        """
+
+    @synchronous
     async def predictions(self) -> dict:
         """
         Retrieves predictions for matches of an event. May not work for all events since this endpoint is in beta per TBA.
