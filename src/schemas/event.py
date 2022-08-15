@@ -125,6 +125,36 @@ class Event(BaseSchema):
 
             return self
 
+    class ExtraStats:
+        """Information about extra statistics regarding the ranking of a team during an event."""
+
+        def __init__(self, extra_stats: list, extra_stats_info: list[dict]):
+            self._attributes_formatted = ""
+
+            for data, data_info in zip(extra_stats, extra_stats_info):
+                snake_case_name = data_info["name"].lower().replace(" ", "_").replace("+", "plus")
+
+                setattr(self, snake_case_name, data)
+                self._attributes_formatted += f"{snake_case_name}={data!r}, "
+
+        def __repr__(self):
+            return f"ExtraStats({self._attributes_formatted.rstrip(', ')})"
+
+    class SortOrders:
+        """Information about the team used to determine ranking for an event."""
+
+        def __init__(self, sort_orders: list, sort_order_info: list[dict]):
+            self._attributes_formatted = ""
+
+            for data, data_info in zip(sort_orders, sort_order_info):
+                snake_case_name = data_info["name"].lower().replace(" ", "_").replace("+", "plus")
+
+                setattr(self, snake_case_name, data)
+                self._attributes_formatted += f"{snake_case_name}={data!r}, "
+
+        def __repr__(self):
+            return f"SortOrders({self._attributes_formatted.rstrip(', ')})"
+
     class Ranking(BaseSchema):
         """Class representing a team's ranking during an event."""
 
