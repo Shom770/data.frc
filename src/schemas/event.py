@@ -318,19 +318,19 @@ class Event(BaseSchema):
             return await response.json()
 
     @synchronous
-    async def rankings(self) -> list[Ranking]:
+    async def rankings(self) -> dict[str, Ranking]:
         """
         Retrieves a list of team rankings for an event.
 
         Returns:
-            A list of Ranking objects, each representing a team's ranking in an event.
+            A dictionary with team keys as the keys of the dictionary and Ranking objects for that team's information about their ranking at an event as values of the dictionary.
         """
         async with InternalData.session.get(
                 url=construct_url("event", key=self.key, endpoint="rankings"),
                 headers=self._headers
         ) as response:
             rankings_info = await response.json()
-            rankings_list = []
+            rankings_dict = {}
 
             for rank_info in rankings_info["rankings"]:
                 rank_info["extra_stats"] = self.ExtraStats(
@@ -342,6 +342,6 @@ class Event(BaseSchema):
                     rankings_info["sort_order_info"]
                 )
 
-                rankings_list.append(self.Ranking(**rank_info))
+                rankings_dict[rank_info["team_key"]] = self.Ranking(**rank_info)
 
-            return rankings_list
+            return rankings_dict
