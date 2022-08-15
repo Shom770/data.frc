@@ -20,6 +20,13 @@ class Event(BaseSchema):
     """Class representing an event containing methods to get specific event information."""
 
     @dataclass()
+    class DistrictPoints:
+        """Class representing an event's district points given for all teams."""
+
+        points: dict[str, dict[str, int]]
+        tiebreakers: dict[str, dict[str, int]]
+
+    @dataclass()
     class Status:
         """Class representing a status of an alliance during an event."""
 
@@ -107,23 +114,6 @@ class Event(BaseSchema):
                     "dpr": mean(self.dprs.values()),
                     "ccwm": mean(self.ccwms.values())
                 }
-
-        def sort_oprs(self, reverse: bool = False) -> "OPRs":
-            """
-            Sorts all metrics that have been calculated (OPRs/DPRs/CCWMs).
-
-            Parameters:
-                reverse:
-                    A boolean specifying if the metrics should be sorted from descending order (greatest -> least). `reverse` is an optional parameter and will be False if not passed in.
-
-            Returns:
-                An OPRs object with the updated sorted metrics.
-            """
-            self.oprs = dict(sorted(self.oprs.items(), key=itemgetter(1), reverse=reverse))
-            self.dprs = dict(sorted(self.dprs.items(), key=itemgetter(1), reverse=reverse))
-            self.ccwms = dict(sorted(self.ccwms.items(), key=itemgetter(1), reverse=reverse))
-
-            return self
 
     class ExtraStats:
         """Information about extra statistics regarding the ranking of a team during an event."""
@@ -266,7 +256,7 @@ class Event(BaseSchema):
             return [Award(**award_info) for award_info in await response.json()]
 
     @synchronous
-    async def district_points(self) -> typing.Optional[DistrictPoints]
+    async def district_points(self) -> typing.Optional[DistrictPoints]:
         """
         Retrieves district points for teams during an event for both qualification and tiebreaker matches.
 
@@ -277,7 +267,10 @@ class Event(BaseSchema):
                 url=construct_url("event", key=self.key, endpoint="district_points"),
                 headers=self._headers
         ) as response:
-            return await response.json()
+            event_district_points = await response.json()
+
+            if event_district_points:
+                return self.DistrictPoints(**event_district_points)
 
     @synchronous
     async def insights(self) -> typing.Optional[Insights]:
