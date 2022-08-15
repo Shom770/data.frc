@@ -6,7 +6,7 @@ from schemas import *
 
 def main():
     with ApiClient() as api_client:
-        print(Event(key="2022cmptx").predictions())
+        print(Event(key="2022iri").oprs().dprs)
 
 
 main()

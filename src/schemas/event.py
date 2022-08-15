@@ -229,8 +229,18 @@ class Event(BaseSchema):
         To see an explanation on OPR and other metrics retrieved from an event, see https://www.thebluealliance.com/opr.
 
         Returns:
-            An OPRs object containing a key/value pair for the OPRs, DPRs, and CCWMs of all teams at an event.
+            An OPRs object containing a key/value pair for the OPRs, DPRs, and CCWMs of all teams at an event. The fields of `OPRs` may be empty if OPRs, DPRs, and CCWMs weren't calculated.
         """
+        async with InternalData.session.get(
+            url=construct_url("event", key=self.key, endpoint="oprs"),
+            headers=self._headers
+        ) as response:
+            metric_data = await response.json()
+
+            if metric_data:
+                return self.OPRs(**await response.json())
+            else:
+                return self.OPRs(oprs={}, dprs={}, ccwms={})
 
     @synchronous
     async def predictions(self) -> dict:
