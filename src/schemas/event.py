@@ -266,6 +266,20 @@ class Event(BaseSchema):
             return [Award(**award_info) for award_info in await response.json()]
 
     @synchronous
+    async def district_points(self) -> dict:
+        """
+        Retrieves district points for teams during an event for both qualification and tiebreaker matches.
+
+        Returns:
+            A DistrictPoints object containing "points" and "tiebreakers" fields, with each field possessing a dictionary mapping team keys to their points.
+        """
+        async with InternalData.session.get(
+                url=construct_url("event", key=self.key, endpoint="district_points"),
+                headers=self._headers
+        ) as response:
+            return await response.json()
+
+    @synchronous
     async def insights(self) -> typing.Optional[Insights]:
         """
         Retrieves insights of an event (specific data about performance and the like at the event; specific by game).

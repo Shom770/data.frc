@@ -6,4 +6,5 @@ def main():
     with ApiClient():
         ranks = Event(key="2022iri").rankings()
 
+
 main()
