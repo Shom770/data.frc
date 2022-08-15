@@ -126,6 +126,12 @@ class Event(BaseSchema):
             return self
 
     @dataclass()
+    class Ranking:
+        """Class representing a team's ranking during an event."""
+
+        ...
+
+    @dataclass()
     class Webcast:
         """Class representing metadata and information about a webcast for an event."""
 
@@ -271,5 +277,19 @@ class Event(BaseSchema):
         async with InternalData.session.get(
             url=construct_url("event", key=self.key, endpoint="predictions"),
             headers=self._headers
+        ) as response:
+            return await response.json()
+
+    @synchronous
+    async def rankings(self) -> list[Ranking]:
+        """
+        Retrieves a list of team rankings for an event.
+
+        Returns:
+            A list of Ranking objects, each representing a team's ranking in an event.
+        """
+        async with InternalData.session.get(
+                url=construct_url("event", key=self.key, endpoint="rankings"),
+                headers=self._headers
         ) as response:
             return await response.json()
