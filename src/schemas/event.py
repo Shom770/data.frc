@@ -125,11 +125,12 @@ class Event(BaseSchema):
 
             return self
 
-    @dataclass()
-    class Ranking:
+    class Ranking(BaseSchema):
         """Class representing a team's ranking during an event."""
 
-        ...
+        def __init__(self, extra_stats_info: list[dict], rankings: dict, sort_order_info: list[dict]):
+            self.dq = rankings["dq"]
+
 
     @dataclass()
     class Webcast:
