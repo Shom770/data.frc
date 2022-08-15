@@ -334,11 +334,11 @@ class Event(BaseSchema):
 
             for rank_info in rankings_info["rankings"]:
                 rank_info["extra_stats"] = self.ExtraStats(
-                    rankings_info["extra_stats"],
+                    rank_info["extra_stats"],
                     rankings_info["extra_stats_info"]
                 )
                 rank_info["sort_orders"] = self.SortOrders(
-                    rankings_info["sort_orders"],
+                    rank_info["sort_orders"],
                     rankings_info["sort_order_info"]
                 )
 
