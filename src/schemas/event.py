@@ -1,6 +1,7 @@
 import datetime
 import typing
 from dataclasses import dataclass
+from operator import itemgetter
 from statistics import mean
 
 from .base_schema import BaseSchema
@@ -107,20 +108,20 @@ class Event(BaseSchema):
                     "ccwm": mean(self.ccwms.values())
                 }
 
-        def sort_oprs(self, reverse: bool) -> "OPRs":
+        def sort_oprs(self, reverse: bool = False) -> "OPRs":
             """
             Sorts all metrics that have been calculated (OPRs/DPRs/CCWMs).
 
             Parameters:
                 reverse:
-                    A boolean specifying if the metrics should be sorted from descending order (greatest -> least)
+                    A boolean specifying if the metrics should be sorted from descending order (greatest -> least). `reverse` is an optional parameter and will be False if not passed in.
 
             Returns:
                 An OPRs object with the updated sorted metrics.
             """
-            self.oprs = dict(sorted(self.oprs.items(), reverse=reverse))
-            self.dprs = dict(sorted(self.dprs.items(), reverse=reverse))
-            self.ccwms = dict(sorted(self.ccwms.items(), reverse=reverse))
+            self.oprs = dict(sorted(self.oprs.items(), key=itemgetter(1), reverse=reverse))
+            self.dprs = dict(sorted(self.dprs.items(), key=itemgetter(1), reverse=reverse))
+            self.ccwms = dict(sorted(self.ccwms.items(), key=itemgetter(1), reverse=reverse))
 
             return self
 
