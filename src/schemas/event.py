@@ -107,6 +107,23 @@ class Event(BaseSchema):
                     "ccwm": mean(self.ccwms.values())
                 }
 
+        def sort_oprs(self, reverse: bool) -> "OPRs":
+            """
+            Sorts all metrics that have been calculated (OPRs/DPRs/CCWMs).
+
+            Parameters:
+                reverse:
+                    A boolean specifying if the metrics should be sorted from descending order (greatest -> least)
+
+            Returns:
+                An OPRs object with the updated sorted metrics.
+            """
+            self.oprs = dict(sorted(self.oprs.items(), reverse=reverse))
+            self.dprs = dict(sorted(self.dprs.items(), reverse=reverse))
+            self.ccwms = dict(sorted(self.ccwms.items(), reverse=reverse))
+
+            return self
+
     @dataclass()
     class Webcast:
         """Class representing metadata and information about a webcast for an event."""
