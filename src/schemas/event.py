@@ -332,11 +332,14 @@ class Event(BaseSchema):
             rankings_info = await response.json()
             rankings_list = []
 
-            for rank_info in rankings_info:
-                rank_info["extra_stats"] = self.ExtraStats(rank_info["extra_stats"], rankings_info["extra_stats_info"])
+            for rank_info in rankings_info["rankings"]:
+                rank_info["extra_stats"] = self.ExtraStats(
+                    rankings_info["extra_stats"],
+                    rankings_info["extra_stats_info"]
+                )
                 rank_info["sort_orders"] = self.SortOrders(
-                    rank_info["sort_orders"],
-                    rank_info["sort_order_info"]
+                    rankings_info["sort_orders"],
+                    rankings_info["sort_order_info"]
                 )
 
                 rankings_list.append(self.Ranking(**rank_info))
