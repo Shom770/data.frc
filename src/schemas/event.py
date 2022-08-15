@@ -155,12 +155,18 @@ class Event(BaseSchema):
         def __repr__(self):
             return f"SortOrders({self._attributes_formatted.rstrip(', ')})"
 
-    class Ranking(BaseSchema):
+    @dataclass()
+    class Ranking:
         """Class representing a team's ranking during an event."""
 
-        def __init__(self, extra_stats_info: list[dict], rankings: dict, sort_order_info: list[dict]):
-            self.dq = rankings["dq"]
-
+        dq: int
+        extra_stats: "Event.ExtraStats"
+        matches_played: int
+        qual_average: int
+        rank: int
+        record: "Event.Record"
+        sort_orders: "Event.SortOrders"
+        team_key: str
 
     @dataclass()
     class Webcast:
@@ -323,4 +329,16 @@ class Event(BaseSchema):
                 url=construct_url("event", key=self.key, endpoint="rankings"),
                 headers=self._headers
         ) as response:
-            return await response.json()
+            rankings_info = await response.json()
+            rankings_list = []
+
+            for rank_info in rankings_info:
+                rank_info["extra_stats"] = self.ExtraStats(rank_info["extra_stats"], rankings_info["extra_stats_info"])
+                rank_info["sort_orders"] = self.SortOrders(
+                    rank_info["sort_orders"],
+                    rank_info["sort_order_info"]
+                )
+
+                rankings_list.append(self.Ranking(**rank_info))
+
+            return rankings_list
