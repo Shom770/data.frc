@@ -75,11 +75,17 @@ class EventTeamStatus:
         ranking: "EventTeamStatus.Ranking"
         status: "EventTeamStatus.Status"
 
-    def __init__(self, event_key: str, team_status_info: dict):
+    def __init__(self, event_or_team_key: str, team_status_info: dict):
         self._attributes_formatted = ""
 
-        self.event_key = event_key
-        self._attributes_formatted += f"{event_key=}, "
+        if event_or_team_key.startswith("frc"):
+            self.event_key = None
+            self.team_key = event_or_team_key
+            self._attributes_formatted += f"{self.team_key=}, "
+        else:
+            self.team_key = None
+            self.event_key = event_or_team_key
+            self._attributes_formatted += f"{self.event_key=}, "
 
         if team_status_info["alliance"]:
             self.alliance = self.Alliance(**team_status_info["alliance"])

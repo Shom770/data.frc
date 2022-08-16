@@ -4,7 +4,7 @@ from schemas import *
 
 def main():
     with ApiClient():
-        ranks = Team(key="frc4099").events(year=2022, statuses=True)
+        ranks = Event(key="2022chcmp").teams(statuses=True)["frc4099"].playoff
         print(ranks)
 
 
