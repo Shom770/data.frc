@@ -369,6 +369,28 @@ class Event(BaseSchema):
 
             return rankings_dict
 
+    @synchronous
+    async def teams(
+            self,
+            simple: bool = False,
+            keys: bool = False,
+            statuses: bool = False
+    ) -> typing.Union[list[typing.Union[str, "Team"]], dict[str, EventTeamStatus]]:
+        """
+        Retrieves all teams who participated at an event.
+
+        Parameters:
+            simple:
+                A boolean that specifies whether the results for each team should be 'shortened' and only contain more relevant information.
+            keys:
+                A boolean that specifies whether only the names of the FRC teams should be retrieved.
+            statuses:
+                A boolean that specifies whether a key/value pair of the statuses of teams in an event should be returned.
+
+        Returns:
+            A dictionary with team keys as the keys of the dictionary and an EventTeamStatus object representing the status of said team as the values of the dictionary or a list of strings representing the keys of the teams that participated in an event or a list of Team objects, each representing a team that participated in an event.
+        """
+
 
 class Match(BaseSchema):
     """Class representing a match's metadata with methods to get match specific data."""
@@ -623,7 +645,7 @@ class Team(BaseSchema):
             simple: bool = False,
             keys: bool = False,
             statuses: bool = False,
-    ) -> list[typing.Union[Event, EventTeamStatus, str]]:
+    ) -> typing.Union[list[typing.Union[Event, str]], dict[str, EventTeamStatus]]:
         """
         Retrieves and returns a record of teams based on the parameters given.
 
@@ -637,10 +659,10 @@ class Team(BaseSchema):
             keys:
                 A boolean that specifies whether only the names of the events this team has participated in should be returned.
             statuses:
-                A boolean that specifies whether a key/value pair of the statuses of events should be returned.
+                A boolean that specifies whether a key/value pair of the statuses of teams in an event should be returned.
 
         Returns:
-            A list of Event objects for each event that was returned or a list of strings representing the keys of the events or a list of EventTeamStatus objects for each team's status during an event.
+            A list of Event objects for each event that was returned or a list of strings representing the keys of the events or a dictionary with team keys as the keys of the dictionary and an EventTeamStatus object representing the status of said team as the values of the dictionary.
         """
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
@@ -661,11 +683,10 @@ class Team(BaseSchema):
             elif not statuses:
                 return [Event(**event_data) for event_data in await response.json()]
             else:
-                return [
-                    EventTeamStatus(event_key, team_status_info)
-                    for event_key, team_status_info in (await response.json()).items()
-                    if team_status_info
-                ]
+                return {
+                    event_key: EventTeamStatus(event_key, team_status_info)
+                    for event_key, team_status_info in (await response.json()).items() if team_status_info
+                }
 
     @synchronous
     async def event(
