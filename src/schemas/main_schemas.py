@@ -317,6 +317,8 @@ class Event(BaseSchema):
         """
         Retrieves all matches that occurred during an event.
 
+        Per TBA, the timeseries data is in development and therefore you should NOT rely on it.
+
         Parameters:
             simple:
                 A boolean that specifies whether the results for each match should be 'shortened' and only contain more relevant information.
