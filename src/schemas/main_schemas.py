@@ -17,6 +17,7 @@ except ImportError:
     from ..utils import *
 
 __all__ = ["District", "Event", "Match", "Team"]
+PARSING_FORMAT = "%Y-%m-%d"
 
 
 class District(BaseSchema):
@@ -29,9 +30,6 @@ class District(BaseSchema):
         self.year: typing.Optional[int] = kwargs.get("year")
 
         super().__init__()
-
-
-PARSING_FORMAT = "%Y-%m-%d"
 
 
 class Event(BaseSchema):
@@ -182,12 +180,12 @@ class Event(BaseSchema):
 
         type: str
         channel: str
-        date: typing.Optional[datetime.datetime] = None
+        date: typing.Optional[str] = None
         file: typing.Optional[str] = None
 
         def __post_init__(self):
             if self.date:
-                self.date = datetime.datetime.strptime(self.date, PARSING_FORMAT)
+                self.date: datetime.datetime = datetime.datetime.strptime(self.date, PARSING_FORMAT)
 
     def __init__(self, **kwargs):
         self.key: str = kwargs["key"]
