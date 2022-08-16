@@ -4,8 +4,8 @@ from schemas import *
 
 def main():
     with ApiClient():
-        ranks = Event(key="2022chcmp").district_points()
-        print(dict(sorted(ranks.points.items(), key=lambda x: x[1]["total"])))
+        ranks = Team(key="frc4099").events()
+        print(ranks)
 
 
 main()
