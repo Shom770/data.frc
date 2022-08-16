@@ -164,6 +164,35 @@ class ApiClient:
             return await self._get_year_events(year, simple, keys)
 
     @synchronous
+    async def match(
+        self,
+        match_key: str,
+        simple: bool = False,
+        timeseries: bool = False,
+        zebra_motionworks: bool = False
+    ) -> list[typing.Union[Team, str]]:
+        """
+        Retrieves information about a match.
+
+        Per TBA, the timeseries data is in development and therefore you should NOT rely on it.
+
+        Parameters:
+            match_key:
+                A string representing a unique key assigned to a match to set it apart from others.
+            simple:
+                A boolean that specifies whether the results for each match should be 'shortened' and only contain more relevant information.
+            keys:
+                A boolean that specifies whether only the keys of the matches should be retrieved.
+            timeseries:
+                A boolean that specifies whether match timeseries data should be retrieved from a match.
+            zebra_motionworks:
+                A boolean that specifies whether data about where robots went during a match should be retrieved. Using this parameter, there may be no data due to the fact that very few matches use the Zebra MotionWorks technology required to get data on where the robots go during a match.
+
+        Returns:
+            A dictionary with team keys as the keys of the dictionary and an EventTeamStatus object representing the status of said team as the values of the dictionary or a list of strings representing the keys of the teams that participated in an event or a list of Team objects, each representing a team that participated in an event.
+        """
+
+    @synchronous
     async def team(
             self,
             team_key: str,
