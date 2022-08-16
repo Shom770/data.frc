@@ -390,6 +390,9 @@ class Event(BaseSchema):
         Returns:
             A dictionary with team keys as the keys of the dictionary and an EventTeamStatus object representing the status of said team as the values of the dictionary or a list of strings representing the keys of the teams that participated in an event or a list of Team objects, each representing a team that participated in an event.
         """
+        if (simple, keys, statuses).count(True) > 1:
+            raise ValueError("Only one parameter out of `simple`, `keys`, and `statuses` can be True. You can't mix and match parameters.")
+
 
 
 class Match(BaseSchema):
