@@ -308,6 +308,43 @@ class Event(BaseSchema):
                 return self.Insights(**insights)
 
     @synchronous
+    async def matches(
+            self,
+            simple: bool = False,
+            keys: bool = False,
+            timeseries: bool = False
+    ) -> list[typing.Union[str, Match]]:
+        """
+        Retrieves all matches that occurred during an event.
+
+        Parameters:
+            simple:
+                A boolean that specifies whether the results for each match should be 'shortened' and only contain more relevant information.
+            keys:
+                A boolean that specifies whether only the keys of the matches should be retrieved.
+            timeseries:
+                A boolean that specifies whether only the keys of the matches that have timeseries data should be retrieved.
+
+        Returns:
+            A dictionary with team keys as the keys of the dictionary and an EventTeamStatus object representing the status of said team as the values of the dictionary or a list of strings representing the keys of the teams that participated in an event or a list of Team objects, each representing a team that participated in an event.
+        """
+        if (simple, keys, timeseries).count(True) > 1:
+            raise ValueError(
+                "Only one parameter out of `simple`, `keys`, and `statuses` can be True. You can't mix and match parameters.")
+
+        async with InternalData.session.get(
+                url=construct_url(
+                    "event", key=self.key,
+                    endpoint="matches", simple=simple, keys=keys, timeseries=timeseries
+                ),
+                headers=self._headers
+        ) as response:
+            if keys or timeseries:
+                return await response.json()
+            else:
+                return [Match(**match_data) for match_data in await response.json()]
+
+    @synchronous
     async def oprs(self) -> OPRs:
         """
         Retrieves different metrics for all teams during an event.
