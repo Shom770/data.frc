@@ -397,15 +397,15 @@ class Event(BaseSchema):
                 url=construct_url("event", key=self.key, endpoint="teams", simple=simple, keys=keys, statuses=statuses),
                 headers=self._headers
         ) as response:
-            if simple:
-                return [Team(**team_data) for team_data in await response.json()]
-            elif keys:
+            if keys:
                 return await response.json()
-            else:
+            elif statuses:
                 return {
                     team_key: EventTeamStatus(team_key, team_status_info)
                     for team_key, team_status_info in (await response.json()).items() if team_status_info
                 }
+            else:
+                return [Team(**team_data) for team_data in await response.json()]
 
 
 class Match(BaseSchema):
