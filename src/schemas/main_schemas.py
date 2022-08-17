@@ -50,6 +50,14 @@ class District(BaseSchema):
         Returns:
             A list of strings with each string representing an event's key for all the events in the given district or a list of Event objects with each object representing an event in the given district.
         """
+        async with InternalData.session.get(
+            url=construct_url("district", key=self.key, endpoint="events"),
+            headers=self._headers
+        ) as response:
+            if keys:
+                return await response.json()
+            else:
+                return [Event(**event_data) for event_data in await response.json()]
 
     @synchronous
     async def teams(
