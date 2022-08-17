@@ -96,6 +96,15 @@ class District(BaseSchema):
             else:
                 return [Team(**event_data) for event_data in await response.json()]
 
+    @synchronous
+    async def rankings(self) -> list[Ranking]:
+        """
+        Retrieves a list of team district rankings for the given district.
+
+        Returns:
+            A list of Ranking objects with each Ranking object representing a team's district ranking for the given district.
+        """
+
 
 class Event(BaseSchema):
     """Class representing an event containing methods to get specific event information."""
