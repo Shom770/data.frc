@@ -24,6 +24,16 @@ PARSING_FORMAT = "%Y-%m-%d"
 class District(BaseSchema):
     """Class representing a district containing methods to get specific district information."""
 
+    @dataclass()
+    class Ranking:
+        """Class representing a team's ranking in a given district."""
+
+        team_key: str
+        rank: int
+        rookie_bonus: int
+        point_total: int
+        event_points: list[dict]
+
     def __init__(self, **kwargs):
         self.abbreviation: typing.Optional[str] = kwargs.get("abbreviation")
         self.display_name: typing.Optional[str] = kwargs.get("display_name")

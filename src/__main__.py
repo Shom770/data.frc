@@ -4,7 +4,7 @@ from schemas import *
 
 def main():
     with ApiClient() as api_client:
-        print(District(key="2022chs").events(keys=True)[0])
+        print(District(key="1990chs").events(simple=True))
 
 
 main()
