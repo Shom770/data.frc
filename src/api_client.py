@@ -112,6 +112,19 @@ class ApiClient:
             ]
 
     @synchronous
+    async def districts(self, year: int) -> list[District]:
+        """
+        Retrieves all FRC districts during a year.
+
+        Parameters:
+            year:
+                An integer representing the year to retrieve its FRC districts from.
+
+        Returns:
+            A list of District objects with each object representing an active district of that year.
+        """
+
+    @synchronous
     async def event(self, event_key: str, simple: typing.Optional[bool] = False) -> Event:
         """
         Retrieves and returns a record of teams based on the parameters given.
