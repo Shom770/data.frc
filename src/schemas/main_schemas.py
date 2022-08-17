@@ -104,6 +104,11 @@ class District(BaseSchema):
         Returns:
             A list of Ranking objects with each Ranking object representing a team's district ranking for the given district.
         """
+        async with InternalData.session.get(
+            url=construct_url("district", key=self.key, endpoint="rankings"),
+            headers=self._headers
+        ) as response:
+            return [self.Ranking(**team_ranking_data) for team_ranking_data in await response.json()]
 
 
 class Event(BaseSchema):
