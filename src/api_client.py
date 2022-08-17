@@ -123,6 +123,11 @@ class ApiClient:
         Returns:
             A list of District objects with each object representing an active district of that year.
         """
+        async with InternalData.session.get(
+            url=construct_url("districts", year=year),
+            headers=self._headers
+        ) as response:
+            return [District(**district_data) for district_data in await response.json()]
 
     @synchronous
     async def event(self, event_key: str, simple: typing.Optional[bool] = False) -> Event:

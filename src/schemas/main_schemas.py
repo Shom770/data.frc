@@ -32,6 +32,25 @@ class District(BaseSchema):
 
         super().__init__()
 
+    @synchronous
+    async def events(
+            self,
+            simple: bool = False,
+            keys: bool = False,
+    ) -> list[typing.Union[str, "Event"]]:
+        """
+        Retrieves a list of events in the given district.
+
+        Parameters:
+            simple:
+                A boolean that specifies whether the results for each event should be 'shortened' and only contain more relevant information.
+            keys:
+                A boolean that specifies whether only the keys of the events in a given district should be retrieved.
+
+        Returns:
+            A list of strings with each string representing an event's key for all the events in the given district or a list of Event objects with each object representing an event in the given district.
+        """
+
 
 class Event(BaseSchema):
     """Class representing an event containing methods to get specific event information."""
