@@ -33,6 +33,14 @@ class District(BaseSchema):
         rookie_bonus: int
         point_total: int
         event_points: list[dict]
+        other_bonus: typing.Optional[int] = None
+
+        def __repr__(self):
+            return (
+                f"District.Ranking("
+                f"{self.team_key=}, {self.rank=}, {self.rookie_bonus=}, {self.other_bonus=}, "
+                f"{self.point_total=}, {self.event_points=})"
+            ).replace("self.", "")
 
     def __init__(self, **kwargs):
         self.abbreviation: typing.Optional[str] = kwargs.get("abbreviation")
