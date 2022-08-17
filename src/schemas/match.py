@@ -28,18 +28,21 @@ class Match(BaseSchema):
 
         key: str
         times: list[float]
-        alliance: "Team"
+        alliances: "Team"
 
         @dataclass()
         class Team:
             """Class representing a team's specific Zebra MotionWorks data during a match."""
 
-            team_keys: str
+            team_key: str
             xs: list
             ys: list
 
         def __post_init__(self):
-            self.alliance = self.Team(**self.alliance)
+            self.alliances = {
+                "red": [self.Team(**team) for team in self.alliances["red"]],
+                "blue": [self.Team(**team) for team in self.alliances["blue"]]
+            }
 
     def __init__(self, **kwargs):
         self.key: str = kwargs["key"]

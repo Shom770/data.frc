@@ -189,6 +189,26 @@ class ApiClient:
         Returns:
             A Match object containing information about the match or a Match.ZebraMotionworks object representing data about where teams' robots went during the match (may not have any data for all teams or even data altogether) or a list of dictionaries containing timeseries data for a match.
         """
+        if (simple, timeseries, zebra_motionworks).count(True) > 1:
+            raise ValueError(
+                "Only one parameter out of `simple`, `keys`, and `statuses` can be True. You can't mix and match parameters.")
+
+        async with InternalData.session.get(
+                url=construct_url(
+                    "match", key=match_key,
+                    simple=simple, timeseries=timeseries, zebra_motionworks=zebra_motionworks
+                ),
+                headers=self._headers
+        ) as response:
+            if timeseries:
+                return await response.json()
+            elif zebra_motionworks:
+                zebra_data = await response.json()
+
+                if zebra_data:
+                    return Match.ZebraMotionworks(**await response.json())
+            else:
+                return Match(**await response.json())
 
     @synchronous
     async def team(
