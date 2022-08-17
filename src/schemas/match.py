@@ -22,6 +22,25 @@ class Match(BaseSchema):
         surrogate_team_keys: list[str]
         dq_team_keys: list[str]
 
+    @dataclass()
+    class ZebraMotionworks:
+        """Class representing Zebra MotionWorks data for a team during a match."""
+
+        key: str
+        times: list[float]
+        alliance: "Team"
+
+        @dataclass()
+        class Team:
+            """Class representing a team's specific Zebra MotionWorks data during a match."""
+
+            team_keys: str
+            xs: list
+            ys: list
+
+        def __post_init__(self):
+            self.alliance = self.Team(**self.alliance)
+
     def __init__(self, **kwargs):
         self.key: str = kwargs["key"]
 
