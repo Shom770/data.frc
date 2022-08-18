@@ -3,6 +3,8 @@ import typing
 
 import aiohttp
 
+from .exceptions import TBAError
+
 
 class InternalData:
     """Contains internal attributes such as the event loop and the client session."""
@@ -28,6 +30,6 @@ class InternalData:
             response_json = await response.json()
 
             if isinstance(response_json, dict) and response_json.get("Error"):
-                raise Exception(response_json["Error"])
+                raise TBAError(response_json["Error"])
             else:
                 return response_json
