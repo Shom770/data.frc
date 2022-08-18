@@ -1,9 +1,4 @@
-import functools
-import typing
-
-from .internal_data import InternalData
-
-__all__ = ["construct_url", "synchronous"]
+__all__ = ["construct_url"]
 
 
 def construct_url(base_endpoint, **kwargs) -> str:
@@ -27,24 +22,3 @@ def construct_url(base_endpoint, **kwargs) -> str:
                 ])
             )
     )
-
-
-def synchronous(coro: typing.Coroutine) -> typing.Callable:
-    """
-    Decorator that wraps an asynchronous function around a synchronous function.
-    Users can call the function synchronously although its internal behavior is asynchronous for efficiency.
-
-    Parameters:
-        coro: A coroutine that is passed into the decorator.
-
-    Returns:
-        A synchronous function with its internal behavior being asynchronous.
-    """
-
-    @functools.wraps(coro)
-    def wrapper(self, *args, **kwargs) -> typing.Any:
-        return InternalData.loop.run_until_complete(coro(self, *args, **kwargs))
-
-    wrapper.coro = coro
-
-    return wrapper

@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import functools
 import itertools
 import typing
 from dataclasses import dataclass
@@ -49,6 +50,27 @@ class District(BaseSchema):
         self.year: typing.Optional[int] = kwargs.get("year")
 
         super().__init__()
+
+    # Defining across multiple files/classes for autocomplete to work
+    def synchronous(coro: typing.Coroutine) -> typing.Callable:
+        """
+        Decorator that wraps an asynchronous function around a synchronous function.
+        Users can call the function synchronously although its internal behavior is asynchronous for efficiency.
+
+        Parameters:
+            coro: A coroutine that is passed into the decorator.
+
+        Returns:
+            A synchronous function with its internal behavior being asynchronous.
+        """
+
+        @functools.wraps(coro)
+        def wrapper(self, *args, **kwargs) -> typing.Any:
+            return InternalData.loop.run_until_complete(coro(self, *args, **kwargs))
+
+        wrapper.coro = coro
+
+        return wrapper
 
     @synchronous
     async def events(
@@ -330,6 +352,27 @@ class Event(BaseSchema):
 
         super().__init__()
 
+    # Defining across multiple files/classes for autocomplete to work
+    def synchronous(coro: typing.Coroutine) -> typing.Callable:
+        """
+        Decorator that wraps an asynchronous function around a synchronous function.
+        Users can call the function synchronously although its internal behavior is asynchronous for efficiency.
+
+        Parameters:
+            coro: A coroutine that is passed into the decorator.
+
+        Returns:
+            A synchronous function with its internal behavior being asynchronous.
+        """
+
+        @functools.wraps(coro)
+        def wrapper(self, *args, **kwargs) -> typing.Any:
+            return InternalData.loop.run_until_complete(coro(self, *args, **kwargs))
+
+        wrapper.coro = coro
+
+        return wrapper
+
     @synchronous
     async def alliances(self) -> list[Alliance]:
         """
@@ -557,6 +600,27 @@ class Team(BaseSchema):
         self.home_championship: typing.Optional[dict] = kwargs.get("home_championship")
 
         super().__init__()
+
+    # Defining across multiple files/classes for autocomplete to work
+    def synchronous(coro: typing.Coroutine) -> typing.Callable:
+        """
+        Decorator that wraps an asynchronous function around a synchronous function.
+        Users can call the function synchronously although its internal behavior is asynchronous for efficiency.
+
+        Parameters:
+            coro: A coroutine that is passed into the decorator.
+
+        Returns:
+            A synchronous function with its internal behavior being asynchronous.
+        """
+
+        @functools.wraps(coro)
+        def wrapper(self, *args, **kwargs) -> typing.Any:
+            return InternalData.loop.run_until_complete(coro(self, *args, **kwargs))
+
+        wrapper.coro = coro
+
+        return wrapper
 
     async def _get_year_matches(self, year: int, simple: bool, keys: bool) -> list[Match]:
         """

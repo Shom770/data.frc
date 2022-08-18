@@ -1,4 +1,5 @@
 import asyncio
+import functools
 import itertools
 import os
 import typing
@@ -6,8 +7,8 @@ from types import TracebackType
 
 from dotenv import load_dotenv
 
-from utils import *
-from schemas import *
+from .utils import *
+from .schemas import *
 
 
 load_dotenv()
@@ -38,6 +39,27 @@ class ApiClient:
         exc_tb: typing.Optional[TracebackType],
     ) -> None:
         InternalData.loop.run_until_complete(InternalData.session.close())
+
+    # Defining across multiple files for autocomplete to work
+    def synchronous(coro: typing.Coroutine) -> typing.Callable:
+        """
+        Decorator that wraps an asynchronous function around a synchronous function.
+        Users can call the function synchronously although its internal behavior is asynchronous for efficiency.
+
+        Parameters:
+            coro: A coroutine that is passed into the decorator.
+
+        Returns:
+            A synchronous function with its internal behavior being asynchronous.
+        """
+
+        @functools.wraps(coro)
+        def wrapper(self, *args, **kwargs) -> typing.Any:
+            return InternalData.loop.run_until_complete(coro(self, *args, **kwargs))
+
+        wrapper.coro = coro
+
+        return wrapper
 
     @synchronous
     async def close(self):

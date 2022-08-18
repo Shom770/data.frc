@@ -15,7 +15,7 @@ class BaseSchema:
             elif isinstance(attr_value, list):
                 attributes_formatted += f"{attr_name}=[{'...' if attr_value else ''}], "
             elif attr_value and type(attr_value).__name__[0].isupper():
-                attributes_formatted += f"{attr_name}={type(attr_value).__name__}(...)"
+                attributes_formatted += f"{attr_name}={type(attr_value).__name__}(...), "
             else:
                 attributes_formatted += f"{attr_name}={attr_value!r}, "
 
