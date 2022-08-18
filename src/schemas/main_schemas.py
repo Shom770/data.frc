@@ -599,9 +599,24 @@ class Event(BaseSchema):
 class Team(BaseSchema):
     """Class representing a team's metadata with methods to get team specific data."""
 
-    def __init__(self, **kwargs):
-        self.key: str = kwargs["key"]
-        self.team_number: typing.Optional[int] = kwargs.get("team_number")
+    def __init__(self, *args, **kwargs):
+        if len(args) == 2:
+            if isinstance(args[0], int) and isinstance(args[1], str):
+                self.key = f"{args[1]}{args[0]}"
+                self.team_number = args[0]
+            elif isinstance(args[0], str) and isinstance(args[1], int):
+                self.key = f"{args[0]}{args[1]}"
+                self.team_number = args[1]
+        elif len(args) == 1:
+            if isinstance(args[0], int):
+                self.key = f"frc{args[0]}"
+            else:
+                self.key, = args
+            self.team_number: int = int(self.key[3:])
+        else:
+            self.key: str = kwargs["key"]
+            self.team_number: int = kwargs.get("team_number") or int(self.key[3:])
+
         self.nickname: typing.Optional[str] = kwargs.get("nickname")
         self.name: typing.Optional[int] = kwargs.get("name")
         self.school_name: typing.Optional[str] = kwargs.get("school_name")
