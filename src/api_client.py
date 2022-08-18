@@ -251,6 +251,17 @@ class ApiClient:
             return Match(**response)
 
     @synchronous
+    async def status(self) -> APIStatus:
+        """
+        Retrieves information about TBA's API status.
+
+        Returns:
+            An APIStatus object containing information about TBA's API status.
+        """
+        response = await InternalData.get(url=construct_url("status").rstrip("/"), headers=self._headers)
+        return APIStatus(**response)
+
+    @synchronous
     async def team(
             self,
             team_key: str,
