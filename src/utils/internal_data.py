@@ -13,7 +13,7 @@ class InternalData:
     session = aiohttp.ClientSession()
 
     @synchronous
-    async def _get(self, *, url: str, headers: dict) -> typing.Union[list, dict]
+    async def _get(self, *, url: str, headers: dict) -> typing.Union[list, dict]:
         """
         Sends a GET request to the TBA API.
 
