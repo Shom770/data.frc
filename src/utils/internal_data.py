@@ -3,8 +3,6 @@ import typing
 
 import aiohttp
 
-from .functions import synchronous
-
 
 class InternalData:
     """Contains internal attributes such as the event loop and the client session."""
@@ -12,8 +10,8 @@ class InternalData:
     loop = asyncio.get_event_loop()
     session = aiohttp.ClientSession()
 
-    @synchronous
-    async def _get(self, *, url: str, headers: dict) -> typing.Union[list, dict]:
+    @classmethod
+    async def get(cls, *, url: str, headers: dict) -> typing.Union[list, dict]:
         """
         Sends a GET request to the TBA API.
 
@@ -26,10 +24,10 @@ class InternalData:
         Returns:
             An aiohttp.ClientResponse object representing the response the GET request returned.
         """
-        async with self.session.get(url=url, headers=headers) as response:
+        async with cls.session.get(url=url, headers=headers) as response:
             response_json = await response.json()
 
-            if response_json.get("Error"):
+            if isinstance(response_json, dict) and response_json.get("Error"):
                 raise Exception(response_json["Error"])
             else:
                 return response_json

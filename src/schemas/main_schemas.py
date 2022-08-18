@@ -68,14 +68,14 @@ class District(BaseSchema):
         Returns:
             A list of strings with each string representing an event's key for all the events in the given district or a list of Event objects with each object representing an event in the given district.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
             url=construct_url("district", key=self.key, endpoint="events", simple=simple, keys=keys),
             headers=self._headers
-        ) as response:
-            if keys:
-                return await response.json()
-            else:
-                return [Event(**event_data) for event_data in await response.json()]
+        ) 
+        if keys:
+            return response
+        else:
+            return [Event(**event_data) for event_data in response]
 
     @synchronous
     async def teams(
@@ -95,14 +95,14 @@ class District(BaseSchema):
         Returns:
             A list of strings with each string representing a team's key for all the teams in the given district or a list of Team objects with each object representing a team in the given district.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
             url=construct_url("district", key=self.key, endpoint="teams", simple=simple, keys=keys),
             headers=self._headers
-        ) as response:
-            if keys:
-                return await response.json()
-            else:
-                return [Team(**event_data) for event_data in await response.json()]
+        )
+        if keys:
+            return response
+        else:
+            return [Team(**event_data) for event_data in response]
 
     @synchronous
     async def rankings(self) -> list[Ranking]:
@@ -112,11 +112,11 @@ class District(BaseSchema):
         Returns:
             A list of Ranking objects with each Ranking object representing a team's district ranking for the given district.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
             url=construct_url("district", key=self.key, endpoint="rankings"),
             headers=self._headers
-        ) as response:
-            return [self.Ranking(**team_ranking_data) for team_ranking_data in await response.json()]
+        ) 
+        return [self.Ranking(**team_ranking_data) for team_ranking_data in response]
 
 
 class Event(BaseSchema):
@@ -338,11 +338,11 @@ class Event(BaseSchema):
         Returns:
             A list of Alliance objects representing each alliance in the event.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url("event", key=self.key, endpoint="alliances"),
                 headers=self._headers
-        ) as response:
-            return [self.Alliance(**alliance_info) for alliance_info in await response.json()]
+        ) 
+        return [self.Alliance(**alliance_info) for alliance_info in response]
 
     @synchronous
     async def awards(self) -> list[Award]:
@@ -352,11 +352,11 @@ class Event(BaseSchema):
         Returns:
             A list of Award objects representing each award distributed in an event.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
             url=construct_url("event", key=self.key, endpoint="awards"),
             headers=self._headers
-        ) as response:
-            return [Award(**award_info) for award_info in await response.json()]
+        ) 
+        return [Award(**award_info) for award_info in response]
 
     @synchronous
     async def district_points(self) -> typing.Optional[DistrictPoints]:
@@ -366,14 +366,14 @@ class Event(BaseSchema):
         Returns:
             A DistrictPoints object containing "points" and "tiebreakers" fields, with each field possessing a dictionary mapping team keys to their points or None if the event doesn't take place in a district or district points are not applicable to the event.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url("event", key=self.key, endpoint="district_points"),
                 headers=self._headers
-        ) as response:
-            event_district_points = await response.json()
+        ) 
+        event_district_points = response
 
-            if event_district_points:
-                return self.DistrictPoints(**event_district_points)
+        if event_district_points:
+            return self.DistrictPoints(**event_district_points)
 
     @synchronous
     async def insights(self) -> typing.Optional[Insights]:
@@ -384,14 +384,14 @@ class Event(BaseSchema):
         Returns:
             An Insight object containing qualification and playoff insights from the event. Can be None if the event hasn't occurred yet, and the fields of Insight may be None depending on how far the event has advanced.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url("event", key=self.key, endpoint="insights"),
                 headers=self._headers
-        ) as response:
-            insights = await response.json()
+        ) 
+        insights = response
 
-            if insights:
-                return self.Insights(**insights)
+        if insights:
+            return self.Insights(**insights)
 
     @synchronous
     async def matches(
@@ -420,17 +420,17 @@ class Event(BaseSchema):
             raise ValueError(
                 "Only one parameter out of `simple`, `keys`, and `statuses` can be True. You can't mix and match parameters.")
 
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url(
                     "event", key=self.key,
                     endpoint="matches", simple=simple, keys=keys, timeseries=timeseries
                 ),
                 headers=self._headers
-        ) as response:
-            if keys or timeseries:
-                return await response.json()
-            else:
-                return [Match(**match_data) for match_data in await response.json()]
+        ) 
+        if keys or timeseries:
+            return response
+        else:
+            return [Match(**match_data) for match_data in response]
 
     @synchronous
     async def oprs(self) -> OPRs:
@@ -441,16 +441,16 @@ class Event(BaseSchema):
         Returns:
             An OPRs object containing a key/value pair for the OPRs, DPRs, and CCWMs of all teams at an event. The fields of `OPRs` may be empty if OPRs, DPRs, and CCWMs weren't calculated.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
             url=construct_url("event", key=self.key, endpoint="oprs"),
             headers=self._headers
-        ) as response:
-            metric_data = await response.json()
+        ) 
+        metric_data = response
 
-            if metric_data:
-                return self.OPRs(**await response.json())
-            else:
-                return self.OPRs(oprs={}, dprs={}, ccwms={})
+        if metric_data:
+            return self.OPRs(**response)
+        else:
+            return self.OPRs(oprs={}, dprs={}, ccwms={})
 
     @synchronous
     async def predictions(self) -> dict:
@@ -460,11 +460,11 @@ class Event(BaseSchema):
         Returns:
             A dictionary containing the predictions of an event from TBA (contains year-specific information). May be an empty dictionary if there are no predictions available for that event.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
             url=construct_url("event", key=self.key, endpoint="predictions"),
             headers=self._headers
-        ) as response:
-            return await response.json()
+        ) 
+        return response
 
     @synchronous
     async def rankings(self) -> dict[str, Ranking]:
@@ -474,26 +474,26 @@ class Event(BaseSchema):
         Returns:
             A dictionary with team keys as the keys of the dictionary and Ranking objects for that team's information about their ranking at an event as values of the dictionary.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url("event", key=self.key, endpoint="rankings"),
                 headers=self._headers
-        ) as response:
-            rankings_info = await response.json()
-            rankings_dict = {}
+        ) 
+        rankings_info = response
+        rankings_dict = {}
 
-            for rank_info in rankings_info["rankings"]:
-                rank_info["extra_stats"] = self.ExtraStats(
-                    rank_info["extra_stats"],
-                    rankings_info["extra_stats_info"]
-                )
-                rank_info["sort_orders"] = self.SortOrders(
-                    rank_info["sort_orders"],
-                    rankings_info["sort_order_info"]
-                )
+        for rank_info in rankings_info["rankings"]:
+            rank_info["extra_stats"] = self.ExtraStats(
+                rank_info["extra_stats"],
+                rankings_info["extra_stats_info"]
+            )
+            rank_info["sort_orders"] = self.SortOrders(
+                rank_info["sort_orders"],
+                rankings_info["sort_order_info"]
+            )
 
-                rankings_dict[rank_info["team_key"]] = self.Ranking(**rank_info)
+            rankings_dict[rank_info["team_key"]] = self.Ranking(**rank_info)
 
-            return rankings_dict
+        return rankings_dict
 
     @synchronous
     async def teams(
@@ -519,19 +519,19 @@ class Event(BaseSchema):
         if (simple, keys, statuses).count(True) > 1:
             raise ValueError("Only one parameter out of `simple`, `keys`, and `statuses` can be True. You can't mix and match parameters.")
 
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url("event", key=self.key, endpoint="teams", simple=simple, keys=keys, statuses=statuses),
                 headers=self._headers
-        ) as response:
-            if keys:
-                return await response.json()
-            elif statuses:
-                return {
-                    team_key: EventTeamStatus(team_key, team_status_info)
-                    for team_key, team_status_info in (await response.json()).items() if team_status_info
-                }
-            else:
-                return [Team(**team_data) for team_data in await response.json()]
+        ) 
+        if keys:
+            return response
+        elif statuses:
+            return {
+                team_key: EventTeamStatus(team_key, team_status_info)
+                for team_key, team_status_info in response.items() if team_status_info
+            }
+        else:
+            return [Team(**team_data) for team_data in response]
 
 
 class Team(BaseSchema):
@@ -573,14 +573,14 @@ class Team(BaseSchema):
         Returns:
             A list of Match objects representing each match a team played based on the conditions; might be empty if team didn't play matches that year.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url("team", key=self.key, endpoint="matches", year=year, simple=simple, keys=keys),
                 headers=self._headers
-        ) as response:
-            if keys:
-                return await response.json()
-            else:
-                return [Match(**match_data) for match_data in await response.json()]
+        ) 
+        if keys:
+            return response
+        else:
+            return [Match(**match_data) for match_data in response]
 
     async def _get_year_media(self, year: int, media_tag: typing.Optional[str] = None) -> list[Media]:
         """
@@ -604,8 +604,8 @@ class Team(BaseSchema):
         else:
             url = construct_url("team", key=self.key, endpoint="media", year=year)
 
-        async with InternalData.session.get(url=url, headers=self._headers) as response:
-            return [Media(**media_data) for media_data in await response.json()]
+        response = await InternalData.get(url=url, headers=self._headers) 
+        return [Media(**media_data) for media_data in response]
 
     @synchronous
     async def awards(self, year: typing.Optional[typing.Union[range, int]] = None) -> list[Award]:
@@ -619,15 +619,15 @@ class Team(BaseSchema):
         Returns:
             A list of Award objects representing each award a team has got based on the parameters; may be empty if the team has gotten no awards.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url("team", key=self.key, endpoint="awards",
                                   year=year if isinstance(year, int) else False),
                 headers=self._headers
-        ) as response:
-            if isinstance(year, range):
-                return [Award(**award_data) for award_data in await response.json() if award_data["year"] in year]
-            else:
-                return [Award(**award_data) for award_data in await response.json()]
+        ) 
+        if isinstance(year, range):
+            return [Award(**award_data) for award_data in response if award_data["year"] in year]
+        else:
+            return [Award(**award_data) for award_data in response]
 
     @synchronous
     async def years_participated(self) -> list[int]:
@@ -637,11 +637,11 @@ class Team(BaseSchema):
         Returns:
             A list of integers representing every year this team has participated in.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url("team", key=self.key, endpoint="years_participated"),
                 headers=self._headers
-        ) as response:
-            return await response.json()
+        ) 
+        return response
 
     @synchronous
     async def districts(self) -> list[District]:
@@ -653,11 +653,11 @@ class Team(BaseSchema):
         Returns:
             A list of districts representing each year this team was in said district if a team has participated in a district, otherwise returns an empty list.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url("team", key=self.key, endpoint="districts"),
                 headers=self._headers
-        ) as response:
-            return [District(**district_data) for district_data in await response.json()]
+        ) 
+        return [District(**district_data) for district_data in response]
 
     @synchronous
     async def matches(
@@ -721,11 +721,11 @@ class Team(BaseSchema):
         Returns:
             A list of districts representing each year this team was in said district if a team has named a robot, otherwise returns an empty list.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url("team", key=self.key, endpoint="robots"),
                 headers=self._headers
-        ) as response:
-            return [Robot(**robot_data) for robot_data in await response.json()]
+        ) 
+        return [Robot(**robot_data) for robot_data in response]
 
     @synchronous
     async def events(
@@ -761,21 +761,21 @@ class Team(BaseSchema):
         elif statuses and not year:
             raise ValueError("statuses cannot be True if a year isn't passed into Team.events")
 
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url(
                     "team", key=self.key, endpoint="events", year=year, simple=simple, keys=keys, statuses=statuses
                 ),
                 headers=self._headers
-        ) as response:
-            if keys:
-                return await response.json()
-            elif not statuses:
-                return [Event(**event_data) for event_data in await response.json()]
-            else:
-                return {
-                    event_key: EventTeamStatus(event_key, team_status_info)
-                    for event_key, team_status_info in (await response.json()).items() if team_status_info
-                }
+        ) 
+        if keys:
+            return response
+        elif not statuses:
+            return [Event(**event_data) for event_data in response]
+        else:
+            return {
+                event_key: EventTeamStatus(event_key, team_status_info)
+                for event_key, team_status_info in response.items() if team_status_info
+            }
 
     @synchronous
     async def event(
@@ -824,7 +824,7 @@ class Team(BaseSchema):
                 "if statuses is True then simple, keys, and matches must be False."
             )
 
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url(
                     "team",
                     key=self.key,
@@ -837,15 +837,15 @@ class Team(BaseSchema):
                     keys=keys,
                 ),
                 headers=self._headers
-        ) as response:
-            if matches and keys:
-                return await response.json()
-            elif matches:
-                return [Match(**match_data) for match_data in await response.json()]
-            elif awards:
-                return [Award(**award_data) for award_data in await response.json()]
-            else:
-                return EventTeamStatus(event_key, await response.json())
+        ) 
+        if matches and keys:
+            return response
+        elif matches:
+            return [Match(**match_data) for match_data in response]
+        elif awards:
+            return [Award(**award_data) for award_data in response]
+        else:
+            return EventTeamStatus(event_key, response)
 
     @synchronous
     async def social_media(self) -> list[Media]:
@@ -855,11 +855,11 @@ class Team(BaseSchema):
         Returns:
             A list of Media objects representing each social media account of a team. May be empty if a team has no social media accounts.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url("team", key=self.key, endpoint="social_media"),
                 headers=self._headers
-        ) as response:
-            return [Media(**social_media_info) for social_media_info in await response.json()]
+        ) 
+        return [Media(**social_media_info) for social_media_info in response]
 
     def __eq__(self, other) -> bool:
         return self.team_number == other.team_number

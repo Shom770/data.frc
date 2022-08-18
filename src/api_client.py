@@ -67,14 +67,14 @@ class ApiClient:
         Returns:
             A list of Event objects representing each event in a year or a list of strings representing all the keys of the events retrieved.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url("events", year=year, simple=simple, keys=keys),
                 headers=self._headers
-        ) as response:
-            if keys:
-                return await response.json()
-            else:
-                return [Event(**event_data) for event_data in await response.json()]
+        ) 
+        if keys:
+            return response
+        else:
+            return [Event(**event_data) for event_data in response]
 
     async def _get_team_page(
         self,
@@ -102,14 +102,14 @@ class ApiClient:
         Returns:
             A list of Team objects for each team in the list.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys),
                 headers=self._headers
-        ) as response:
-            return [
-                Team(**team_data) if not isinstance(team_data, str) else team_data
-                for team_data in await response.json()
-            ]
+        ) 
+        return [
+            Team(**team_data) if not isinstance(team_data, str) else team_data
+            for team_data in response
+        ]
 
     @synchronous
     async def districts(self, year: int) -> list[District]:
@@ -123,11 +123,11 @@ class ApiClient:
         Returns:
             A list of District objects with each object representing an active district of that year.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
             url=construct_url("districts", year=year),
             headers=self._headers
-        ) as response:
-            return [District(**district_data) for district_data in await response.json()]
+        ) 
+        return [District(**district_data) for district_data in response]
 
     @synchronous
     async def event(self, event_key: str, simple: typing.Optional[bool] = False) -> Event:
@@ -143,11 +143,11 @@ class ApiClient:
         Returns:
             A Team object representing the data given.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
             url=construct_url("event", key=event_key, simple=simple),
             headers=self._headers
-        ) as response:
-            return Event(**await response.json())
+        ) 
+        return Event(**response)
 
     @synchronous
     async def events(
@@ -211,22 +211,22 @@ class ApiClient:
             raise ValueError(
                 "Only one parameter out of `simple`, `keys`, and `statuses` can be True. You can't mix and match parameters.")
 
-        async with InternalData.session.get(
+        response = await InternalData.get(
                 url=construct_url(
                     "match", key=match_key,
                     simple=simple, timeseries=timeseries, zebra_motionworks=zebra_motionworks
                 ),
                 headers=self._headers
-        ) as response:
-            if timeseries:
-                return await response.json()
-            elif zebra_motionworks:
-                zebra_data = await response.json()
+        ) 
+        if timeseries:
+            return response
+        elif zebra_motionworks:
+            zebra_data = response
 
-                if zebra_data:
-                    return Match.ZebraMotionworks(**await response.json())
-            else:
-                return Match(**await response.json())
+            if zebra_data:
+                return Match.ZebraMotionworks(**response)
+        else:
+            return Match(**response)
 
     @synchronous
     async def team(
@@ -246,11 +246,11 @@ class ApiClient:
         Returns:
             A Team object representing the data given.
         """
-        async with InternalData.session.get(
+        response = await InternalData.get(
             url=construct_url("team", key=team_key, simple=simple),
             headers=self._headers
-        ) as response:
-            return Team(**await response.json())
+        ) 
+        return Team(**response)
 
     @synchronous
     async def teams(
