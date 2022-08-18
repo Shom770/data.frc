@@ -53,6 +53,10 @@ class District(BaseSchema):
                 self.abbreviation = args[0]
                 self.year = args[1]
                 self.key = f"{self.year}{self.abbreviation}"
+        elif len(args) == 1:
+            self.key, = args
+            self.abbreviation: typing.Optional[str] = kwargs.get("abbreviation")
+            self.year: typing.Optional[int] = kwargs.get("year")
         else:
             self.key: str = kwargs["key"]
             self.abbreviation: typing.Optional[str] = kwargs.get("abbreviation")
