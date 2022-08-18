@@ -43,11 +43,22 @@ class District(BaseSchema):
                 f"{self.point_total=}, {self.event_points=})"
             ).replace("self.", "")
 
-    def __init__(self, **kwargs):
-        self.abbreviation: typing.Optional[str] = kwargs.get("abbreviation")
+    def __init__(self, *args, **kwargs):
+        if len(args) == 2:
+            if isinstance(args[0], int) and isinstance(args[1], str):
+                self.abbreviation = args[1]
+                self.year = args[0]
+                self.key = f"{self.year}{self.abbreviation}"
+            elif isinstance(args[0], str) and isinstance(args[1], int):
+                self.abbreviation = args[0]
+                self.year = args[1]
+                self.key = f"{self.year}{self.abbreviation}"
+        else:
+            self.key: str = kwargs["key"]
+            self.abbreviation: typing.Optional[str] = kwargs.get("abbreviation")
+            self.year: typing.Optional[int] = kwargs.get("year")
+
         self.display_name: typing.Optional[str] = kwargs.get("display_name")
-        self.key: str = kwargs["key"]
-        self.year: typing.Optional[int] = kwargs.get("year")
 
         super().__init__()
 
