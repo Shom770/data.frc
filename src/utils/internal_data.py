@@ -1,4 +1,5 @@
 import asyncio
+import typing
 
 import aiohttp
 
@@ -12,7 +13,7 @@ class InternalData:
     session = aiohttp.ClientSession()
 
     @synchronous
-    async def get(self, *, url: str, headers: dict) -> aiohttp.ClientResponse:
+    async def _get(self, *, url: str, headers: dict) -> typing.Union[list, dict]
         """
         Sends a GET request to the TBA API.
 
@@ -25,4 +26,10 @@ class InternalData:
         Returns:
             An aiohttp.ClientResponse object representing the response the GET request returned.
         """
-        response = self.session.get(url=url, headers=headers)
+        async with self.session.get(url=url, headers=headers) as response:
+            response_json = await response.json()
+
+            if response_json.get("Error"):
+                raise Exception(response_json["Error"])
+            else:
+                return response_json
