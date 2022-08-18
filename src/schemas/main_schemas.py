@@ -311,8 +311,12 @@ class Event(BaseSchema):
             if self.date:
                 self.date: datetime.datetime = datetime.datetime.strptime(self.date, PARSING_FORMAT)
 
-    def __init__(self, **kwargs):
-        self.key: str = kwargs["key"]
+    def __init__(self, *args, **kwargs):
+        if len(args) == 1:
+            self.key, = args
+        else:
+            self.key: str = kwargs["key"]
+
         self.name: typing.Optional[str] = kwargs.get("name")
         self.event_code: typing.Optional[str] = kwargs.get("event_code")
         self.event_type: typing.Optional[int] = kwargs.get("event_type")
