@@ -56,3 +56,11 @@ def test_events_range():
     with ApiClient() as api_client:
         all_events = api_client.events(year=range(2020, 2023))
         assert isinstance(all_events, list) and all(isinstance(event, Event) for event in all_events)
+
+
+def test_events_simple():
+    with ApiClient() as api_client:
+        all_events = api_client.events(year=2022)
+        all_events_simple = api_client.events(year=2022, simple=True)
+        assert all_events != all_events_simple
+
