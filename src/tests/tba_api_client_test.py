@@ -64,3 +64,8 @@ def test_events_simple():
         all_events_simple = api_client.events(year=2022, simple=True)
         assert all_events != all_events_simple
 
+
+def test_events_keys():
+    with ApiClient() as api_client:
+        all_event_keys = api_client.events(year=2022, keys=True)
+        assert isinstance(all_event_keys, list) and all(isinstance(event_key, str) for event_key in all_event_keys)
