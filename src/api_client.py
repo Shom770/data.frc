@@ -5,6 +5,7 @@ import os
 import typing
 from types import TracebackType
 
+import aiohttp
 from dotenv import load_dotenv
 
 from .utils import *
@@ -38,7 +39,7 @@ class ApiClient:
         exc_val: typing.Optional[BaseException],
         exc_tb: typing.Optional[TracebackType],
     ) -> None:
-        InternalData.loop.run_until_complete(InternalData.session.close())
+        InternalData.loop.run_until_complete(self.close())
 
     # Defining across multiple files for autocomplete to work
     def synchronous(coro: typing.Coroutine) -> typing.Callable:
@@ -61,13 +62,10 @@ class ApiClient:
 
         return wrapper
 
-    @synchronous
-    async def close(self):
-        """
-        Closes the ongoing session (`aiohttp.ClientSession`).
-        Do note that this function should only be used if `persistent_session` was True when initializing this instance.
-        """
+    async def close(self) -> None:
+        """Closes the ongoing session (`aiohttp.ClientSession`)."""
         await InternalData.session.close()
+        InternalData.session = aiohttp.ClientSession()
 
     async def _get_year_events(
             self,

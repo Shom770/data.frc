@@ -1,10 +1,16 @@
 from hypothesis import given, strategies
 
-
-def inc(x):
-    return x + 1 if x != 2 else x + 2
+from ..api_client import ApiClient
 
 
-@given(strategies.integers())
-def test_add(x):
-    assert inc(x) == x + 1
+def test_team():
+    with ApiClient() as api_client:
+        team4099 = api_client.team("frc4099")
+        assert team4099.team_number == 4099 and team4099.nickname == "The Falcons"
+
+
+def test_team_simple():
+    with ApiClient() as api_client:
+        team4099 = api_client.team("frc4099")
+        team4099_simple = api_client.team("frc4099", simple=True)
+        assert team4099 != team4099_simple

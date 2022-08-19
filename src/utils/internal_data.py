@@ -10,7 +10,7 @@ class InternalData:
     """Contains internal attributes such as the event loop and the client session."""
 
     loop = asyncio.get_event_loop()
-    session = aiohttp.ClientSession()
+    session = None
 
     @classmethod
     async def get(cls, *, url: str, headers: dict) -> typing.Union[list, dict]:
@@ -26,6 +26,9 @@ class InternalData:
         Returns:
             An aiohttp.ClientResponse object representing the response the GET request returned.
         """
+        if cls.session is None:
+            cls.session = aiohttp.ClientSession()
+
         async with cls.session.get(url=url, headers=headers) as response:
             response_json = await response.json()
 
