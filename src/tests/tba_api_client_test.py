@@ -6,7 +6,7 @@ from ..schemas import *
 from ..utils import *
 
 
-@given(strategies.integers(min_value=2005, max_value=2025))
+@given(strategies.integers(min_value=2013, max_value=2023))
 @settings(deadline=None)
 def test_districts(year: int):
     with ApiClient() as api_client:
