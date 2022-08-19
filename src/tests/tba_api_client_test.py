@@ -50,3 +50,9 @@ def test_event_not_existing():
     with pytest.raises(TBAError, match="is not a valid event key"):
         with ApiClient() as api_client:
             api_client.event(event_key="Event Doesn't Exist")
+
+
+def test_events_range():
+    with ApiClient() as api_client:
+        all_events = api_client.events(year=range(2020, 2023))
+        assert isinstance(all_events, list) and all(isinstance(event, Event) for event in all_events)
