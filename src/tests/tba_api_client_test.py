@@ -6,7 +6,7 @@ from ..schemas import *
 from ..utils import *
 
 
-@given(strategies.integers(min_value=1990, max_value=2022))
+@given(strategies.integers(min_value=2005, max_value=2025))
 @settings(deadline=None)
 def test_districts(year: int):
     with ApiClient() as api_client:
@@ -44,3 +44,9 @@ def test_event_simple():
         cmp2022 = api_client.event("2022cmptx")
         cmp2022_simple = api_client.event("2022cmptx", simple=True)
         assert cmp2022 != cmp2022_simple
+
+
+def test_event_not_existing():
+    with pytest.raises(TBAError, match="is not a valid event key"):
+        with ApiClient() as api_client:
+            api_client.event(event_key="Event Doesn't Exist")
