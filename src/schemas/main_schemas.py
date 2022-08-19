@@ -959,9 +959,6 @@ class Team(BaseSchema):
         ) 
         return [Media(**social_media_info) for social_media_info in response]
 
-    def __eq__(self, other) -> bool:
-        return self.team_number == other.team_number
-
     def __hash__(self) -> int:
         return self.team_number
 
