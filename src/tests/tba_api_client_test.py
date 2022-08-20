@@ -97,3 +97,19 @@ def test_events_extra_parameters():
     with pytest.raises(ValueError):
         with ApiClient() as api_client:
             api_client.events(year=2022, simple=True, keys=True)
+
+
+def test_match():
+    """Tests TBA's endpoint for retrieving information about a match."""
+    with ApiClient() as api_client:
+        einstein_final = api_client.match("2022cmptx_f1m1")
+        assert einstein_final.alliances["red"].score == 126 and einstein_final.alliances["blue"].score == 127
+
+
+def test_match_simple():
+    """Tests TBA's endpoint for retrieving shortened information about a match."""
+    with ApiClient() as api_client:
+        einstein_final = api_client.match("2022cmptx_f1m1")
+        einstein_final_simple = api_client.match("2022cmptx_f1m1", simple=True)
+        assert einstein_final != einstein_final_simple
+
