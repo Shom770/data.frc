@@ -40,14 +40,14 @@ def test_district_events_simple():
         assert chs_district.events() != chs_district.events(simple=True)
 
 
-def test_district_keys():
+def test_district_events_keys():
     """Tests TBA's endpoint to retrieve the keys of all the events that occurred in a district."""
     with ApiClient():
         chs_events = District(2022, "chs").events(keys=True)
         assert isinstance(chs_events, list) and all(isinstance(event_key, str) for event_key in chs_events)
 
 
-def test_district_extra_parameters():
+def test_district_events_extra_parameters():
     """Tests `District.events` to ensure that an error is raised when `simple` and `keys` are both True."""
     with pytest.raises(ValueError):
         with ApiClient():
@@ -68,11 +68,11 @@ def test_district_teams_simple():
         assert chs_district.teams() != chs_district.teams(simple=True)
 
 
-def test_district_keys():
-    """Tests TBA's endpoint to retrieve the keys of all the events that occurred in a district."""
+def test_district_teams_keys():
+    """Tests TBA's endpoint to retrieve the keys of all the teams that played in a district."""
     with ApiClient():
-        chs_events = District(2022, "chs").events(keys=True)
-        assert isinstance(chs_events, list) and all(isinstance(event_key, str) for event_key in chs_events)
+        chs_teams = District(2022, "chs").teams(keys=True)
+        assert isinstance(chs_teams, list) and all(isinstance(team_key, str) for team_key in chs_teams)
 
 
 def test_district_extra_parameters():
