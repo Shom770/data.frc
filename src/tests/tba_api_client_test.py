@@ -52,6 +52,12 @@ def test_event_not_existing():
             api_client.event(event_key="Event Doesn't Exist")
 
 
+def test_events():
+    with ApiClient() as api_client:
+        chs_cmp = api_client.events(year=2022)
+        assert isinstance(chs_cmp, list) and all(isinstance(event, Event) for event in chs_cmp)
+
+
 def test_events_range():
     with ApiClient() as api_client:
         all_events = api_client.events(year=range(2020, 2023))
