@@ -61,11 +61,11 @@ def test_district_teams():
         assert isinstance(chs_teams, list) and all(isinstance(team, Team) for team in chs_teams)
 
 
-def test_district_events_simple():
-    """Tests TBA's endpoint to retrieve shortened information about the events that occurred in a district."""
+def test_district_teams_simple():
+    """Tests TBA's endpoint to retrieve shortened information about the teams that played in a district."""
     with ApiClient():
         chs_district = District(2022, "chs")
-        assert chs_district.events() != chs_district.events(simple=True)
+        assert chs_district.teams() != chs_district.teams(simple=True)
 
 
 def test_district_keys():
