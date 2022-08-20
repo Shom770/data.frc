@@ -30,6 +30,7 @@ class ApiClient:
 
         self._headers = {"X-TBA-Auth-Key": api_key}
         BaseSchema.add_headers(self._headers)
+        InternalData.loop.run_until_complete(InternalData.set_session())
 
     def __enter__(self) -> "ApiClient":
         return self

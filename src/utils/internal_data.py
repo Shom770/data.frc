@@ -26,8 +26,6 @@ class InternalData:
         Returns:
             An aiohttp.ClientResponse object representing the response the GET request returned.
         """
-        if cls.session is None:
-            cls.session = aiohttp.ClientSession()
 
         async with cls.session.get(url=url, headers=headers) as response:
             response_json = await response.json()
@@ -36,3 +34,9 @@ class InternalData:
                 raise TBAError(response_json["Error"])
             else:
                 return response_json
+
+    @classmethod
+    async def set_session(cls) -> None:
+        """Initializes a `aiohttp.ClientSession` instance to send GET/POST requests out of."""
+        if cls.session is None:
+            cls.session = aiohttp.ClientSession()
