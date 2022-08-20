@@ -87,3 +87,13 @@ def test_district_teams_extra_parameters():
     with pytest.raises(ValueError):
         with ApiClient():
             District(2022, "chs").teams(simple=True, keys=True)
+
+
+def test_district_rankings():
+    """Tests TBA's endpoint to retrieve the rankings of all the teams in a district."""
+    with ApiClient():
+        chs_rankings = District(2022, "chs").rankings()
+        assert (
+            isinstance(chs_rankings, list)
+            and all(isinstance(team_rank, District.Ranking) for team_rank in chs_rankings)
+        )

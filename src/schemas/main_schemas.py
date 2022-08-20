@@ -37,7 +37,7 @@ class District(BaseSchema):
         event_points: list[dict]
         other_bonus: typing.Optional[int] = None
 
-        def __repr__(self):
+        def __repr__(self):  # pragma: no cover
             return (
                 f"District.Ranking("
                 f"{self.team_key=}, {self.rank=}, {self.rookie_bonus=}, {self.other_bonus=}, "
