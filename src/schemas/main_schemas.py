@@ -659,7 +659,7 @@ class Team(BaseSchema):
     async def _get_year_matches(
             self,
             year: int,
-            event_key: typing.Optional[str],
+            event_code: typing.Optional[str],
             simple: bool,
             keys: bool
     ) -> list[Match]:
@@ -669,8 +669,8 @@ class Team(BaseSchema):
         Parameters:
             year:
                 An integer representing the year to retrieve a team's matches from.
-            event_key:
-                A string representing a unique key assigned to an event. Used for filtering matches a team played to only those in a certain event.
+            event_code:
+                A string representing the code of an event (the latter half of a key, eg 'iri' instead of '2022iri'). Used for filtering matches a team played to only those in a certain event.
             simple:
                 A boolean representing whether each match's information should be stripped to only contain relevant information.
             keys:
@@ -686,8 +686,8 @@ class Team(BaseSchema):
         if keys:
             return response
         else:
-            if event_key:
-                return [Match(**match_data) for match_data in response if match_data["event_key"] == event_key]
+            if event_code:
+                return [Match(**match_data) for match_data in response if event_code in match_data["event_key"]]
             else:
                 return [Match(**match_data) for match_data in response]
 
@@ -772,7 +772,7 @@ class Team(BaseSchema):
     async def matches(
             self,
             year: typing.Union[range, int],
-            event_key: typing.Optional[str] = None,
+            event_code: typing.Optional[str] = None,
             simple: typing.Optional[bool] = False,
             keys: typing.Optional[bool] = False
     ) -> list[Match]:
@@ -782,8 +782,8 @@ class Team(BaseSchema):
         Parameters:
             year:
                 An integer representing the year to retrieve a team's matches from or a range object representing all the years matches a team played should be retrieved from.
-            event_key:
-                A string representing a unique key assigned to an event. Used for filtering matches a team played to only those in a certain event. Can be None if all matches a team played want to be retrieved.
+            event_code
+                A string representing the code of an event (the latter half of a key, eg 'iri' instead of '2022iri'). Used for filtering matches a team played to only those in a certain event. Can be None if all matches a team played want to be retrieved.
             simple:
                 A boolean representing whether each match's information should be stripped to only contain relevant information. Can be False if `simple` isn't passed in.
             keys:
@@ -798,11 +798,11 @@ class Team(BaseSchema):
         if isinstance(year, range):
             return list(itertools.chain.from_iterable(
                 await asyncio.gather(
-                    *[self.matches.coro(self, spec_year, event_key, simple, keys) for spec_year in year]
+                    *[self.matches.coro(self, spec_year, event_code, simple, keys) for spec_year in year]
                 )
             ))
         else:
-            return await self._get_year_matches(year, event_key, simple, keys)
+            return await self._get_year_matches(year, event_code, simple, keys)
 
     @synchronous
     async def media(self, year: typing.Union[range, int], media_tag: typing.Optional[str] = None) -> list[Media]:
