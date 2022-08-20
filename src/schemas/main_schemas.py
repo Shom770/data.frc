@@ -106,6 +106,9 @@ class District(BaseSchema):
         Returns:
             A list of strings with each string representing an event's key for all the events in the given district or a list of Event objects with each object representing an event in the given district.
         """
+        if simple and keys:
+            raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
+
         response = await InternalData.get(
             url=construct_url("district", key=self.key, endpoint="events", simple=simple, keys=keys),
             headers=self._headers
@@ -133,6 +136,9 @@ class District(BaseSchema):
         Returns:
             A list of strings with each string representing a team's key for all the teams in the given district or a list of Team objects with each object representing a team in the given district.
         """
+        if simple and keys:
+            raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
+
         response = await InternalData.get(
             url=construct_url("district", key=self.key, endpoint="teams", simple=simple, keys=keys),
             headers=self._headers

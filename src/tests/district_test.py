@@ -38,3 +38,17 @@ def test_district_events_simple():
     with ApiClient():
         chs_district = District(2022, "chs")
         assert chs_district.events() != chs_district.events(simple=True)
+
+
+def test_district_keys():
+    """Tests TBA's endpoint to retrieve the keys of all the events that occurred in a district."""
+    with ApiClient():
+        chs_events = District(2022, "chs").events(keys=True)
+        assert isinstance(chs_events, list) and all(isinstance(event_key, str) for event_key in chs_events)
+
+
+def test_district_extra_parameters():
+    """Tests `District.events` to ensure that an error is raised when `simple` and `keys` are both True."""
+    with pytest.raises(ValueError):
+        with ApiClient():
+            District(2022, "chs").events(simple=True, keys=True)
