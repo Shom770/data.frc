@@ -75,8 +75,8 @@ def test_district_teams_keys():
         assert isinstance(chs_teams, list) and all(isinstance(team_key, str) for team_key in chs_teams)
 
 
-def test_district_extra_parameters():
-    """Tests `District.events` to ensure that an error is raised when `simple` and `keys` are both True."""
+def test_district_teams_extra_parameters():
+    """Tests `District.teams` to ensure that an error is raised when `simple` and `keys` are both True."""
     with pytest.raises(ValueError):
         with ApiClient():
-            District(2022, "chs").events(simple=True, keys=True)
+            District(2022, "chs").teams(simple=True, keys=True)
