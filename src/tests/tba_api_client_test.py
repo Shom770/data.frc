@@ -157,19 +157,19 @@ def test_teams_range():
         )
 
 
-def test_events_simple():
-    """Tests TBA's endpoint for retrieving shortened information about all the events that occurred during a year."""
+def test_teams_simple():
+    """Tests TBA's endpoint for retrieving shortened information about all the teams that played during a year."""
     with ApiClient() as api_client:
-        all_events = api_client.events(year=2022)
-        all_events_simple = api_client.events(year=2022, simple=True)
-        assert all_events != all_events_simple
+        all_teams = api_client.teams(year=2022)
+        all_teams_simple = api_client.teams(year=2022, simple=True)
+        assert all_teams != all_teams_simple
 
 
-def test_events_keys():
-    """Tests TBA's endpoint for retrieving the keys of all the events that occurred during a year."""
+def test_teams_keys():
+    """Tests TBA's endpoint for retrieving the keys of all the teams that played during a year."""
     with ApiClient() as api_client:
-        all_event_keys = api_client.events(year=2022, keys=True)
-        assert isinstance(all_event_keys, list) and all(isinstance(event_key, str) for event_key in all_event_keys)
+        all_team_keys = api_client.teams(year=2022, keys=True)
+        assert isinstance(all_team_keys, list) and all(isinstance(team, str) for team_key in all_team_keys)
 
 
 def test_events_extra_parameters():

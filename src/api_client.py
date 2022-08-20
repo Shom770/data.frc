@@ -24,7 +24,8 @@ class ApiClient:
         if api_key is None:
             try:
                 api_key = os.environ["TBA_API_KEY"]
-            except KeyError:  # In case TBA_API_KEY isn't an environment variable
+            except KeyError:  # pragma: no cover
+                # In case TBA_API_KEY isn't an environment variable
                 api_key = os.environ["API_KEY"]
 
         self._headers = {"X-TBA-Auth-Key": api_key}
@@ -241,7 +242,7 @@ class ApiClient:
                 ),
                 headers=self._headers
         ) 
-        if timeseries:
+        if timeseries:  # pragma: no cover
             return response
         elif zebra_motionworks:
             zebra_data = response
