@@ -4,6 +4,7 @@ import functools
 import itertools
 import typing
 from dataclasses import dataclass
+from re import match
 from statistics import mean
 
 from .award import Award
@@ -55,8 +56,8 @@ class District(BaseSchema):
                 self.key = f"{self.year}{self.abbreviation}"
         elif len(args) == 1:
             self.key, = args
-            self.abbreviation: typing.Optional[str] = kwargs.get("abbreviation")
-            self.year: typing.Optional[int] = kwargs.get("year")
+            self.year: typing.Optional[int] = kwargs.get("year") or int(match(r"\d+", self.key)[0])
+            self.abbreviation: typing.Optional[str] = kwargs.get("abbreviation") or self.key.replace(str(self.year), "")
         else:
             self.key: str = kwargs["key"]
             self.abbreviation: typing.Optional[str] = kwargs.get("abbreviation")
