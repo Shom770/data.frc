@@ -5,6 +5,12 @@ from ..schemas import *
 from ..utils import *
 
 
+def test_api_status():
+    with ApiClient() as api_client:
+        tba_api_status = api_client.status()
+        assert isinstance(tba_api_status, APIStatus)
+
+
 def test_districts():
     with ApiClient() as api_client:
         all_districts = api_client.districts(year=2022)
