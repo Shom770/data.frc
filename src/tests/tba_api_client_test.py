@@ -130,3 +130,46 @@ def test_match_zebra_motionworks():
             and all(isinstance(team, Match.ZebraMotionworks.Team) for team in einstein_zebra.alliances["red"])
             and all(isinstance(team, Match.ZebraMotionworks.Team) for team in einstein_zebra.alliances["blue"])
         )
+
+
+def test_match_extra_parameters():
+    """Tests `ApiClient.events` to ensure that an error is raised when more than one parameter out of `simple`, `zebra_motionworks` and `timeseries` are True."""
+    with pytest.raises(ValueError):
+        with ApiClient() as api_client:
+            api_client.match("2022cmptx_f1m1", simple=True, timeseries=True, zebra_motionworks=True)
+
+
+def test_teams():
+    """Tests TBA's endpoint for retrieving information about all the teams that played during a year."""
+    with ApiClient() as api_client:
+        all_teams = api_client.teams(year=2022)
+        assert isinstance(all_teams, list) and all(isinstance(team, Team) for team in all_teams)
+
+
+def test_events_range():
+    """Tests the `year` parameter in `ApiClient.events` with a range object to signify that events should be retrieved from all years within the range object."""
+    with ApiClient() as api_client:
+        all_events = api_client.events(year=range(2020, 2023))
+        assert isinstance(all_events, list) and all(isinstance(event, Event) for event in all_events)
+
+
+def test_events_simple():
+    """Tests TBA's endpoint for retrieving shortened information about all the events that occurred during a year."""
+    with ApiClient() as api_client:
+        all_events = api_client.events(year=2022)
+        all_events_simple = api_client.events(year=2022, simple=True)
+        assert all_events != all_events_simple
+
+
+def test_events_keys():
+    """Tests TBA's endpoint for retrieving the keys of all the events that occurred during a year."""
+    with ApiClient() as api_client:
+        all_event_keys = api_client.events(year=2022, keys=True)
+        assert isinstance(all_event_keys, list) and all(isinstance(event_key, str) for event_key in all_event_keys)
+
+
+def test_events_extra_parameters():
+    """Tests `ApiClient.events` to ensure that an error is raised when `simple` and `keys` are both True."""
+    with pytest.raises(ValueError):
+        with ApiClient() as api_client:
+            api_client.events(year=2022, simple=True, keys=True)
