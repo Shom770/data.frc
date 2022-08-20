@@ -21,3 +21,6 @@ def test_district_key():
 
 def test_district_kwargs():
     """Tests initializing `District` via passing in keyword arguments."""
+    with ApiClient():
+        chs_district = District(key="2022chs")
+        assert chs_district.year == 2022 and chs_district.abbreviation == "chs" and chs_district.key == "2022chs"

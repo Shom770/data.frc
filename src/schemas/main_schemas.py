@@ -60,8 +60,8 @@ class District(BaseSchema):
             self.abbreviation: typing.Optional[str] = kwargs.get("abbreviation") or self.key.replace(str(self.year), "")
         else:
             self.key: str = kwargs["key"]
-            self.abbreviation: typing.Optional[str] = kwargs.get("abbreviation")
-            self.year: typing.Optional[int] = kwargs.get("year")
+            self.year: typing.Optional[int] = kwargs.get("year") or int(match(r"\d+", self.key)[0])
+            self.abbreviation: typing.Optional[str] = kwargs.get("abbreviation") or self.key.replace(str(self.year), "")
 
         self.display_name: typing.Optional[str] = kwargs.get("display_name")
 
