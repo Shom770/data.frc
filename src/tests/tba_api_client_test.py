@@ -169,11 +169,11 @@ def test_teams_keys():
     """Tests TBA's endpoint for retrieving the keys of all the teams that played during a year."""
     with ApiClient() as api_client:
         all_team_keys = api_client.teams(year=2022, keys=True)
-        assert isinstance(all_team_keys, list) and all(isinstance(team, str) for team_key in all_team_keys)
+        assert isinstance(all_team_keys, list) and all(isinstance(team_key, str) for team_key in all_team_keys)
 
 
-def test_events_extra_parameters():
-    """Tests `ApiClient.events` to ensure that an error is raised when `simple` and `keys` are both True."""
+def test_teams_extra_parameters():
+    """Tests `ApiClient.teams` to ensure that an error is raised when `simple` and `keys` are both True."""
     with pytest.raises(ValueError):
         with ApiClient() as api_client:
-            api_client.events(year=2022, simple=True, keys=True)
+            api_client.teams(year=2022, simple=True, keys=True)
