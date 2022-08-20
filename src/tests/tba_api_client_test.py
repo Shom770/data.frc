@@ -127,6 +127,6 @@ def test_match_zebra_motionworks():
         einstein_zebra = api_client.match("2022cmptx_f1m1", zebra_motionworks=True)
         assert (
             isinstance(einstein_zebra, Match.ZebraMotionworks)
-            and isinstance(einstein_zebra.alliances["red"], Match.ZebraMotionworks.Team)
-            and isinstance(einstein_zebra.alliances["blue"], Match.ZebraMotionworks.Team)
+            and all(isinstance(team, Match.ZebraMotionworks.Team) for team in einstein_zebra.alliances["red"])
+            and all(isinstance(team, Match.ZebraMotionworks.Team) for team in einstein_zebra.alliances["blue"])
         )
