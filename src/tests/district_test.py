@@ -12,6 +12,13 @@ def test_district_year_abbreviation():
         assert chs_district.year == 2022 and chs_district.abbreviation == "chs" and chs_district.key == "2022chs"
 
 
+def test_district_year_abbreviation_reversed():
+    """Tests initializing `District` via passing in the abbreviation and then the year (eg District('chs', 2022))."""
+    with ApiClient():
+        chs_district = District("chs", 2022)
+        assert chs_district.year == 2022 and chs_district.abbreviation == "chs" and chs_district.key == "2022chs"
+
+
 def test_district_key():
     """Tests initializing `District` via passing in the district key (eg '2022chs')."""
     with ApiClient():
