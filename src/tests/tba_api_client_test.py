@@ -1,16 +1,13 @@
 import pytest
-from hypothesis import given, settings, strategies
 
 from ..api_client import ApiClient
 from ..schemas import *
 from ..utils import *
 
 
-@given(strategies.integers(min_value=2013, max_value=2023))
-@settings(deadline=None)
-def test_districts(year: int):
+def test_districts():
     with ApiClient() as api_client:
-        all_districts = api_client.districts(year)
+        all_districts = api_client.districts(year=2022)
         assert isinstance(all_districts, list) and all(isinstance(district, District) for district in all_districts)
 
 
