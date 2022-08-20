@@ -113,3 +113,20 @@ def test_match_simple():
         einstein_final_simple = api_client.match("2022cmptx_f1m1", simple=True)
         assert einstein_final != einstein_final_simple
 
+
+def test_match_timeseries():
+    """Tests `TBAError` being raised for timeseries data regarding an invalid endpoint since timeseries data isn't implemented yet for many matches."""
+    with pytest.raises(TBAError, match="Invalid endpoint"):
+        with ApiClient() as api_client:
+            api_client.match("2022cmptx_f1m1", timeseries=True)
+
+
+def test_match_zebra_motionworks():
+    """Tests TBA's endpoint for retrieving Zebra MotionWorks data from a match."""
+    with ApiClient() as api_client:
+        einstein_zebra = api_client.match("2022cmptx_f1m1", zebra_motionworks=True)
+        assert (
+            isinstance(einstein_zebra, Match.ZebraMotionworks)
+            and isinstance(einstein_zebra.alliances["red"], Match.ZebraMotionworks.Team)
+            and isinstance(einstein_zebra.alliances["blue"], Match.ZebraMotionworks.Team)
+        )

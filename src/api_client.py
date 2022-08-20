@@ -211,7 +211,7 @@ class ApiClient:
         simple: bool = False,
         timeseries: bool = False,
         zebra_motionworks: bool = False
-    ) -> typing.Union[list[dict], Match, Match.ZebraMotionworks]:
+    ) -> typing.Optional[typing.Union[list[dict], Match, Match.ZebraMotionworks]]:
         """
         Retrieves information about a match.
 
@@ -228,7 +228,7 @@ class ApiClient:
                 A boolean that specifies whether data about where robots went during a match should be retrieved. Using this parameter, there may be no data due to the fact that very few matches use the Zebra MotionWorks technology required to get data on where the robots go during a match.
 
         Returns:
-            A Match object containing information about the match or a Match.ZebraMotionworks object representing data about where teams' robots went during the match (may not have any data for all teams or even data altogether) or a list of dictionaries containing timeseries data for a match.
+            A Match object containing information about the match or a Match.ZebraMotionworks object representing data about where teams' robots went during the match (may not have any data for all teams or even data altogether and if so will return None) or a list of dictionaries containing timeseries data for a match.
         """
         if (simple, timeseries, zebra_motionworks).count(True) > 1:
             raise ValueError(
