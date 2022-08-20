@@ -146,11 +146,15 @@ def test_teams():
         assert isinstance(all_teams, list) and all(isinstance(team, Team) for team in all_teams)
 
 
-def test_events_range():
-    """Tests the `year` parameter in `ApiClient.events` with a range object to signify that events should be retrieved from all years within the range object."""
+def test_teams_range():
+    """Tests TBA's endpoint for retrieving information about all the teams that played across numerous years via passing in a range object into the `year` parameter."""
     with ApiClient() as api_client:
-        all_events = api_client.events(year=range(2020, 2023))
-        assert isinstance(all_events, list) and all(isinstance(event, Event) for event in all_events)
+        all_range_teams = api_client.teams(year=range(2020, 2023))
+        assert (
+            isinstance(all_range_teams, list)
+            and all(isinstance(team, Team) for team in all_range_teams)
+            and not set(all_range_teams).difference(all_range_teams)
+        )
 
 
 def test_events_simple():
