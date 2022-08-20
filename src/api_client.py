@@ -190,6 +190,9 @@ class ApiClient:
         Returns:
             A list of Event objects representing each event in certain year(s) or a list of strings representing all the keys of the events retrieved.
         """
+        if simple and keys:
+            raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
+
         if isinstance(year, range):
             return list(
                 itertools.chain.from_iterable(
