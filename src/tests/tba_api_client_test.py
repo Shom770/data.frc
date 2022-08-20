@@ -142,6 +142,13 @@ def test_match_extra_parameters():
 def test_teams():
     """Tests TBA's endpoint for retrieving information about all the teams that played during a year."""
     with ApiClient() as api_client:
+        all_teams = api_client.teams(page_num=1, year=2022)
+        assert isinstance(all_teams, list) and all(isinstance(team, Team) for team in all_teams)
+
+
+def test_teams_without_page_num():
+    """Tests `ApiClient.teams` with finding all teams that played during a season and not just one page (500 teams)."""
+    with ApiClient() as api_client:
         all_teams = api_client.teams(year=2022)
         assert isinstance(all_teams, list) and all(isinstance(team, Team) for team in all_teams)
 
@@ -149,7 +156,7 @@ def test_teams():
 def test_teams_range():
     """Tests TBA's endpoint for retrieving information about all the teams that played across numerous years via passing in a range object into the `year` parameter."""
     with ApiClient() as api_client:
-        all_range_teams = api_client.teams(year=range(2020, 2023))
+        all_range_teams = api_client.teams(page_num=1, year=range(2020, 2023))
         assert (
             isinstance(all_range_teams, list)
             and all(isinstance(team, Team) for team in all_range_teams)
@@ -160,15 +167,15 @@ def test_teams_range():
 def test_teams_simple():
     """Tests TBA's endpoint for retrieving shortened information about all the teams that played during a year."""
     with ApiClient() as api_client:
-        all_teams = api_client.teams(year=2022)
-        all_teams_simple = api_client.teams(year=2022, simple=True)
+        all_teams = api_client.teams(page_num=1, year=2022)
+        all_teams_simple = api_client.teams(page_num=1, year=2022, simple=True)
         assert all_teams != all_teams_simple
 
 
 def test_teams_keys():
     """Tests TBA's endpoint for retrieving the keys of all the teams that played during a year."""
     with ApiClient() as api_client:
-        all_team_keys = api_client.teams(year=2022, keys=True)
+        all_team_keys = api_client.teams(page_num=1, year=2022, keys=True)
         assert isinstance(all_team_keys, list) and all(isinstance(team_key, str) for team_key in all_team_keys)
 
 
@@ -176,4 +183,4 @@ def test_teams_extra_parameters():
     """Tests `ApiClient.teams` to ensure that an error is raised when `simple` and `keys` are both True."""
     with pytest.raises(ValueError):
         with ApiClient() as api_client:
-            api_client.teams(year=2022, simple=True, keys=True)
+            api_client.teams(page_num=1, year=2022, simple=True, keys=True)
