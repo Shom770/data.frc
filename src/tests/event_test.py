@@ -35,10 +35,13 @@ def test_event_awards():
     )
 
 
-def test_event_awards():
-    """Tests TBA's endpoint that retrieves all awards distributed at an event."""
-    chs_comp_awards = Event("2022chcmp").awards()
-    assert (
-        isinstance(chs_comp_awards, Award)
-        and all(isinstance(comp_award, Award) for comp_award in chs_comp_awards)
-    )
+def test_event_district_points():
+    """Tests TBA's endpoint that retrieves the district points distributed to all teams at that event."""
+    event_district_points = Event("2022chcmp").district_points()
+    assert isinstance(event_district_points, Event.DistrictPoints)
+
+
+def test_event_district_points_no_return():
+    """Tests `Event.DistrictPoints` to ensure that None is returned when there are no district points distributed for an event among teams."""
+    comp_district_points = Event("2022cmptx").district_points()
+    assert comp_district_points is None
