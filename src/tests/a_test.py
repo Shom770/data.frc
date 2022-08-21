@@ -106,6 +106,16 @@ def test_team_matches_range():
     )
 
 
+def test_team_matches_event_code():
+    """Tests `Team.matches` to retrieve all the matches a team played in a certain event."""
+    with ApiClient():
+        team4099_iri_matches = Team(4099).matches(2022, "iri")
+        assert (
+            isinstance(team4099_iri_matches, list)
+            and all(isinstance(game_match, Match) for game_match in team4099_iri_matches)
+        )
+
+
 def test_team_matches_simple():
     """Tests TBA's endpoint to retrieve shortened information about all the matches a team played in a certain year."""
     with ApiClient():
