@@ -656,6 +656,29 @@ class Team(BaseSchema):
 
         return wrapper
 
+    async def _get_year_events(
+            self,
+            year: int,
+            simple: bool,
+            keys: bool,
+            statuses: bool
+    ) -> typing.Union[list[typing.Union[str, Event]], dict[str, EventTeamStatus]]:
+        response = await InternalData.get(
+            url=construct_url(
+                "team", key=self.key, endpoint="events", year=year, simple=simple, keys=keys, statuses=statuses
+            ),
+            headers=self._headers
+        )
+        if keys:
+            return response
+        elif not statuses:
+            return [Event(**event_data) for event_data in response]
+        else:
+            return {
+                event_key: EventTeamStatus(event_key, team_status_info)
+                for event_key, team_status_info in response.items() if team_status_info
+            }
+
     async def _get_year_matches(
             self,
             year: int,
@@ -876,23 +899,18 @@ class Team(BaseSchema):
             raise ValueError(
                 "statuses cannot be True in conjunction with simple or keys, if statuses is True then simple and keys must be False.")
         elif statuses and not year:
-            raise ValueError("statuses cannot be True if a year isn't passed into Team.events")
+            raise ValueError("statuses cannot be True if a year isn't passed into Team.events.")
+        elif statuses and isinstance(year, range):
+            raise ValueError("statuses cannot be True when year is a range object.")
 
-        response = await InternalData.get(
-                url=construct_url(
-                    "team", key=self.key, endpoint="events", year=year, simple=simple, keys=keys, statuses=statuses
-                ),
-                headers=self._headers
-        ) 
-        if keys:
-            return response
-        elif not statuses:
-            return [Event(**event_data) for event_data in response]
+        if isinstance(year, range):
+            return list(itertools.chain.from_iterable(
+                await asyncio.gather(
+                    *[self.events.coro(self, spec_year, simple, keys, statuses) for spec_year in year]
+                )
+            ))
         else:
-            return {
-                event_key: EventTeamStatus(event_key, team_status_info)
-                for event_key, team_status_info in response.items() if team_status_info
-            }
+            return await self._get_year_events(year, simple, keys, statuses)
 
     @synchronous
     async def event(
@@ -926,8 +944,6 @@ class Team(BaseSchema):
         """
         if not awards and not matches and not status:
             raise ValueError("Either awards, matches or status must be True for this function.")
-        elif awards and matches:
-            raise ValueError("awards and matches cannot be True, you must choose one endpoint over the other.")
         elif simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
         elif awards and (simple or keys or matches):
