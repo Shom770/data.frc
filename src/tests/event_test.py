@@ -39,3 +39,9 @@ def test_event_district_points():
     """Tests TBA's endpoint that retrieves the district points distributed to all teams at that event."""
     event_district_points = Event("2022chcmp").district_points()
     assert isinstance(event_district_points, Event.DistrictPoints)
+
+
+def test_event_insights():
+    """Test TBA's endpoint that retrieves insights about an event."""
+    chs_comp_insights = Event("2022chcmp").insights()
+    assert isinstance(chs_comp_insights, Event.Insights)
