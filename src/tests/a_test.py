@@ -296,3 +296,10 @@ def test_team_event_matches_keys():
             isinstance(team4099_iri_matches_keys, list)
             and all(isinstance(match_key, Match) for match_key in team4099_iri_matches_keys)
         )
+
+
+def test_team_event_status():
+    """Tests TBA's endpoint to retrieve the status of a team at an event."""
+    with ApiClient():
+        team4099_iri_status = Team(4099).event("2022iri", status=True)
+        assert isinstance(team4099_iri_status, EventTeamStatus)
