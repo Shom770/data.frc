@@ -86,3 +86,15 @@ def test_event_matches_extra_parameters():
     with pytest.raises(ValueError):
         with ApiClient():
             Event("2022chcmp").matches(simple=True, keys=True, timeseries=True)
+
+
+def test_event_oprs():
+    """Test TBA's endpoint to retrieve the OPRs, DPRs, and CCWMs of all teams at an event."""
+    with ApiClient():
+        chs_comp_oprs = Event("2022chcmp").oprs()
+        assert (
+            isinstance(chs_comp_oprs, Event.OPRs)
+            and isinstance(chs_comp_oprs.oprs, dict)
+            and isinstance(chs_comp_oprs.dprs, dict)
+            and isinstance(chs_comp_oprs.ccwms, dict)
+        )
