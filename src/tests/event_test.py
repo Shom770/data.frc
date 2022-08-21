@@ -106,9 +106,21 @@ def test_event_opr_average():
         chs_avg_oprs = Event("2022chcmp").oprs().average()
         assert (
             isinstance(chs_avg_oprs, dict)
-            and "oprs" in chs_avg_oprs.keys()
-            and "dprs" in chs_avg_oprs.keys()
-            and "ccwms" in chs_avg_oprs.keys()
+            and "opr" in chs_avg_oprs.keys()
+            and "dpr" in chs_avg_oprs.keys()
+            and "ccwm" in chs_avg_oprs.keys()
+        )
+
+
+def test_event_opr_average_with_metric():
+    """Test `Event.OPRs.average` with the metric argument to ensure that it only returns ."""
+    with ApiClient():
+        chs_avg_opr = Event("2022chcmp").oprs().average(metric="opr")
+        assert (
+            isinstance(chs_avg_opr, dict)
+            and "opr" in chs_avg_opr.keys()
+            and "dpr" not in chs_avg_opr.keys()
+            and "ccwm" not in chs_avg_opr.keys()
         )
 
 
