@@ -24,7 +24,7 @@ class BaseSchema:
     def __eq__(self, other):
         return vars(self) == vars(other)
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         return f"{type(self).__name__}({self._attributes_formatted})"
 
     @classmethod
