@@ -206,3 +206,21 @@ def test_team_events_range():
                 isinstance(team4099_events, list)
                 and all(isinstance(team_event, Event) for team_event in team4099_events)
         )
+
+
+def test_team_events_simple():
+    """Tests TBA's endpoint to retrieve shortened information about all the events a team has ever played at."""
+    with ApiClient():
+        team4099_events = Team(4099).events(2022)
+        team4099_events_simple = Team(4099).events(2022, simple=True)
+        assert team4099_events != team4099_events_simple
+
+
+def test_team_events_keys():
+    """Tests TBA's endpoint to retrieve the keys of all the events a team has ever played at."""
+    with ApiClient():
+        team4099_event_keys = Team(4099).events(2022, keys=True)
+        assert (
+            isinstance(team4099_event_keys, list)
+            and all(isinstance(event_key, str) for event_key in team4099_event_keys)
+        )
