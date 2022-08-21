@@ -116,6 +116,16 @@ def test_team_matches_event_code():
         )
 
 
+def test_team_matches_event_code_keys():
+    """Tests `Team.matches` to retrieve the keys of all the matches a team played in a certain event."""
+    with ApiClient():
+        team4099_iri_matches = Team(4099).matches(2022, "iri")
+        assert (
+            isinstance(team4099_iri_matches, list)
+            and all(match_key.startswith("2022iri") for match_key in team4099_iri_matches)
+        )
+
+
 def test_team_matches_simple():
     """Tests TBA's endpoint to retrieve shortened information about all the matches a team played in a certain year."""
     with ApiClient():
