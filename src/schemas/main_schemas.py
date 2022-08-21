@@ -915,6 +915,7 @@ class Team(BaseSchema):
     async def event(
             self,
             event_key: str,
+            *,
             awards: bool = False,
             matches: bool = False,
             simple: bool = False,

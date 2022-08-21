@@ -303,3 +303,23 @@ def test_team_event_status():
     with ApiClient():
         team4099_iri_status = Team(4099).event("2022iri", status=True)
         assert isinstance(team4099_iri_status, EventTeamStatus)
+
+
+@pytest.mark.parametrize(
+    "awards,matches,simple,keys,status,match",
+    (
+        (False, False, False, False, False, "Either awards, matches or status must be True for this function."),
+        (False, True, True, True, False, "simple and keys cannot both be True"),
+        (True, True, False, False, False, "awards cannot be True in conjunction with simple, keys or matches"),
+        (False, True, False, False, True, "status cannot be True in conjunction with simple, keys or matches")
+    )
+)
+def test_team_event_errors(awards: bool, matches: bool, simple: bool, keys: bool, status: bool, match: str):
+    """Tests `Team.event` for all possible errors that could be raised from it as a result of the parameters."""
+    with pytest.raises(ValueError, match=match):
+        with ApiClient():
+            Team(4099).event("2022iri", awards=awards, matches=matches, simple=simple, keys=keys, status=status)
+
+
+def test_team_social_media():
+    """Tests TBA's endpoint to retrieve all the social media accounts of a team."""
