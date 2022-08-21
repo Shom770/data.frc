@@ -75,3 +75,13 @@ def test_team_years_participated():
     with ApiClient():
         team4099_years_participated = Team(4099).years_participated()
         assert isinstance(team4099_years_participated, list) and min(team4099_years_participated) == 2012
+
+
+def test_team_districts():
+    """Tests TBA's endpoint to retrieve all the districts the team has ever played in (eg 2020chs, 2021chs, ...)"""
+    with ApiClient():
+        team4099_districts = Team(4099).districts()
+        assert (
+            isinstance(team4099_districts, list)
+            and all(isinstance(team_district, District) for team_district in team4099_districts)
+        )
