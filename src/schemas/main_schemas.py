@@ -267,7 +267,7 @@ class Event(BaseSchema):
                 setattr(self, snake_case_name, data)
                 self._attributes_formatted += f"{snake_case_name}={data!r}, "
 
-        def __repr__(self):
+        def __repr__(self):  # pragma: no cover
             return f"ExtraStats({self._attributes_formatted.rstrip(', ')})"
 
     class SortOrders:
@@ -282,7 +282,7 @@ class Event(BaseSchema):
                 setattr(self, snake_case_name, data)
                 self._attributes_formatted += f"{snake_case_name}={data!r}, "
 
-        def __repr__(self):
+        def __repr__(self):  # pragma: no cover
             return f"SortOrders({self._attributes_formatted.rstrip(', ')})"
 
     @dataclass()
