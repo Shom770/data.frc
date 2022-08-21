@@ -72,3 +72,6 @@ def test_team_awards_range():
 
 def test_team_years_participated():
     """Tests TBA's endpoint to retrieve all the years a team played in."""
+    with ApiClient():
+        team4099_years_participated = Team(4099).years_participated()
+        assert isinstance(team4099_years_participated, list) and min(team4099_years_participated) == 2012
