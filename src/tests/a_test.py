@@ -171,3 +171,20 @@ def test_team_media_range():
             isinstance(team4099_media, list)
             and all(isinstance(team_media, Media) for team_media in team4099_media)
         )
+
+
+def test_team_media_with_media_tag():
+    """Tests TBA's endpoint to retrieve media a team made under a media tag."""
+    with ApiClient():
+        team4099_media_tag = Team(4099).media(2022, media_tag="youtube")
+        assert isinstance(team4099_media_tag, list)
+
+
+def test_team_robots():
+    """Tests TBA's endpoint to retrive all robots a team made that were registered onto TBA."""
+    with ApiClient():
+        team4099_robots = Team(4099).robots()
+        assert (
+            isinstance(team4099_robots, list)
+            and all(isinstance(team_robot, Robot) for team_robot in team4099_robots)
+        )
