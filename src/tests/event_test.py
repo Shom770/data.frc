@@ -45,3 +45,12 @@ def test_event_insights():
     """Test TBA's endpoint that retrieves insights about an event."""
     chs_comp_insights = Event("2022chcmp").insights()
     assert isinstance(chs_comp_insights, Event.Insights)
+
+
+def test_event_matches():
+    """Test TBA's endpoint to retrieve all matches that occurred at an event."""
+    chs_comp_matches = Event("2022chcmp").matches()
+    assert (
+        isinstance(chs_comp_matches, list)
+        and all(isinstance(comp_match, Match) for comp_match in chs_comp_matches)
+    )
