@@ -684,7 +684,10 @@ class Team(BaseSchema):
                 headers=self._headers
         ) 
         if keys:
-            return response
+            if event_code:
+                return [match_key for match_key in response if event_code in match_key]
+            else:
+                return response
         else:
             if event_code:
                 return [Match(**match_data) for match_data in response if event_code in match_data["event_key"]]

@@ -134,3 +134,10 @@ def test_team_matches_keys():
             isinstance(rapid_react_matches, list)
             and all(isinstance(match_key, str) for match_key in rapid_react_matches)
         )
+
+
+def test_team_matches_extra_parameters():
+    """Tests `Team.matches` to ensure that an error is raised when simple and keys are both True.."""
+    with pytest.raises(ValueError):
+        with ApiClient():
+            Team(4099).matches(2022, simple=True, keys=True)
