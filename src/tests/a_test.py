@@ -161,3 +161,13 @@ def test_team_media():
             isinstance(team4099_media, list)
             and all(isinstance(team_media, Media) for team_media in team4099_media)
         )
+
+
+def test_team_media_range():
+    """Tests `Team.media` to pass in a range object in the `year` parameter to retrieve media a team made across multiple years."""
+    with ApiClient():
+        team4099_media = Team(4099).media(range(2019, 2023))
+        assert (
+            isinstance(team4099_media, list)
+            and all(isinstance(team_media, Media) for team_media in team4099_media)
+        )
