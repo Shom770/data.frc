@@ -156,8 +156,8 @@ def test_event_teams_statuses():
         )
 
 
-def test_event_matches_extra_parameters():
-    """Test `Event.matches` to ensure that an error is raised when more than one parameter out of `simple`, `keys` and `timeseries` is True."""
+def test_event_teams_extra_parameters():
+    """Test `Event.teams` to ensure that an error is raised when more than one parameter out of `simple`, `keys` and `statuses` is True."""
     with pytest.raises(ValueError):
         with ApiClient():
-            Event("2022chcmp").matches(simple=True, keys=True, timeseries=True)
+            Event("2022chcmp").teams(simple=True, keys=True, statuses=True)
