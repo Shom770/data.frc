@@ -113,15 +113,17 @@ def test_event_opr_average():
 
 
 def test_event_opr_average_with_metric():
-    """Test `Event.OPRs.average` with the metric argument to ensure that it only returns ."""
+    """Test `Event.OPRs.average` with the metric argument to ensure that it only returns the metric specified."""
     with ApiClient():
         chs_avg_opr = Event("2022chcmp").oprs().average(metric="opr")
-        assert (
-            isinstance(chs_avg_opr, dict)
-            and "opr" in chs_avg_opr.keys()
-            and "dpr" not in chs_avg_opr.keys()
-            and "ccwm" not in chs_avg_opr.keys()
-        )
+        assert isinstance(chs_avg_opr, float)
+
+
+def test_event_opr_average_error():
+    """Test `Event.OPRs.average` with a wrong argument for the `metric` parameter to ensure it errors out."""
+    with pytest.raises(ValueError):
+        with ApiClient():
+            Event("2022chcmp").oprs().average(metric="wrong metric")
 
 
 def test_event_predictions():
