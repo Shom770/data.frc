@@ -278,3 +278,21 @@ def test_team_event_matches():
             isinstance(team4099_iri_matches, list)
             and all(isinstance(iri_match, Match) for iri_match in team4099_iri_matches)
         )
+
+
+def test_team_event_matches_simple():
+    """Tests TBA's endpoint to retrieve shortened information about all the matches a team played at during an event."""
+    with ApiClient():
+        team4099_iri_matches = Team(4099).event("2022iri", matches=True)
+        team4099_iri_matches_simple = Team(4099).event("2022iri", matches=True, simple=True)
+        assert team4099_iri_matches != team4099_iri_matches_simple
+
+
+def test_team_event_matches_keys():
+    """Tests TBA's endpoint to retrieve the keys of all the matches a team played at during an event."""
+    with ApiClient():
+        team4099_iri_matches_keys = Team(4099).event("2022iri", matches=True, keys=True)
+        assert (
+            isinstance(team4099_iri_matches_keys, list)
+            and all(isinstance(match_key, Match) for match_key in team4099_iri_matches_keys)
+        )
