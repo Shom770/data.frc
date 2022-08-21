@@ -115,3 +115,38 @@ def test_event_rankings():
             all(isinstance(team_key, str) for team_key in chs_comp_rankings.keys())
             and all(isinstance(team_ranking, Event.Ranking) for team_ranking in chs_comp_rankings.values())
         )
+
+
+def test_event_teams():
+    """Test TBA's endpoint to retrieve all the teams that played at an event."""
+    with ApiClient():
+        chs_comp_teams = Event("2022chcmp").teams()
+        assert (
+            isinstance(chs_comp_teams, list)
+            and all(isinstance(comp_team, Team) for comp_team in chs_comp_teams)
+        )
+
+
+def test_event_matches_simple():
+    """Test TBA's endpoint to retrieve shortened information about all the matches that occurred at an event."""
+    with ApiClient():
+        chs_comp_matches = Event("2022chcmp").matches()
+        chs_comp_matches_simple = Event("2022chcmp").matches(simple=True)
+        assert chs_comp_matches != chs_comp_matches_simple
+
+
+def test_event_matches_keys():
+    """Test TBA's endpoint to retrieve the keys of all the matches that occurred at an event."""
+    with ApiClient():
+        chs_comp_matches_keys = Event("2022chcmp").matches(keys=True)
+        assert (
+            isinstance(chs_comp_matches_keys, list)
+            and all(isinstance(match_key, str) for match_key in chs_comp_matches_keys)
+        )
+
+
+def test_event_matches_extra_parameters():
+    """Test `Event.matches` to ensure that an error is raised when more than one parameter out of `simple`, `keys` and `timeseries` is True."""
+    with pytest.raises(ValueError):
+        with ApiClient():
+            Event("2022chcmp").matches(simple=True, keys=True, timeseries=True)
