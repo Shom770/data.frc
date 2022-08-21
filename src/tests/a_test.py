@@ -119,7 +119,7 @@ def test_team_matches_event_code():
 def test_team_matches_event_code_keys():
     """Tests `Team.matches` to retrieve the keys of all the matches a team played in a certain event."""
     with ApiClient():
-        team4099_iri_matches = Team(4099).matches(2022, "iri")
+        team4099_iri_matches = Team(4099).matches(2022, "iri", keys=True)
         assert (
             isinstance(team4099_iri_matches, list)
             and all(match_key.startswith("2022iri") for match_key in team4099_iri_matches)
@@ -151,3 +151,13 @@ def test_team_matches_extra_parameters():
     with pytest.raises(ValueError):
         with ApiClient():
             Team(4099).matches(2022, simple=True, keys=True)
+
+
+def test_team_media():
+    """Tests TBA's endpoint to retrieve all media a team created during a year."""
+    with ApiClient():
+        team4099_media = Team(4099).media(2022)
+        assert (
+            isinstance(team4099_media, list)
+            and all(isinstance(team_media, Media) for team_media in team4099_media)
+        )
