@@ -896,8 +896,7 @@ class Team(BaseSchema):
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
         elif statuses and (simple or keys):
-            raise ValueError(
-                "statuses cannot be True in conjunction with simple or keys, if statuses is True then simple and keys must be False.")
+            raise ValueError("statuses cannot be True in conjunction with simple or keys, if statuses is True then simple and keys must be False.")
         elif statuses and not year:
             raise ValueError("statuses cannot be True if a year isn't passed into Team.events.")
         elif statuses and isinstance(year, range):

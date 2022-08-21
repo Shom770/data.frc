@@ -1,3 +1,5 @@
+import typing
+
 import pytest
 
 from ..api_client import ApiClient
@@ -229,15 +231,30 @@ def test_team_events_keys():
 def test_team_events_statuses():
     """Tests TBA's endpoint to retrieve a team's status in all the events a team has ever played at."""
     with ApiClient():
-        team4099_event_keys = Team(4099).events(2022, statuses=True)
+        team4099_event_statuses = Team(4099).events(2022, statuses=True)
         assert (
-            isinstance(team4099_event_keys, list)
-            and all(isinstance(event_key, str) for event_key in team4099_event_keys)
+            isinstance(team4099_event_statuses, dict)
+            and all(isinstance(event_key, str) for event_key in team4099_event_statuses.keys())
+            and all(isinstance(event_status, EventTeamStatus) for event_status in team4099_event_statuses.values())
         )
 
 
-def test_team_events_extra_parameters():
-    """Tests `Team.events` to ensure an error is raised when `simple` and `keys` are both True."""
-    with pytest.raises(ValueError, match="simple and keys cannot both be True"):
-        with ApiClient():
-            Team(4099).events(simple=True, keys=True)
+@pytest.mark.parametrize(
+    "year,simple,keys,statuses,match",
+    (
+        (None, True, True, False, "simple and keys cannot both be True"),
+        (None, False, True, True, "statuses cannot be True in conjunction with simple or keys"),
+        (None, False, False, True, "statuses cannot be True if a year isn't passed into Team.events."),
+        (range(2020, 2023), False, False, True, "statuses cannot be True when year is a range object.")
+    )
+)
+def test_team_events_errors(
+        year: typing.Optional[typing.Union[int, range]],
+        simple: bool,
+        keys: bool,
+        statuses: bool,
+        match: str
+):
+    """Tests `Team.events` to ensure an error is raised for the numerous cases that fail when entering parameters for it."""
+    with pytest.raises(ValueError, match=match):
+        Team(4099).events(year=year, simple=simple, keys=keys, statuses=statuses)

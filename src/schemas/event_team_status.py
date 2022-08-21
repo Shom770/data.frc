@@ -25,7 +25,7 @@ class EventTeamStatus:
                 setattr(self, snake_case_name, data)
                 self._attributes_formatted += f"{snake_case_name}={data!r}, "
 
-        def __repr__(self):
+        def __repr__(self):  # pragma: no cover
             return f"SortOrders({self._attributes_formatted.rstrip(', ')})"
 
     @dataclass()
@@ -142,5 +142,5 @@ class EventTeamStatus:
         self._attributes_formatted += "qual=Qualifications(...)"
         self._attributes_formatted = self._attributes_formatted.replace("self.", "")
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         return f"EventTeamStatus({self._attributes_formatted})"
