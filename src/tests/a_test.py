@@ -323,3 +323,9 @@ def test_team_event_errors(awards: bool, matches: bool, simple: bool, keys: bool
 
 def test_team_social_media():
     """Tests TBA's endpoint to retrieve all the social media accounts of a team."""
+    with ApiClient():
+        team4099_social_media = Team(4099).social_media()
+        assert (
+            isinstance(team4099_social_media, list)
+            and all(isinstance(social_media_account, Media) for social_media_account in team4099_social_media)
+        )
