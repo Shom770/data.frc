@@ -127,21 +127,21 @@ def test_event_teams():
         )
 
 
-def test_event_matches_simple():
-    """Test TBA's endpoint to retrieve shortened information about all the matches that occurred at an event."""
+def test_event_teams_simple():
+    """Test TBA's endpoint to retrieve shortened information about all the teams that played at an event."""
     with ApiClient():
-        chs_comp_matches = Event("2022chcmp").matches()
-        chs_comp_matches_simple = Event("2022chcmp").matches(simple=True)
-        assert chs_comp_matches != chs_comp_matches_simple
+        chs_comp_teams = Event("2022chcmp").teams()
+        chs_comp_teams_simple = Event("2022chcmp").teams(simple=True)
+        assert chs_comp_teams != chs_comp_teams_simple
 
 
-def test_event_matches_keys():
-    """Test TBA's endpoint to retrieve the keys of all the matches that occurred at an event."""
+def test_event_teams_keys():
+    """Test TBA's endpoint to retrieve the keys of all the teams that played at an event.."""
     with ApiClient():
-        chs_comp_matches_keys = Event("2022chcmp").matches(keys=True)
+        chs_comp_teams_keys = Event("2022chcmp").teams(keys=True)
         assert (
-            isinstance(chs_comp_matches_keys, list)
-            and all(isinstance(match_key, str) for match_key in chs_comp_matches_keys)
+            isinstance(chs_comp_teams_keys, list)
+            and all(isinstance(team_key, str) for team_key in chs_comp_teams_keys)
         )
 
 
