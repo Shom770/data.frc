@@ -224,3 +224,20 @@ def test_team_events_keys():
             isinstance(team4099_event_keys, list)
             and all(isinstance(event_key, str) for event_key in team4099_event_keys)
         )
+
+
+def test_team_events_statuses():
+    """Tests TBA's endpoint to retrieve a team's status in all the events a team has ever played at."""
+    with ApiClient():
+        team4099_event_keys = Team(4099).events(2022, statuses=True)
+        assert (
+            isinstance(team4099_event_keys, list)
+            and all(isinstance(event_key, str) for event_key in team4099_event_keys)
+        )
+
+
+def test_team_events_extra_parameters():
+    """Tests `Team.events` to ensure an error is raised when `simple` and `keys` are both True."""
+    with pytest.raises(ValueError, match="simple and keys cannot both be True"):
+        with ApiClient():
+            Team(4099).events(simple=True, keys=True)
