@@ -24,3 +24,21 @@ def test_event_alliances():
         isinstance(chs_comp_alliances, Event.Alliance)
         and all(isinstance(alliance, Event.Alliance) for alliance in chs_comp_alliances)
     )
+
+
+def test_event_awards():
+    """Tests TBA's endpoint that retrieves all awards distributed at an event."""
+    chs_comp_awards = Event("2022chcmp").awards()
+    assert (
+        isinstance(chs_comp_awards, Award)
+        and all(isinstance(comp_award, Award) for comp_award in chs_comp_awards)
+    )
+
+
+def test_event_awards():
+    """Tests TBA's endpoint that retrieves all awards distributed at an event."""
+    chs_comp_awards = Event("2022chcmp").awards()
+    assert (
+        isinstance(chs_comp_awards, Award)
+        and all(isinstance(comp_award, Award) for comp_award in chs_comp_awards)
+    )

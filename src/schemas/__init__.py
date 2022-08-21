@@ -1,4 +1,5 @@
 from .api_status import APIStatus
+from .award import Award
 from .base_schema import BaseSchema
 from .event_team_status import EventTeamStatus
 from .main_schemas import *
