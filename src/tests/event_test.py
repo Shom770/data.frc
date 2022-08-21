@@ -145,6 +145,17 @@ def test_event_teams_keys():
         )
 
 
+def test_event_teams_statuses():
+    """Test TBA's endpoint to retrieve the statuses of all the teams that played/are playing at an event.."""
+    with ApiClient():
+        chs_comp_teams_statuses = Event("2022chcmp").teams(statuses=True)
+        assert (
+            isinstance(chs_comp_teams_statuses, dict)
+            and all(isinstance(team_key, str) for team_key in chs_comp_teams_statuses.keys())
+            and all(isinstance(team_status, EventTeamStatus) for team_status in chs_comp_teams_statuses)
+        )
+
+
 def test_event_matches_extra_parameters():
     """Test `Event.matches` to ensure that an error is raised when more than one parameter out of `simple`, `keys` and `timeseries` is True."""
     with pytest.raises(ValueError):
