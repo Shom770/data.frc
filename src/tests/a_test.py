@@ -105,3 +105,13 @@ def test_team_matches_simple():
             isinstance(rapid_react_matches, list)
             and all(isinstance(game_match, Match) for game_match in rapid_react_matches)
         )
+
+
+def test_team_matches_keys():
+    """Tests TBA's endpoint to retrieve the keys of all the matches a team played in a certain year."""
+    with ApiClient():
+        rapid_react_matches = Team(4099).matches(2022, keys=True)
+        assert (
+            isinstance(rapid_react_matches, list)
+            and all(isinstance(match_key, str) for match_key in rapid_react_matches)
+        )
