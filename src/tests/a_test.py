@@ -88,9 +88,19 @@ def test_team_districts():
 
 
 def test_team_matches():
-    """Tests TBA's endpoint to retrieve all matches a team played in a certain year."""
+    """Tests TBA's endpoint to retrieve all the matches a team played in a certain year."""
     with ApiClient():
         rapid_react_matches = Team(4099).matches(2022)
+        assert (
+            isinstance(rapid_react_matches, list)
+            and all(isinstance(game_match, Match) for game_match in rapid_react_matches)
+        )
+
+
+def test_team_matches_simple():
+    """Tests TBA's endpoint to retrieve shortened information about all the matches a team played in a certain year."""
+    with ApiClient():
+        rapid_react_matches = Team(4099).matches(2022, simple=True)
         assert (
             isinstance(rapid_react_matches, list)
             and all(isinstance(game_match, Match) for game_match in rapid_react_matches)
