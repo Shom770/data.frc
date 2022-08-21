@@ -260,6 +260,16 @@ def test_team_events_errors(
         Team(4099).events(year=year, simple=simple, keys=keys, statuses=statuses)
 
 
+def test_team_event_awards():
+    """Tests TBA's endpoint to retrieve all matches a team played at during an event."""
+    with ApiClient():
+        team4099_chcmp_awards = Team(4099).event("2022chcmp", awards=True)
+        assert (
+            isinstance(team4099_chcmp_awards, list)
+            and all(isinstance(chcmp_award, Award) for chcmp_award in team4099_chcmp_awards)
+        )
+
+
 def test_team_event_matches():
     """Tests TBA's endpoint to retrieve all matches a team played at during an event."""
     with ApiClient():
@@ -268,5 +278,3 @@ def test_team_event_matches():
             isinstance(team4099_iri_matches, list)
             and all(isinstance(iri_match, Match) for iri_match in team4099_iri_matches)
         )
-
-
