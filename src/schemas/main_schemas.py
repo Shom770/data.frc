@@ -511,7 +511,7 @@ class Event(BaseSchema):
 
         if metric_data:
             return self.OPRs(**response)
-        else:
+        else:  # pragma: no cover
             return self.OPRs(oprs={}, dprs={}, ccwms={})
 
     @synchronous
