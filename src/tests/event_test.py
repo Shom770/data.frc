@@ -98,3 +98,10 @@ def test_event_oprs():
             and isinstance(chs_comp_oprs.dprs, dict)
             and isinstance(chs_comp_oprs.ccwms, dict)
         )
+
+
+def test_event_predictions():
+    """Test TBA's endpoint to retrieve the predictions for the matches at an event."""
+    with ApiClient():
+        chs_comp_predictions = Event("2022chcmp").predictions()
+        assert isinstance(chs_comp_predictions, dict)
