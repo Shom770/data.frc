@@ -294,7 +294,7 @@ def test_team_event_matches_keys():
         team4099_iri_matches_keys = Team(4099).event("2022iri", matches=True, keys=True)
         assert (
             isinstance(team4099_iri_matches_keys, list)
-            and all(isinstance(match_key, Match) for match_key in team4099_iri_matches_keys)
+            and all(isinstance(match_key, str) for match_key in team4099_iri_matches_keys)
         )
 
 
