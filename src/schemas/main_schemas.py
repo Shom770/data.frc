@@ -33,16 +33,9 @@ class District(BaseSchema):
         team_key: str
         rank: int
         rookie_bonus: int
-        point_total: int
-        event_points: list[dict]
         other_bonus: typing.Optional[int] = None
-
-        def __repr__(self):  # pragma: no cover
-            return (
-                f"District.Ranking("
-                f"{self.team_key=}, {self.rank=}, {self.rookie_bonus=}, {self.other_bonus=}, "
-                f"{self.point_total=}, {self.event_points=})"
-            ).replace("self.", "")
+        point_total: int = 0
+        event_points: list[dict] = None
 
     def __init__(self, *args, **kwargs):
         if len(args) == 2:
