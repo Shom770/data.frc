@@ -152,7 +152,7 @@ def test_event_teams_statuses():
         assert (
             isinstance(chs_comp_teams_statuses, dict)
             and all(isinstance(team_key, str) for team_key in chs_comp_teams_statuses.keys())
-            and all(isinstance(team_status, EventTeamStatus) for team_status in chs_comp_teams_statuses)
+            and all(isinstance(team_status, EventTeamStatus) for team_status in chs_comp_teams_statuses.values())
         )
 
 
