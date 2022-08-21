@@ -12,22 +12,29 @@ def test_team_frc_number():
         assert team4099.team_number == 4099 and team4099.key == "frc4099"
 
 
-def test_district_year_abbreviation_reversed():
-    """Tests initializing `District` via passing in the abbreviation and then the year (eg District('chs', 2022))."""
+def test_team_number_frc():
+    """Tests initializing `Team` via passing in the team number and then 'frc'."""
     with ApiClient():
-        chs_district = District("chs", 2022)
-        assert chs_district.year == 2022 and chs_district.abbreviation == "chs" and chs_district.key == "2022chs"
+        team4099 = Team(4099, "frc")
+        assert team4099.team_number == 4099 and team4099.key == "frc4099"
 
 
-def test_district_key():
-    """Tests initializing `District` via passing in the district key (eg '2022chs')."""
+def test_team_number():
+    """Tests initializing `Team` via passing in the team number only."""
     with ApiClient():
-        chs_district = District("2022chs")
-        assert chs_district.year == 2022 and chs_district.abbreviation == "chs" and chs_district.key == "2022chs"
+        team4099 = Team(4099)
+        assert team4099.team_number == 4099 and team4099.key == "frc4099"
 
 
-def test_district_kwargs():
-    """Tests initializing `District` via passing in keyword arguments."""
+def test_team_key():
+    """Tests initializing `Team` via passing in the team key only."""
     with ApiClient():
-        chs_district = District(key="2022chs")
-        assert chs_district.year == 2022 and chs_district.abbreviation == "chs" and chs_district.key == "2022chs"
+        team4099 = Team("frc4099")
+        assert team4099.team_number == 4099 and team4099.key == "frc4099"
+
+
+def test_team_kwarg():
+    """Tests initializing `Team` via passing in the team key only as a keyword argument."""
+    with ApiClient():
+        team4099 = Team(key="frc4099")
+        assert team4099.key == "frc4099"
