@@ -54,3 +54,19 @@ def test_event_matches():
         isinstance(chs_comp_matches, list)
         and all(isinstance(comp_match, Match) for comp_match in chs_comp_matches)
     )
+
+
+def test_event_matches_simple():
+    """Test TBA's endpoint to retrieve shortened information about all the matches that occurred at an event."""
+    chs_comp_matches = Event("2022chcmp").matches()
+    chs_comp_matches_simple = Event("2022chcmp").matches(simple=True)
+    assert chs_comp_matches != chs_comp_matches_simple
+
+
+def test_event_matches_keys():
+    """Test TBA's endpoint to retrieve the keys of all the matches that occurred at an event."""
+    chs_comp_matches_keys = Event("2022chcmp").matches(keys=True)
+    assert (
+        isinstance(chs_comp_matches_keys, list)
+        and all(isinstance(match_key, str) for match_key in chs_comp_matches_keys)
+    )
