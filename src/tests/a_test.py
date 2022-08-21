@@ -85,3 +85,13 @@ def test_team_districts():
             isinstance(team4099_districts, list)
             and all(isinstance(team_district, District) for team_district in team4099_districts)
         )
+
+
+def test_team_matches():
+    """Tests TBA's endpoint to retrieve all matches a team played in a certain year."""
+    with ApiClient():
+        rapid_react_matches = Team(4099).matches(2022)
+        assert (
+            isinstance(rapid_react_matches, list)
+            and all(isinstance(game_match, Match) for game_match in rapid_react_matches)
+        )
