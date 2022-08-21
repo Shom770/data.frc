@@ -47,14 +47,14 @@ def test_event_district_points():
 
 
 def test_event_insights():
-    """Test TBA's endpoint that retrieves insights about an event."""
+    """Tests TBA's endpoint that retrieves insights about an event."""
     with ApiClient():
         chs_comp_insights = Event("2022chcmp").insights()
         assert isinstance(chs_comp_insights, Event.Insights)
 
 
 def test_event_matches():
-    """Test TBA's endpoint to retrieve all matches that occurred at an event."""
+    """Tests TBA's endpoint to retrieve all matches that occurred at an event."""
     with ApiClient():
         chs_comp_matches = Event("2022chcmp").matches()
         assert (
@@ -64,7 +64,7 @@ def test_event_matches():
 
 
 def test_event_matches_simple():
-    """Test TBA's endpoint to retrieve shortened information about all the matches that occurred at an event."""
+    """Tests TBA's endpoint to retrieve shortened information about all the matches that occurred at an event."""
     with ApiClient():
         chs_comp_matches = Event("2022chcmp").matches()
         chs_comp_matches_simple = Event("2022chcmp").matches(simple=True)
@@ -72,7 +72,7 @@ def test_event_matches_simple():
 
 
 def test_event_matches_keys():
-    """Test TBA's endpoint to retrieve the keys of all the matches that occurred at an event."""
+    """Tests TBA's endpoint to retrieve the keys of all the matches that occurred at an event."""
     with ApiClient():
         chs_comp_matches_keys = Event("2022chcmp").matches(keys=True)
         assert (
@@ -82,14 +82,14 @@ def test_event_matches_keys():
 
 
 def test_event_matches_extra_parameters():
-    """Test `Event.matches` to ensure that an error is raised when more than one parameter out of `simple`, `keys` and `timeseries` is True."""
+    """Tests `Event.matches` to ensure that an error is raised when more than one parameter out of `simple`, `keys` and `timeseries` is True."""
     with pytest.raises(ValueError):
         with ApiClient():
             Event("2022chcmp").matches(simple=True, keys=True, timeseries=True)
 
 
 def test_event_oprs():
-    """Test TBA's endpoint to retrieve the OPRs, DPRs, and CCWMs of all teams at an event."""
+    """Tests TBA's endpoint to retrieve the OPRs, DPRs, and CCWMs of all teams at an event."""
     with ApiClient():
         chs_comp_oprs = Event("2022chcmp").oprs()
         assert (
@@ -101,7 +101,7 @@ def test_event_oprs():
 
 
 def test_event_opr_average():
-    """Test `Event.OPRs.average` to ensure that it returns the average of the OPRs of teams at an event."""
+    """Tests `Event.OPRs.average` to ensure that it returns the average of the OPRs of teams at an event."""
     with ApiClient():
         chs_avg_oprs = Event("2022chcmp").oprs().average()
         assert (
@@ -113,28 +113,28 @@ def test_event_opr_average():
 
 
 def test_event_opr_average_with_metric():
-    """Test `Event.OPRs.average` with the metric argument to ensure that it only returns the metric specified."""
+    """Tests `Event.OPRs.average` with the metric argument to ensure that it only returns the metric specified."""
     with ApiClient():
         chs_avg_opr = Event("2022chcmp").oprs().average(metric="opr")
         assert isinstance(chs_avg_opr, float)
 
 
 def test_event_opr_average_error():
-    """Test `Event.OPRs.average` with a wrong argument for the `metric` parameter to ensure it errors out."""
+    """Tests `Event.OPRs.average` with a wrong argument for the `metric` parameter to ensure it errors out."""
     with pytest.raises(ValueError):
         with ApiClient():
             Event("2022chcmp").oprs().average(metric="wrong metric")
 
 
 def test_event_predictions():
-    """Test TBA's endpoint to retrieve the predictions for the matches at an event."""
+    """Tests TBA's endpoint to retrieve the predictions for the matches at an event."""
     with ApiClient():
         chs_comp_predictions = Event("2022chcmp").predictions()
         assert isinstance(chs_comp_predictions, dict)
 
 
 def test_event_rankings():
-    """Test TBA's endpoint to retrieve the rankings of all teams at an event."""
+    """Tests TBA's endpoint to retrieve the rankings of all teams at an event."""
     with ApiClient():
         chs_comp_rankings = Event("2022chcmp").rankings()
         assert (
@@ -144,7 +144,7 @@ def test_event_rankings():
 
 
 def test_event_teams():
-    """Test TBA's endpoint to retrieve all the teams that played at an event."""
+    """Tests TBA's endpoint to retrieve all the teams that played at an event."""
     with ApiClient():
         chs_comp_teams = Event("2022chcmp").teams()
         assert (
@@ -154,7 +154,7 @@ def test_event_teams():
 
 
 def test_event_teams_simple():
-    """Test TBA's endpoint to retrieve shortened information about all the teams that played at an event."""
+    """Tests TBA's endpoint to retrieve shortened information about all the teams that played at an event."""
     with ApiClient():
         chs_comp_teams = Event("2022chcmp").teams()
         chs_comp_teams_simple = Event("2022chcmp").teams(simple=True)
@@ -162,7 +162,7 @@ def test_event_teams_simple():
 
 
 def test_event_teams_keys():
-    """Test TBA's endpoint to retrieve the keys of all the teams that played at an event.."""
+    """Tests TBA's endpoint to retrieve the keys of all the teams that played at an event.."""
     with ApiClient():
         chs_comp_teams_keys = Event("2022chcmp").teams(keys=True)
         assert (
@@ -172,7 +172,7 @@ def test_event_teams_keys():
 
 
 def test_event_teams_statuses():
-    """Test TBA's endpoint to retrieve the statuses of all the teams that played/are playing at an event.."""
+    """Tests TBA's endpoint to retrieve the statuses of all the teams that played/are playing at an event.."""
     with ApiClient():
         chs_comp_teams_statuses = Event("2022chcmp").teams(statuses=True)
         assert (
@@ -183,7 +183,7 @@ def test_event_teams_statuses():
 
 
 def test_event_teams_extra_parameters():
-    """Test `Event.teams` to ensure that an error is raised when more than one parameter out of `simple`, `keys` and `statuses` is True."""
+    """Tests `Event.teams` to ensure that an error is raised when more than one parameter out of `simple`, `keys` and `statuses` is True."""
     with pytest.raises(ValueError):
         with ApiClient():
             Event("2022chcmp").teams(simple=True, keys=True, statuses=True)
