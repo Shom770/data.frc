@@ -100,6 +100,18 @@ def test_event_oprs():
         )
 
 
+def test_event_opr_average():
+    """Test `Event.OPRs.average` to ensure that it returns the average of the OPRs of teams at an event."""
+    with ApiClient():
+        chs_avg_oprs = Event("2022chcmp").oprs().average()
+        assert (
+            isinstance(chs_avg_oprs, dict)
+            and "oprs" in chs_avg_oprs.keys()
+            and "dprs" in chs_avg_oprs.keys()
+            and "ccwms" in chs_avg_oprs.keys()
+        )
+
+
 def test_event_predictions():
     """Test TBA's endpoint to retrieve the predictions for the matches at an event."""
     with ApiClient():
