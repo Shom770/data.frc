@@ -105,3 +105,13 @@ def test_event_predictions():
     with ApiClient():
         chs_comp_predictions = Event("2022chcmp").predictions()
         assert isinstance(chs_comp_predictions, dict)
+
+
+def test_event_rankings():
+    """Test TBA's endpoint to retrieve the rankings of all teams at an event."""
+    with ApiClient():
+        chs_comp_rankings = Event("2022chcmp").rankings()
+        assert (
+            all(isinstance(team_key, str) for team_key in chs_comp_rankings.keys())
+            and all(isinstance(team_ranking, Event.Ranking) for team_ranking in chs_comp_rankings.values())
+        )
