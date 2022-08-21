@@ -258,3 +258,15 @@ def test_team_events_errors(
     """Tests `Team.events` to ensure an error is raised for the numerous cases that fail when entering parameters for it."""
     with pytest.raises(ValueError, match=match):
         Team(4099).events(year=year, simple=simple, keys=keys, statuses=statuses)
+
+
+def test_team_event_matches():
+    """Tests TBA's endpoint to retrieve all matches a team played at during an event."""
+    with ApiClient():
+        team4099_iri_matches = Team(4099).event("2022iri", matches=True)
+        assert (
+            isinstance(team4099_iri_matches, list)
+            and all(isinstance(iri_match, Match) for iri_match in team4099_iri_matches)
+        )
+
+
