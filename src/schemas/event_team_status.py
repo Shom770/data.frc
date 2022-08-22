@@ -100,7 +100,7 @@ class EventTeamStatus:
         self.overall_status_str = team_status_info["overall_status_str"]
 
         self._attributes_formatted += (
-            f"alliance_status_str=\"...\", {self.last_match_key=}, {self.next_match_key=}, overall_status_str=\"...\", "
+            f'alliance_status_str="...", {self.last_match_key=}, {self.next_match_key=}, overall_status_str="...", '
         )
 
         if team_status_info["playoff"]:
@@ -109,13 +109,13 @@ class EventTeamStatus:
                 level=team_status_info["playoff"]["level"],
                 playoff_average=team_status_info["playoff"]["playoff_average"],
                 record=self.Record(**team_status_info["playoff"]["record"]),
-                status=getattr(self.Status, team_status_info["playoff"]["status"].upper())
+                status=getattr(self.Status, team_status_info["playoff"]["status"].upper()),
             )
         else:
             self.playoff = None
 
         self.playoff_status_str = team_status_info["playoff_status_str"]
-        self._attributes_formatted += "playoff=Playoff(...), playoff_status_str=\"...\", "
+        self._attributes_formatted += 'playoff=Playoff(...), playoff_status_str="...", '
 
         if team_status_info["qual"]:
             self.qual = self.Qualifications(
@@ -129,12 +129,11 @@ class EventTeamStatus:
                         **team_status_info["qual"]["ranking"]["record"],
                     ),
                     sort_orders=self.SortOrders(
-                        team_status_info["qual"]["ranking"]["sort_orders"],
-                        team_status_info["qual"]["sort_order_info"]
+                        team_status_info["qual"]["ranking"]["sort_orders"], team_status_info["qual"]["sort_order_info"]
                     ),
-                    team_key=team_status_info["qual"]["ranking"]["team_key"]
+                    team_key=team_status_info["qual"]["ranking"]["team_key"],
                 ),
-                status=team_status_info["qual"]["status"]
+                status=team_status_info["qual"]["status"],
             )
         else:
             self.qual = None

@@ -2,14 +2,9 @@ import typing
 
 from .base_schema import BaseSchema
 
-try:
-    from utils import *
-except ImportError:
-    from ..utils import *
-
 
 class APIStatus(BaseSchema):
-    """Class containing information about TBA's API status."""""
+    """Class containing information about TBA's API status.""" ""
 
     def __init__(self, **kwargs):
         self.current_season: typing.Optional[int] = kwargs.get("current_season")

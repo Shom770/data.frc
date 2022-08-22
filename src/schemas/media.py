@@ -2,11 +2,6 @@ import typing
 
 from .base_schema import BaseSchema
 
-try:
-    from utils import *
-except ImportError:
-    from ..utils import *
-
 
 class Media(BaseSchema):
     """Class representing most media associated with a team or event on TBA."""

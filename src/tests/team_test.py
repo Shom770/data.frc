@@ -46,9 +46,8 @@ def test_team_awards():
     """Tests TBA's endpoint to retrieve all awards a team has gotten over its career."""
     with ApiClient():
         team4099_awards = Team(4099).awards()
-        assert (
-            isinstance(team4099_awards, list)
-            and all(isinstance(team_award, Award) for team_award in team4099_awards)
+        assert isinstance(team4099_awards, list) and all(
+            isinstance(team_award, Award) for team_award in team4099_awards
         )
 
 
@@ -56,9 +55,8 @@ def test_team_awards_year():
     """Tests TBA's endpoint to retrieve all awards a team has gotten in a certain year."""
     with ApiClient():
         team4099_awards = Team(4099).awards(2022)
-        assert (
-            isinstance(team4099_awards, list)
-            and all(isinstance(team_award, Award) for team_award in team4099_awards)
+        assert isinstance(team4099_awards, list) and all(
+            isinstance(team_award, Award) for team_award in team4099_awards
         )
 
 
@@ -66,9 +64,8 @@ def test_team_awards_range():
     """Tests `Team.awards` with passing in a range object into the `year` parameter to retrieve awards a team recieved across multiple years."""
     with ApiClient():
         team4099_awards = Team(4099).awards(range(2020, 2023))
-        assert (
-            isinstance(team4099_awards, list)
-            and all(isinstance(team_award, Award) for team_award in team4099_awards)
+        assert isinstance(team4099_awards, list) and all(
+            isinstance(team_award, Award) for team_award in team4099_awards
         )
 
 
@@ -83,9 +80,8 @@ def test_team_districts():
     """Tests TBA's endpoint to retrieve all the districts the team has ever played in (eg 2020chs, 2021chs, ...)"""
     with ApiClient():
         team4099_districts = Team(4099).districts()
-        assert (
-            isinstance(team4099_districts, list)
-            and all(isinstance(team_district, District) for team_district in team4099_districts)
+        assert isinstance(team4099_districts, list) and all(
+            isinstance(team_district, District) for team_district in team4099_districts
         )
 
 
@@ -93,28 +89,23 @@ def test_team_matches():
     """Tests TBA's endpoint to retrieve all the matches a team played in a certain year."""
     with ApiClient():
         rapid_react_matches = Team(4099).matches(2022)
-        assert (
-            isinstance(rapid_react_matches, list)
-            and all(isinstance(game_match, Match) for game_match in rapid_react_matches)
+        assert isinstance(rapid_react_matches, list) and all(
+            isinstance(game_match, Match) for game_match in rapid_react_matches
         )
 
 
 def test_team_matches_range():
     """Tests `Team.matches` to pass in a range object for the `year` parameter to retrieve matches a team played over multiple years."""
     team4099_matches = Team(4099).matches(range(2020, 2023))
-    assert (
-            isinstance(team4099_matches, list)
-            and all(isinstance(game_match, Match) for game_match in team4099_matches)
-    )
+    assert isinstance(team4099_matches, list) and all(isinstance(game_match, Match) for game_match in team4099_matches)
 
 
 def test_team_matches_event_code():
     """Tests `Team.matches` to retrieve all the matches a team played in a certain event."""
     with ApiClient():
         team4099_iri_matches = Team(4099).matches(2022, "iri")
-        assert (
-            isinstance(team4099_iri_matches, list)
-            and all(isinstance(game_match, Match) for game_match in team4099_iri_matches)
+        assert isinstance(team4099_iri_matches, list) and all(
+            isinstance(game_match, Match) for game_match in team4099_iri_matches
         )
 
 
@@ -122,9 +113,8 @@ def test_team_matches_event_code_keys():
     """Tests `Team.matches` to retrieve the keys of all the matches a team played in a certain event."""
     with ApiClient():
         team4099_iri_matches = Team(4099).matches(2022, "iri", keys=True)
-        assert (
-            isinstance(team4099_iri_matches, list)
-            and all(match_key.startswith("2022iri") for match_key in team4099_iri_matches)
+        assert isinstance(team4099_iri_matches, list) and all(
+            match_key.startswith("2022iri") for match_key in team4099_iri_matches
         )
 
 
@@ -140,9 +130,8 @@ def test_team_matches_keys():
     """Tests TBA's endpoint to retrieve the keys of all the matches a team played in a certain year."""
     with ApiClient():
         rapid_react_matches = Team(4099).matches(2022, keys=True)
-        assert (
-            isinstance(rapid_react_matches, list)
-            and all(isinstance(match_key, str) for match_key in rapid_react_matches)
+        assert isinstance(rapid_react_matches, list) and all(
+            isinstance(match_key, str) for match_key in rapid_react_matches
         )
 
 
@@ -157,20 +146,14 @@ def test_team_media():
     """Tests TBA's endpoint to retrieve all media a team created during a year."""
     with ApiClient():
         team4099_media = Team(4099).media(2022)
-        assert (
-            isinstance(team4099_media, list)
-            and all(isinstance(team_media, Media) for team_media in team4099_media)
-        )
+        assert isinstance(team4099_media, list) and all(isinstance(team_media, Media) for team_media in team4099_media)
 
 
 def test_team_media_range():
     """Tests `Team.media` to pass in a range object in the `year` parameter to retrieve media a team made across multiple years."""
     with ApiClient():
         team4099_media = Team(4099).media(range(2019, 2023))
-        assert (
-            isinstance(team4099_media, list)
-            and all(isinstance(team_media, Media) for team_media in team4099_media)
-        )
+        assert isinstance(team4099_media, list) and all(isinstance(team_media, Media) for team_media in team4099_media)
 
 
 def test_team_media_with_media_tag():
@@ -184,9 +167,8 @@ def test_team_robots():
     """Tests TBA's endpoint to retrive all robots a team made that were registered onto TBA."""
     with ApiClient():
         team4099_robots = Team(4099).robots()
-        assert (
-            isinstance(team4099_robots, list)
-            and all(isinstance(team_robot, Robot) for team_robot in team4099_robots)
+        assert isinstance(team4099_robots, list) and all(
+            isinstance(team_robot, Robot) for team_robot in team4099_robots
         )
 
 
@@ -194,9 +176,8 @@ def test_team_events():
     """Tests TBA's endpoint to retrieve all events a team has ever played at."""
     with ApiClient():
         team4099_events = Team(4099).events()
-        assert (
-            isinstance(team4099_events, list)
-            and all(isinstance(team_event, Event) for team_event in team4099_events)
+        assert isinstance(team4099_events, list) and all(
+            isinstance(team_event, Event) for team_event in team4099_events
         )
 
 
@@ -204,9 +185,8 @@ def test_team_events_range():
     """Tests `Team.events` to retrieve all events a team has played at across multiple years."""
     with ApiClient():
         team4099_events = Team(4099).events(range(2020, 2023))
-        assert (
-                isinstance(team4099_events, list)
-                and all(isinstance(team_event, Event) for team_event in team4099_events)
+        assert isinstance(team4099_events, list) and all(
+            isinstance(team_event, Event) for team_event in team4099_events
         )
 
 
@@ -222,9 +202,8 @@ def test_team_events_keys():
     """Tests TBA's endpoint to retrieve the keys of all the events a team has ever played at."""
     with ApiClient():
         team4099_event_keys = Team(4099).events(2022, keys=True)
-        assert (
-            isinstance(team4099_event_keys, list)
-            and all(isinstance(event_key, str) for event_key in team4099_event_keys)
+        assert isinstance(team4099_event_keys, list) and all(
+            isinstance(event_key, str) for event_key in team4099_event_keys
         )
 
 
@@ -245,15 +224,11 @@ def test_team_events_statuses():
         (None, True, True, False, "simple and keys cannot both be True"),
         (None, False, True, True, "statuses cannot be True in conjunction with simple or keys"),
         (None, False, False, True, "statuses cannot be True if a year isn't passed into Team.events."),
-        (range(2020, 2023), False, False, True, "statuses cannot be True when year is a range object.")
-    )
+        (range(2020, 2023), False, False, True, "statuses cannot be True when year is a range object."),
+    ),
 )
 def test_team_events_errors(
-        year: typing.Optional[typing.Union[int, range]],
-        simple: bool,
-        keys: bool,
-        statuses: bool,
-        match: str
+    year: typing.Optional[typing.Union[int, range]], simple: bool, keys: bool, statuses: bool, match: str
 ):
     """Tests `Team.events` to ensure an error is raised for the numerous cases that fail when entering parameters for it."""
     with pytest.raises(ValueError, match=match):
@@ -264,9 +239,8 @@ def test_team_event_awards():
     """Tests TBA's endpoint to retrieve all matches a team played at during an event."""
     with ApiClient():
         team4099_chcmp_awards = Team(4099).event("2022chcmp", awards=True)
-        assert (
-            isinstance(team4099_chcmp_awards, list)
-            and all(isinstance(chcmp_award, Award) for chcmp_award in team4099_chcmp_awards)
+        assert isinstance(team4099_chcmp_awards, list) and all(
+            isinstance(chcmp_award, Award) for chcmp_award in team4099_chcmp_awards
         )
 
 
@@ -274,9 +248,8 @@ def test_team_event_matches():
     """Tests TBA's endpoint to retrieve all matches a team played at during an event."""
     with ApiClient():
         team4099_iri_matches = Team(4099).event("2022iri", matches=True)
-        assert (
-            isinstance(team4099_iri_matches, list)
-            and all(isinstance(iri_match, Match) for iri_match in team4099_iri_matches)
+        assert isinstance(team4099_iri_matches, list) and all(
+            isinstance(iri_match, Match) for iri_match in team4099_iri_matches
         )
 
 
@@ -292,9 +265,8 @@ def test_team_event_matches_keys():
     """Tests TBA's endpoint to retrieve the keys of all the matches a team played at during an event."""
     with ApiClient():
         team4099_iri_matches_keys = Team(4099).event("2022iri", matches=True, keys=True)
-        assert (
-            isinstance(team4099_iri_matches_keys, list)
-            and all(isinstance(match_key, str) for match_key in team4099_iri_matches_keys)
+        assert isinstance(team4099_iri_matches_keys, list) and all(
+            isinstance(match_key, str) for match_key in team4099_iri_matches_keys
         )
 
 
@@ -311,8 +283,8 @@ def test_team_event_status():
         (False, False, False, False, False, "Either awards, matches or status must be True for this function."),
         (False, True, True, True, False, "simple and keys cannot both be True"),
         (True, True, False, False, False, "awards cannot be True in conjunction with simple, keys or matches"),
-        (False, True, False, False, True, "status cannot be True in conjunction with simple, keys or matches")
-    )
+        (False, True, False, False, True, "status cannot be True in conjunction with simple, keys or matches"),
+    ),
 )
 def test_team_event_errors(awards: bool, matches: bool, simple: bool, keys: bool, status: bool, match: str):
     """Tests `Team.event` for all possible errors that could be raised from it as a result of the parameters."""
@@ -325,7 +297,6 @@ def test_team_social_media():
     """Tests TBA's endpoint to retrieve all the social media accounts of a team."""
     with ApiClient():
         team4099_social_media = Team(4099).social_media()
-        assert (
-            isinstance(team4099_social_media, list)
-            and all(isinstance(social_media_account, Media) for social_media_account in team4099_social_media)
+        assert isinstance(team4099_social_media, list) and all(
+            isinstance(social_media_account, Media) for social_media_account in team4099_social_media
         )

@@ -23,9 +23,8 @@ def test_event_alliances():
     """Tests TBA's endpoint that retrieves all alliances in an event."""
     with ApiClient():
         chs_comp_alliances = Event("2022chcmp").alliances()
-        assert (
-            isinstance(chs_comp_alliances, list)
-            and all(isinstance(alliance, Event.Alliance) for alliance in chs_comp_alliances)
+        assert isinstance(chs_comp_alliances, list) and all(
+            isinstance(alliance, Event.Alliance) for alliance in chs_comp_alliances
         )
 
 
@@ -33,9 +32,8 @@ def test_event_awards():
     """Tests TBA's endpoint that retrieves all awards distributed at an event."""
     with ApiClient():
         chs_comp_awards = Event("2022chcmp").awards()
-        assert (
-            isinstance(chs_comp_awards, list)
-            and all(isinstance(comp_award, Award) for comp_award in chs_comp_awards)
+        assert isinstance(chs_comp_awards, list) and all(
+            isinstance(comp_award, Award) for comp_award in chs_comp_awards
         )
 
 
@@ -57,9 +55,8 @@ def test_event_matches():
     """Tests TBA's endpoint to retrieve all matches that occurred at an event."""
     with ApiClient():
         chs_comp_matches = Event("2022chcmp").matches()
-        assert (
-            isinstance(chs_comp_matches, list)
-            and all(isinstance(comp_match, Match) for comp_match in chs_comp_matches)
+        assert isinstance(chs_comp_matches, list) and all(
+            isinstance(comp_match, Match) for comp_match in chs_comp_matches
         )
 
 
@@ -75,9 +72,8 @@ def test_event_matches_keys():
     """Tests TBA's endpoint to retrieve the keys of all the matches that occurred at an event."""
     with ApiClient():
         chs_comp_matches_keys = Event("2022chcmp").matches(keys=True)
-        assert (
-            isinstance(chs_comp_matches_keys, list)
-            and all(isinstance(match_key, str) for match_key in chs_comp_matches_keys)
+        assert isinstance(chs_comp_matches_keys, list) and all(
+            isinstance(match_key, str) for match_key in chs_comp_matches_keys
         )
 
 
@@ -137,9 +133,8 @@ def test_event_rankings():
     """Tests TBA's endpoint to retrieve the rankings of all teams at an event."""
     with ApiClient():
         chs_comp_rankings = Event("2022chcmp").rankings()
-        assert (
-            all(isinstance(team_key, str) for team_key in chs_comp_rankings.keys())
-            and all(isinstance(team_ranking, Event.Ranking) for team_ranking in chs_comp_rankings.values())
+        assert all(isinstance(team_key, str) for team_key in chs_comp_rankings.keys()) and all(
+            isinstance(team_ranking, Event.Ranking) for team_ranking in chs_comp_rankings.values()
         )
 
 
@@ -147,10 +142,7 @@ def test_event_teams():
     """Tests TBA's endpoint to retrieve all the teams that played at an event."""
     with ApiClient():
         chs_comp_teams = Event("2022chcmp").teams()
-        assert (
-            isinstance(chs_comp_teams, list)
-            and all(isinstance(comp_team, Team) for comp_team in chs_comp_teams)
-        )
+        assert isinstance(chs_comp_teams, list) and all(isinstance(comp_team, Team) for comp_team in chs_comp_teams)
 
 
 def test_event_teams_simple():
@@ -165,9 +157,8 @@ def test_event_teams_keys():
     """Tests TBA's endpoint to retrieve the keys of all the teams that played at an event.."""
     with ApiClient():
         chs_comp_teams_keys = Event("2022chcmp").teams(keys=True)
-        assert (
-            isinstance(chs_comp_teams_keys, list)
-            and all(isinstance(team_key, str) for team_key in chs_comp_teams_keys)
+        assert isinstance(chs_comp_teams_keys, list) and all(
+            isinstance(team_key, str) for team_key in chs_comp_teams_keys
         )
 
 

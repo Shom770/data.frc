@@ -48,7 +48,7 @@ class District(BaseSchema):
                 self.year = args[1]
                 self.key = f"{self.year}{self.abbreviation}"
         elif len(args) == 1:
-            self.key, = args
+            (self.key,) = args
             self.year: typing.Optional[int] = kwargs.get("year") or int(match(r"\d+", self.key)[0])
             self.abbreviation: typing.Optional[str] = kwargs.get("abbreviation") or self.key.replace(str(self.year), "")
         else:
@@ -83,9 +83,9 @@ class District(BaseSchema):
 
     @synchronous
     async def events(
-            self,
-            simple: bool = False,
-            keys: bool = False,
+        self,
+        simple: bool = False,
+        keys: bool = False,
     ) -> list[typing.Union[str, "Event"]]:
         """
         Retrieves a list of events in the given district.
@@ -98,14 +98,14 @@ class District(BaseSchema):
 
         Returns:
             A list of strings with each string representing an event's key for all the events in the given district or a list of Event objects with each object representing an event in the given district.
-        """
+        """  # noqa
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
 
         response = await InternalData.get(
             url=construct_url("district", key=self.key, endpoint="events", simple=simple, keys=keys),
-            headers=self._headers
-        ) 
+            headers=self._headers,
+        )
         if keys:
             return response
         else:
@@ -113,9 +113,9 @@ class District(BaseSchema):
 
     @synchronous
     async def teams(
-            self,
-            simple: bool = False,
-            keys: bool = False,
+        self,
+        simple: bool = False,
+        keys: bool = False,
     ) -> list[typing.Union[str, "Team"]]:
         """
         Retrieves a list of teams in the given district.
@@ -128,13 +128,13 @@ class District(BaseSchema):
 
         Returns:
             A list of strings with each string representing a team's key for all the teams in the given district or a list of Team objects with each object representing a team in the given district.
-        """
+        """  # noqa
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
 
         response = await InternalData.get(
             url=construct_url("district", key=self.key, endpoint="teams", simple=simple, keys=keys),
-            headers=self._headers
+            headers=self._headers,
         )
         if keys:
             return response
@@ -148,11 +148,10 @@ class District(BaseSchema):
 
         Returns:
             A list of Ranking objects with each Ranking object representing a team's district ranking for the given district.
-        """
+        """  # noqa
         response = await InternalData.get(
-            url=construct_url("district", key=self.key, endpoint="rankings"),
-            headers=self._headers
-        ) 
+            url=construct_url("district", key=self.key, endpoint="rankings"), headers=self._headers
+        )
         return [self.Ranking(**team_ranking_data) for team_ranking_data in response]
 
 
@@ -188,12 +187,7 @@ class Event(BaseSchema):
         """Class representing an alliance in an event."""
 
         def __init__(
-                self,
-                name: str,
-                declines: list[str],
-                picks: list[str],
-                status: dict,
-                backup: typing.Optional[dict] = None
+            self, name: str, declines: list[str], picks: list[str], status: dict, backup: typing.Optional[dict] = None
         ):
             self.name = name
             self.backup = backup
@@ -202,13 +196,9 @@ class Event(BaseSchema):
             self.status: Event.Status = Event.Status(
                 playoff_average=status["playoff_average"],
                 level=status["level"],
-                record=Event.Record(
-                    **status["record"]
-                ),
-                current_level_record=Event.Record(
-                    **status["current_level_record"]
-                ),
-                status=status["status"]
+                record=Event.Record(**status["record"]),
+                current_level_record=Event.Record(**status["current_level_record"]),
+                status=status["status"],
             )
 
             super().__init__()
@@ -238,7 +228,7 @@ class Event(BaseSchema):
 
             Returns:
                 A dictionary containing the averages for all metrics or a decimal (float object) representing the average of one of the metrics if specified.
-            """
+            """  # noqa
             metric_data_mapping = {"opr": self.oprs, "dpr": self.dprs, "ccwm": self.ccwms}
 
             if metric:
@@ -252,7 +242,7 @@ class Event(BaseSchema):
                 return {
                     "opr": mean(self.oprs.values()),
                     "dpr": mean(self.dprs.values()),
-                    "ccwm": mean(self.ccwms.values())
+                    "ccwm": mean(self.ccwms.values()),
                 }
 
     class ExtraStats:
@@ -313,7 +303,7 @@ class Event(BaseSchema):
 
     def __init__(self, *args, **kwargs):
         if len(args) == 1:
-            self.key, = args
+            (self.key,) = args
         else:
             self.key: str = kwargs["key"]
 
@@ -401,9 +391,8 @@ class Event(BaseSchema):
             A list of Alliance objects representing each alliance in the event.
         """
         response = await InternalData.get(
-                url=construct_url("event", key=self.key, endpoint="alliances"),
-                headers=self._headers
-        ) 
+            url=construct_url("event", key=self.key, endpoint="alliances"), headers=self._headers
+        )
         return [self.Alliance(**alliance_info) for alliance_info in response]
 
     @synchronous
@@ -415,9 +404,8 @@ class Event(BaseSchema):
             A list of Award objects representing each award distributed in an event.
         """
         response = await InternalData.get(
-            url=construct_url("event", key=self.key, endpoint="awards"),
-            headers=self._headers
-        ) 
+            url=construct_url("event", key=self.key, endpoint="awards"), headers=self._headers
+        )
         return [Award(**award_info) for award_info in response]
 
     @synchronous
@@ -427,11 +415,10 @@ class Event(BaseSchema):
 
         Returns:
             A DistrictPoints object containing "points" and "tiebreakers" fields, with each field possessing a dictionary mapping team keys to their points or None if the event doesn't take place in a district or district points are not applicable to the event.
-        """
+        """  # noqa
         response = await InternalData.get(
-                url=construct_url("event", key=self.key, endpoint="district_points"),
-                headers=self._headers
-        ) 
+            url=construct_url("event", key=self.key, endpoint="district_points"), headers=self._headers
+        )
         event_district_points = response
 
         if event_district_points:
@@ -445,11 +432,10 @@ class Event(BaseSchema):
 
         Returns:
             An Insight object containing qualification and playoff insights from the event. Can be None if the event hasn't occurred yet, and the fields of Insight may be None depending on how far the event has advanced.
-        """
+        """  # noqa
         response = await InternalData.get(
-                url=construct_url("event", key=self.key, endpoint="insights"),
-                headers=self._headers
-        ) 
+            url=construct_url("event", key=self.key, endpoint="insights"), headers=self._headers
+        )
         insights = response
 
         if insights:
@@ -457,10 +443,7 @@ class Event(BaseSchema):
 
     @synchronous
     async def matches(
-            self,
-            simple: bool = False,
-            keys: bool = False,
-            timeseries: bool = False
+        self, simple: bool = False, keys: bool = False, timeseries: bool = False
     ) -> list[typing.Union[str, Match]]:
         """
         Retrieves all matches that occurred during an event.
@@ -477,18 +460,19 @@ class Event(BaseSchema):
 
         Returns:
             A dictionary with team keys as the keys of the dictionary and an EventTeamStatus object representing the status of said team as the values of the dictionary or a list of strings representing the keys of the teams that participated in an event or a list of Team objects, each representing a team that participated in an event.
-        """
+        """  # noqa
         if (simple, keys, timeseries).count(True) > 1:
             raise ValueError(
-                "Only one parameter out of `simple`, `keys`, and `statuses` can be True. You can't mix and match parameters.")
+                "Only one parameter out of `simple`, `keys`, and `statuses`"
+                " can be True. You can't mix and match parameters."
+            )
 
         response = await InternalData.get(
-                url=construct_url(
-                    "event", key=self.key,
-                    endpoint="matches", simple=simple, keys=keys, timeseries=timeseries
-                ),
-                headers=self._headers
-        ) 
+            url=construct_url(
+                "event", key=self.key, endpoint="matches", simple=simple, keys=keys, timeseries=timeseries
+            ),
+            headers=self._headers,
+        )
         if keys or timeseries:
             return response
         else:
@@ -502,11 +486,10 @@ class Event(BaseSchema):
 
         Returns:
             An OPRs object containing a key/value pair for the OPRs, DPRs, and CCWMs of all teams at an event. The fields of `OPRs` may be empty if OPRs, DPRs, and CCWMs weren't calculated.
-        """
+        """  # noqa
         response = await InternalData.get(
-            url=construct_url("event", key=self.key, endpoint="oprs"),
-            headers=self._headers
-        ) 
+            url=construct_url("event", key=self.key, endpoint="oprs"), headers=self._headers
+        )
         metric_data = response
 
         if metric_data:
@@ -521,11 +504,10 @@ class Event(BaseSchema):
 
         Returns:
             A dictionary containing the predictions of an event from TBA (contains year-specific information). May be an empty dictionary if there are no predictions available for that event.
-        """
+        """  # noqa
         response = await InternalData.get(
-            url=construct_url("event", key=self.key, endpoint="predictions"),
-            headers=self._headers
-        ) 
+            url=construct_url("event", key=self.key, endpoint="predictions"), headers=self._headers
+        )
         return response
 
     @synchronous
@@ -535,23 +517,16 @@ class Event(BaseSchema):
 
         Returns:
             A dictionary with team keys as the keys of the dictionary and Ranking objects for that team's information about their ranking at an event as values of the dictionary.
-        """
+        """  # noqa
         response = await InternalData.get(
-                url=construct_url("event", key=self.key, endpoint="rankings"),
-                headers=self._headers
-        ) 
+            url=construct_url("event", key=self.key, endpoint="rankings"), headers=self._headers
+        )
         rankings_info = response
         rankings_dict = {}
 
         for rank_info in rankings_info["rankings"]:
-            rank_info["extra_stats"] = self.ExtraStats(
-                rank_info["extra_stats"],
-                rankings_info["extra_stats_info"]
-            )
-            rank_info["sort_orders"] = self.SortOrders(
-                rank_info["sort_orders"],
-                rankings_info["sort_order_info"]
-            )
+            rank_info["extra_stats"] = self.ExtraStats(rank_info["extra_stats"], rankings_info["extra_stats_info"])
+            rank_info["sort_orders"] = self.SortOrders(rank_info["sort_orders"], rankings_info["sort_order_info"])
 
             rankings_dict[rank_info["team_key"]] = self.Ranking(**rank_info)
 
@@ -559,10 +534,7 @@ class Event(BaseSchema):
 
     @synchronous
     async def teams(
-            self,
-            simple: bool = False,
-            keys: bool = False,
-            statuses: bool = False
+        self, simple: bool = False, keys: bool = False, statuses: bool = False
     ) -> typing.Union[list[typing.Union[str, "Team"]], dict[str, EventTeamStatus]]:
         """
         Retrieves all teams who participated at an event.
@@ -577,20 +549,24 @@ class Event(BaseSchema):
 
         Returns:
             A dictionary with team keys as the keys of the dictionary and an EventTeamStatus object representing the status of said team as the values of the dictionary or a list of strings representing the keys of the teams that participated in an event or a list of Team objects, each representing a team that participated in an event.
-        """
+        """  # noqa
         if (simple, keys, statuses).count(True) > 1:
-            raise ValueError("Only one parameter out of `simple`, `keys`, and `statuses` can be True. You can't mix and match parameters.")
+            raise ValueError(
+                "Only one parameter out of `simple`, `keys`, and `statuses` can be True."
+                " You can't mix and match parameters."
+            )
 
         response = await InternalData.get(
-                url=construct_url("event", key=self.key, endpoint="teams", simple=simple, keys=keys, statuses=statuses),
-                headers=self._headers
-        ) 
+            url=construct_url("event", key=self.key, endpoint="teams", simple=simple, keys=keys, statuses=statuses),
+            headers=self._headers,
+        )
         if keys:
             return response
         elif statuses:
             return {
                 team_key: EventTeamStatus(team_key, team_status_info)
-                for team_key, team_status_info in response.items() if team_status_info
+                for team_key, team_status_info in response.items()
+                if team_status_info
             }
         else:
             return [Team(**team_data) for team_data in response]
@@ -611,7 +587,7 @@ class Team(BaseSchema):
             if isinstance(args[0], int):
                 self.key = f"frc{args[0]}"
             else:
-                self.key, = args
+                (self.key,) = args
             self.team_number: int = int(self.key[3:])
         else:
             self.key: str = kwargs["key"]
@@ -657,17 +633,13 @@ class Team(BaseSchema):
         return wrapper
 
     async def _get_year_events(
-            self,
-            year: int,
-            simple: bool,
-            keys: bool,
-            statuses: bool
+        self, year: int, simple: bool, keys: bool, statuses: bool
     ) -> typing.Union[list[typing.Union[str, Event]], dict[str, EventTeamStatus]]:
         response = await InternalData.get(
             url=construct_url(
                 "team", key=self.key, endpoint="events", year=year, simple=simple, keys=keys, statuses=statuses
             ),
-            headers=self._headers
+            headers=self._headers,
         )
         if keys:
             return response
@@ -676,15 +648,12 @@ class Team(BaseSchema):
         else:
             return {
                 event_key: EventTeamStatus(event_key, team_status_info)
-                for event_key, team_status_info in response.items() if team_status_info
+                for event_key, team_status_info in response.items()
+                if team_status_info
             }
 
     async def _get_year_matches(
-            self,
-            year: int,
-            event_code: typing.Optional[str],
-            simple: bool,
-            keys: bool
+        self, year: int, event_code: typing.Optional[str], simple: bool, keys: bool
     ) -> list[Match]:
         """
         Retrieves all matches a team played from a certain year.
@@ -701,11 +670,11 @@ class Team(BaseSchema):
 
         Returns:
             A list of Match objects representing each match a team played based on the conditions; might be empty if team didn't play matches that year.
-        """
+        """  # noqa
         response = await InternalData.get(
-                url=construct_url("team", key=self.key, endpoint="matches", year=year, simple=simple, keys=keys),
-                headers=self._headers
-        ) 
+            url=construct_url("team", key=self.key, endpoint="matches", year=year, simple=simple, keys=keys),
+            headers=self._headers,
+        )
         if keys:
             if event_code:
                 return [match_key for match_key in response if event_code in match_key]
@@ -732,14 +701,12 @@ class Team(BaseSchema):
         """
         if media_tag:
             url = construct_url(
-                "team", key=self.key,
-                endpoint="media", second_endpoint="tag",
-                media_tag=media_tag, year=year
+                "team", key=self.key, endpoint="media", second_endpoint="tag", media_tag=media_tag, year=year
             )
         else:
             url = construct_url("team", key=self.key, endpoint="media", year=year)
 
-        response = await InternalData.get(url=url, headers=self._headers) 
+        response = await InternalData.get(url=url, headers=self._headers)
         return [Media(**media_data) for media_data in response]
 
     @synchronous
@@ -753,12 +720,11 @@ class Team(BaseSchema):
 
         Returns:
             A list of Award objects representing each award a team has got based on the parameters; may be empty if the team has gotten no awards.
-        """
+        """  # noqa
         response = await InternalData.get(
-                url=construct_url("team", key=self.key, endpoint="awards",
-                                  year=year if isinstance(year, int) else False),
-                headers=self._headers
-        ) 
+            url=construct_url("team", key=self.key, endpoint="awards", year=year if isinstance(year, int) else False),
+            headers=self._headers,
+        )
         if isinstance(year, range):
             return [Award(**award_data) for award_data in response if award_data["year"] in year]
         else:
@@ -773,9 +739,8 @@ class Team(BaseSchema):
             A list of integers representing every year this team has participated in.
         """
         response = await InternalData.get(
-                url=construct_url("team", key=self.key, endpoint="years_participated"),
-                headers=self._headers
-        ) 
+            url=construct_url("team", key=self.key, endpoint="years_participated"), headers=self._headers
+        )
         return response
 
     @synchronous
@@ -787,20 +752,19 @@ class Team(BaseSchema):
 
         Returns:
             A list of districts representing each year this team was in said district if a team has participated in a district, otherwise returns an empty list.
-        """
+        """  # noqa
         response = await InternalData.get(
-                url=construct_url("team", key=self.key, endpoint="districts"),
-                headers=self._headers
-        ) 
+            url=construct_url("team", key=self.key, endpoint="districts"), headers=self._headers
+        )
         return [District(**district_data) for district_data in response]
 
     @synchronous
     async def matches(
-            self,
-            year: typing.Union[range, int],
-            event_code: typing.Optional[str] = None,
-            simple: typing.Optional[bool] = False,
-            keys: typing.Optional[bool] = False
+        self,
+        year: typing.Union[range, int],
+        event_code: typing.Optional[str] = None,
+        simple: typing.Optional[bool] = False,
+        keys: typing.Optional[bool] = False,
     ) -> list[Match]:
         """
         Retrieves all matches a team played from certain year(s).
@@ -817,16 +781,18 @@ class Team(BaseSchema):
 
         Returns:
             A list of Match objects representing each match a team played based on the conditions; might be empty if team didn't play matches in the specified year(s).
-        """
+        """  # noqa
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
 
         if isinstance(year, range):
-            return list(itertools.chain.from_iterable(
-                await asyncio.gather(
-                    *[self.matches.coro(self, spec_year, event_code, simple, keys) for spec_year in year]
+            return list(
+                itertools.chain.from_iterable(
+                    await asyncio.gather(
+                        *[self.matches.coro(self, spec_year, event_code, simple, keys) for spec_year in year]
+                    )
                 )
-            ))
+            )
         else:
             return await self._get_year_matches(year, event_code, simple, keys)
 
@@ -843,11 +809,13 @@ class Team(BaseSchema):
 
         Returns:
             A list of Media objects representing individual media from a team.
-        """
+        """  # noqa
         if isinstance(year, range):
-            return list(itertools.chain.from_iterable(
-                await asyncio.gather(*[self.media.coro(self, spec_year, media_tag) for spec_year in year])
-            ))
+            return list(
+                itertools.chain.from_iterable(
+                    await asyncio.gather(*[self.media.coro(self, spec_year, media_tag) for spec_year in year])
+                )
+            )
         else:
             return await self._get_year_media(year, media_tag)
 
@@ -860,20 +828,19 @@ class Team(BaseSchema):
 
         Returns:
             A list of districts representing each year this team was in said district if a team has named a robot, otherwise returns an empty list.
-        """
+        """  # noqa
         response = await InternalData.get(
-                url=construct_url("team", key=self.key, endpoint="robots"),
-                headers=self._headers
-        ) 
+            url=construct_url("team", key=self.key, endpoint="robots"), headers=self._headers
+        )
         return [Robot(**robot_data) for robot_data in response]
 
     @synchronous
     async def events(
-            self,
-            year: typing.Union[range, int] = None,
-            simple: bool = False,
-            keys: bool = False,
-            statuses: bool = False,
+        self,
+        year: typing.Union[range, int] = None,
+        simple: bool = False,
+        keys: bool = False,
+        statuses: bool = False,
     ) -> typing.Union[list[typing.Union[Event, str]], dict[str, EventTeamStatus]]:
         """
         Retrieves and returns a record of teams based on the parameters given.
@@ -892,35 +859,40 @@ class Team(BaseSchema):
 
         Returns:
             A list of Event objects for each event that was returned or a list of strings representing the keys of the events or a dictionary with team keys as the keys of the dictionary and an EventTeamStatus object representing the status of said team as the values of the dictionary.
-        """
+        """  # noqa
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
         elif statuses and (simple or keys):
-            raise ValueError("statuses cannot be True in conjunction with simple or keys, if statuses is True then simple and keys must be False.")
+            raise ValueError(
+                "statuses cannot be True in conjunction with simple or keys,"
+                " if statuses is True then simple and keys must be False."
+            )
         elif statuses and not year:
             raise ValueError("statuses cannot be True if a year isn't passed into Team.events.")
         elif statuses and isinstance(year, range):
             raise ValueError("statuses cannot be True when year is a range object.")
 
         if isinstance(year, range):
-            return list(itertools.chain.from_iterable(
-                await asyncio.gather(
-                    *[self.events.coro(self, spec_year, simple, keys, statuses) for spec_year in year]
+            return list(
+                itertools.chain.from_iterable(
+                    await asyncio.gather(
+                        *[self.events.coro(self, spec_year, simple, keys, statuses) for spec_year in year]
+                    )
                 )
-            ))
+            )
         else:
             return await self._get_year_events(year, simple, keys, statuses)
 
     @synchronous
     async def event(
-            self,
-            event_key: str,
-            *,
-            awards: bool = False,
-            matches: bool = False,
-            simple: bool = False,
-            keys: bool = False,
-            status: bool = False,
+        self,
+        event_key: str,
+        *,
+        awards: bool = False,
+        matches: bool = False,
+        simple: bool = False,
+        keys: bool = False,
+        status: bool = False,
     ) -> typing.Union[list[Award], EventTeamStatus, list[typing.Union[Match, str]]]:
         """
         Retrieves and returns a record of teams based on the parameters given.
@@ -941,7 +913,7 @@ class Team(BaseSchema):
 
         Returns:
             A list of Match objects representing each match a team played or an EventTeamStatus object to represent the team's status during an event or a list of strings representing the keys of the matches the team played in or a list of Award objects to represent award(s) a team got during an event.
-        """
+        """  # noqa
         if not awards and not matches and not status:
             raise ValueError("Either awards, matches or status must be True for this function.")
         elif simple and keys:
@@ -958,19 +930,19 @@ class Team(BaseSchema):
             )
 
         response = await InternalData.get(
-                url=construct_url(
-                    "team",
-                    key=self.key,
-                    endpoint="event",
-                    event_key=event_key,
-                    awards=awards,
-                    matches=matches,
-                    status=status,
-                    simple=simple,
-                    keys=keys,
-                ),
-                headers=self._headers
-        ) 
+            url=construct_url(
+                "team",
+                key=self.key,
+                endpoint="event",
+                event_key=event_key,
+                awards=awards,
+                matches=matches,
+                status=status,
+                simple=simple,
+                keys=keys,
+            ),
+            headers=self._headers,
+        )
         if matches and keys:
             return response
         elif matches:
@@ -987,11 +959,10 @@ class Team(BaseSchema):
 
         Returns:
             A list of Media objects representing each social media account of a team. May be empty if a team has no social media accounts.
-        """
+        """  # noqa
         response = await InternalData.get(
-                url=construct_url("team", key=self.key, endpoint="social_media"),
-                headers=self._headers
-        ) 
+            url=construct_url("team", key=self.key, endpoint="social_media"), headers=self._headers
+        )
         return [Media(**social_media_info) for social_media_info in response]
 
     def __hash__(self) -> int:

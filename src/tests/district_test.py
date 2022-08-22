@@ -64,7 +64,7 @@ def test_district_events_extra_parameters():
 def test_district_teams():
     """Tests TBA's endpoint to retrieve all teams that played in a district."""
     with ApiClient():
-        chs_teams= District(2022, "chs").teams()
+        chs_teams = District(2022, "chs").teams()
         assert isinstance(chs_teams, list) and all(isinstance(team, Team) for team in chs_teams)
 
 
@@ -93,7 +93,6 @@ def test_district_rankings():
     """Tests TBA's endpoint to retrieve the rankings of all the teams in a district."""
     with ApiClient():
         chs_rankings = District(2022, "chs").rankings()
-        assert (
-            isinstance(chs_rankings, list)
-            and all(isinstance(team_rank, District.Ranking) for team_rank in chs_rankings)
+        assert isinstance(chs_rankings, list) and all(
+            isinstance(team_rank, District.Ranking) for team_rank in chs_rankings
         )

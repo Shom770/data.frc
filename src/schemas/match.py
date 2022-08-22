@@ -5,9 +5,9 @@ from dataclasses import dataclass
 from .base_schema import BaseSchema
 
 try:
-    from utils import *
+    from utils import *  # noqa
 except ImportError:
-    from ..utils import *
+    from ..utils import *  # noqa
 
 
 class Match(BaseSchema):
@@ -41,7 +41,7 @@ class Match(BaseSchema):
         def __post_init__(self):
             self.alliances = {
                 "red": [self.Team(**team) for team in self.alliances["red"]],
-                "blue": [self.Team(**team) for team in self.alliances["blue"]]
+                "blue": [self.Team(**team) for team in self.alliances["blue"]],
             }
 
     def __init__(self, **kwargs):
@@ -55,7 +55,7 @@ class Match(BaseSchema):
         alliances = kwargs.get("alliances")
         self.alliances: typing.Optional[dict] = {
             "red": self.Alliance(**alliances["red"]),
-            "blue": self.Alliance(**alliances["blue"])
+            "blue": self.Alliance(**alliances["blue"]),
         }
         self.winning_alliance: typing.Optional[str] = kwargs.get("winning_alliance")
 
@@ -66,12 +66,8 @@ class Match(BaseSchema):
         predicted_time = kwargs.get("predicted_time")
         post_result_time = kwargs.get("post_result_time")
 
-        self.time: typing.Optional[datetime.datetime] = (
-            datetime.datetime.fromtimestamp(time) if time else None
-        )
-        self.actual_time: typing.Optional[int] = (
-            datetime.datetime.fromtimestamp(actual_time) if actual_time else None
-        )
+        self.time: typing.Optional[datetime.datetime] = datetime.datetime.fromtimestamp(time) if time else None
+        self.actual_time: typing.Optional[int] = datetime.datetime.fromtimestamp(actual_time) if actual_time else None
         self.predicted_time: typing.Optional[int] = (
             datetime.datetime.fromtimestamp(predicted_time) if predicted_time else None
         )

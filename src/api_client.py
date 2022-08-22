@@ -8,9 +8,8 @@ from types import TracebackType
 import aiohttp
 from dotenv import load_dotenv
 
-from .utils import *
 from .schemas import *
-
+from .utils import *
 
 load_dotenv()
 
@@ -70,10 +69,7 @@ class ApiClient:
         InternalData.session = aiohttp.ClientSession()
 
     async def _get_year_events(
-            self,
-            year: int,
-            simple: typing.Optional[bool] = False,
-            keys: typing.Optional[bool] = False
+        self, year: int, simple: typing.Optional[bool] = False, keys: typing.Optional[bool] = False
     ) -> list[typing.Union[Event, str]]:
         """
         Retrieves all the events from a year.
@@ -88,22 +84,17 @@ class ApiClient:
 
         Returns:
             A list of Event objects representing each event in a year or a list of strings representing all the keys of the events retrieved.
-        """
+        """  # noqa
         response = await InternalData.get(
-                url=construct_url("events", year=year, simple=simple, keys=keys),
-                headers=self._headers
-        ) 
+            url=construct_url("events", year=year, simple=simple, keys=keys), headers=self._headers
+        )
         if keys:
             return response
         else:
             return [Event(**event_data) for event_data in response]
 
     async def _get_team_page(
-        self,
-        page_num: int = None,
-        year: typing.Union[range, int] = None,
-        simple: bool = False,
-        keys: bool = False
+        self, page_num: int = None, year: typing.Union[range, int] = None, simple: bool = False, keys: bool = False
     ) -> list[typing.Union[Team, str]]:
         """
         Returns a page of teams (a list of 500 teams or less)
@@ -123,15 +114,11 @@ class ApiClient:
 
         Returns:
             A list of Team objects for each team in the list.
-        """
+        """  # noqa
         response = await InternalData.get(
-                url=construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys),
-                headers=self._headers
-        ) 
-        return [
-            Team(**team_data) if not isinstance(team_data, str) else team_data
-            for team_data in response
-        ]
+            url=construct_url("teams", year=year, page_num=page_num, simple=simple, keys=keys), headers=self._headers
+        )
+        return [Team(**team_data) if not isinstance(team_data, str) else team_data for team_data in response]
 
     @synchronous
     async def districts(self, year: int) -> list[District]:
@@ -145,10 +132,7 @@ class ApiClient:
         Returns:
             A list of District objects with each object representing an active district of that year.
         """
-        response = await InternalData.get(
-            url=construct_url("districts", year=year),
-            headers=self._headers
-        ) 
+        response = await InternalData.get(url=construct_url("districts", year=year), headers=self._headers)
         return [District(**district_data) for district_data in response]
 
     @synchronous
@@ -164,19 +148,15 @@ class ApiClient:
 
         Returns:
             A Team object representing the data given.
-        """
+        """  # noqa
         response = await InternalData.get(
-            url=construct_url("event", key=event_key, simple=simple),
-            headers=self._headers
-        ) 
+            url=construct_url("event", key=event_key, simple=simple), headers=self._headers
+        )
         return Event(**response)
 
     @synchronous
     async def events(
-            self,
-            year: typing.Union[range, int],
-            simple: typing.Optional[bool] = False,
-            keys: typing.Optional[bool] = False
+        self, year: typing.Union[range, int], simple: typing.Optional[bool] = False, keys: typing.Optional[bool] = False
     ) -> list[typing.Union[Event, str]]:
         """
         Retrieves all the events from certain year(s).
@@ -191,16 +171,14 @@ class ApiClient:
 
         Returns:
             A list of Event objects representing each event in certain year(s) or a list of strings representing all the keys of the events retrieved.
-        """
+        """  # noqa
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
 
         if isinstance(year, range):
             return list(
                 itertools.chain.from_iterable(
-                    await asyncio.gather(
-                        *[self.events.coro(self, spec_year, simple, keys) for spec_year in year]
-                    )
+                    await asyncio.gather(*[self.events.coro(self, spec_year, simple, keys) for spec_year in year])
                 )
             )
         else:
@@ -208,11 +186,7 @@ class ApiClient:
 
     @synchronous
     async def match(
-        self,
-        match_key: str,
-        simple: bool = False,
-        timeseries: bool = False,
-        zebra_motionworks: bool = False
+        self, match_key: str, simple: bool = False, timeseries: bool = False, zebra_motionworks: bool = False
     ) -> typing.Optional[typing.Union[list[dict], Match, Match.ZebraMotionworks]]:
         """
         Retrieves information about a match.
@@ -231,18 +205,19 @@ class ApiClient:
 
         Returns:
             A Match object containing information about the match or a Match.ZebraMotionworks object representing data about where teams' robots went during the match (may not have any data for all teams or even data altogether and if so will return None) or a list of dictionaries containing timeseries data for a match.
-        """
+        """  # noqa
         if (simple, timeseries, zebra_motionworks).count(True) > 1:
             raise ValueError(
-                "Only one parameter out of `simple`, `keys`, and `statuses` can be True. You can't mix and match parameters.")
+                "Only one parameter out of `simple`, `keys`, and `statuses` can be True. "
+                "You can't mix and match parameters."
+            )
 
         response = await InternalData.get(
-                url=construct_url(
-                    "match", key=match_key,
-                    simple=simple, timeseries=timeseries, zebra_motionworks=zebra_motionworks
-                ),
-                headers=self._headers
-        ) 
+            url=construct_url(
+                "match", key=match_key, simple=simple, timeseries=timeseries, zebra_motionworks=zebra_motionworks
+            ),
+            headers=self._headers,
+        )
         if timeseries:  # pragma: no cover
             return response
         elif zebra_motionworks:
@@ -265,11 +240,7 @@ class ApiClient:
         return APIStatus(**response)
 
     @synchronous
-    async def team(
-            self,
-            team_key: str,
-            simple: bool = False
-    ) -> Team:
+    async def team(self, team_key: str, simple: bool = False) -> Team:
         """
         Retrieves and returns a record of teams based on the parameters given.
 
@@ -281,20 +252,13 @@ class ApiClient:
 
         Returns:
             A Team object representing the data given.
-        """
-        response = await InternalData.get(
-            url=construct_url("team", key=team_key, simple=simple),
-            headers=self._headers
-        ) 
+        """  # noqa
+        response = await InternalData.get(url=construct_url("team", key=team_key, simple=simple), headers=self._headers)
         return Team(**response)
 
     @synchronous
     async def teams(
-        self,
-        page_num: int = None,
-        year: typing.Union[range, int] = None,
-        simple: bool = False,
-        keys: bool = False
+        self, page_num: int = None, year: typing.Union[range, int] = None, simple: bool = False, keys: bool = False
     ) -> list[typing.Union[Team, str]]:
         """
         Retrieves and returns a record of teams based on the parameters given.
@@ -314,7 +278,7 @@ class ApiClient:
 
         Returns:
             A list of Team objects for each team in the list.
-        """
+        """  # noqa
         if simple and keys:
             raise ValueError("simple and keys cannot both be True, you must choose one mode over the other.")
 
